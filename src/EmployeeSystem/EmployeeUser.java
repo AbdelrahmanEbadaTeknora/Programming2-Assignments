@@ -1,4 +1,6 @@
-public class EmployeeUser 
+package EmployeeSystem;
+
+public class EmployeeUser
 {
     //employeeId, Name, Email, Address, PhoneNumber 
     private String employeeId;
