@@ -59,13 +59,13 @@ public class EmployeeRole {
 
         long daysDifference = java.time.temporal.ChronoUnit.DAYS.between(cp.getPurchaseDate(), returnDate);
         if (daysDifference > 14) {
-            System.out.println("Error: Cannot return product. 14-day return window expired");
+            System.out.println("Cannot return product because the 14-day return  expired");
             return -1;
         }
 
         Product product = productDatabase.getRecord(productID);
         if (product == null) {
-            System.out.println("Error: Product not found");
+            System.out.println("Product not found");
             return -1;
         }
 
@@ -84,14 +84,14 @@ public class EmployeeRole {
             System.out.println("Payment applied successfully");
             return true;
         }
-        System.out.println("Error: Purchase record not found");
+        System.out.println("Purchase record not found");
         return false;
     }
 
     public void logout() {
         productDatabase.saveToFile();
         customerProductDatabase.saveToFile();
-        System.out.println("All data saved , Logout successful");
+        System.out.println("All data saved , Logged out  successfully");
     }
 
     private String formatDate(LocalDate date) {

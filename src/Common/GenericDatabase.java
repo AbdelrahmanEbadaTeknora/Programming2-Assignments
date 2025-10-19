@@ -13,7 +13,6 @@ public abstract class GenericDatabase<T extends IRecord> {
         this.records = new ArrayList<>();
     }
 
-    // Read from file - generic implementation
     public void readFromFile() {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
@@ -53,7 +52,7 @@ public abstract class GenericDatabase<T extends IRecord> {
             return;
         }
         if (contains(record.getSearchKey())) {
-            System.out.println("Error: Record with key " + record.getSearchKey() + " already exists.");
+            System.out.println("Record with key " + record.getSearchKey() + " already exists.");
             return;
         }
         records.add(record);

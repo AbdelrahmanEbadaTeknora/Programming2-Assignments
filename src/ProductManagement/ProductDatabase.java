@@ -24,7 +24,7 @@ public class ProductDatabase extends GenericDatabase<Product> {
                     Float.parseFloat(parts[5].trim())
             );
         } catch (NumberFormatException e) {
-            System.out.println("Error parsing product: " + e.getMessage());
+            System.out.println("Error with parsing product: " + e.getMessage());
             return null;
         }
     }

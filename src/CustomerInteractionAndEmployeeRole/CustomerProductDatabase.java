@@ -27,7 +27,7 @@ public class CustomerProductDatabase extends GenericDatabase<CustomerProduct> {
             cp.setPaid(Boolean.parseBoolean(parts[3].trim()));
             return cp;
         } catch (Exception e) {
-            System.out.println("Error parsing customer product: " + e.getMessage());
+            System.out.println("error in getting customer product " + e.getMessage());
             return null;
         }
     }
