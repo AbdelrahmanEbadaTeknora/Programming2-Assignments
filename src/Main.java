@@ -234,7 +234,8 @@ public class Main extends Application {
                         manufacturerField.getText(), supplierField.getText(),
                         Integer.parseInt(quantityField.getText()),
                         Float.parseFloat(priceField.getText()));
-                updateStatus("Product added successfully");
+                productDB.saveToFile(); // Auto-save after adding
+                updateStatus("Product added and saved successfully");
                 clearFields(prodIdField, prodNameField, manufacturerField, supplierField, quantityField, priceField);
             } catch (NumberFormatException ex) {
                 updateStatus("Error: Invalid number format");
@@ -268,7 +269,15 @@ public class Main extends Application {
             if (purchaseDatePicker.getValue() != null) {
                 boolean success = employee.purchaseProduct(ssnField.getText(), purchaseProdField.getText(),
                         purchaseDatePicker.getValue());
-                updateStatus(success ? "Purchase recorded" : "Purchase failed");
+                if (success) {
+                    employee.logout(); // Auto-save after purchase
+                    updateStatus("Purchase recorded - Quantity decremented");
+                    ssnField.clear();
+                    purchaseProdField.clear();
+                    purchaseDatePicker.setValue(null);
+                } else {
+                    updateStatus("Purchase failed");
+                }
             }
         });
 
@@ -320,26 +329,94 @@ public class Main extends Application {
         // Products Table
         VBox productsSection = createStyledBox("Products");
         TableView<Product> productsTable = new TableView<>();
+
         TableColumn<Product, String> prodIdCol = new TableColumn<>("Product ID");
         prodIdCol.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleStringProperty(cellData.getValue().getSearchKey()));
 
-        productsTable.getColumns().add(prodIdCol);
+        TableColumn<Product, String> prodNameCol = new TableColumn<>("Name");
+        prodNameCol.setCellValueFactory(cellData -> {
+            String[] parts = cellData.getValue().lineRepresentation().split(",");
+            return new javafx.beans.property.SimpleStringProperty(parts.length > 1 ? parts[1] : "");
+        });
+
+        TableColumn<Product, String> manuCol = new TableColumn<>("Manufacturer");
+        manuCol.setCellValueFactory(cellData -> {
+            String[] parts = cellData.getValue().lineRepresentation().split(",");
+            return new javafx.beans.property.SimpleStringProperty(parts.length > 2 ? parts[2] : "");
+        });
+
+        TableColumn<Product, String> suppCol = new TableColumn<>("Supplier");
+        suppCol.setCellValueFactory(cellData -> {
+            String[] parts = cellData.getValue().lineRepresentation().split(",");
+            return new javafx.beans.property.SimpleStringProperty(parts.length > 3 ? parts[3] : "");
+        });
+
+        TableColumn<Product, String> qtyCol = new TableColumn<>("Quantity");
+        qtyCol.setCellValueFactory(cellData -> {
+            String[] parts = cellData.getValue().lineRepresentation().split(",");
+            return new javafx.beans.property.SimpleStringProperty(parts.length > 4 ? parts[4] : "");
+        });
+
+        TableColumn<Product, String> priceCol = new TableColumn<>("Price");
+        priceCol.setCellValueFactory(cellData -> {
+            String[] parts = cellData.getValue().lineRepresentation().split(",");
+            return new javafx.beans.property.SimpleStringProperty(parts.length > 5 ? parts[5] : "");
+        });
+
+        productsTable.getColumns().addAll(prodIdCol, prodNameCol, manuCol, suppCol, qtyCol, priceCol);
         productsTable.getItems().addAll(employee.getListOfProducts());
 
-        productsSection.getChildren().add(productsTable);
+        Button refreshProductsBtn = createStyledButton("Refresh Products");
+        refreshProductsBtn.setOnAction(e -> {
+            productDB = new ProductDatabase("Products.txt");
+            productDB.readFromFile();
+            employee = new EmployeeRole(productDB, customerProductDB);
+            productsTable.getItems().clear();
+            productsTable.getItems().addAll(employee.getListOfProducts());
+            updateStatus("Products refreshed");
+        });
+
+        VBox productsBox = new VBox(5);
+        productsBox.getChildren().addAll(refreshProductsBtn, productsTable);
+        productsSection.getChildren().add(productsBox);
 
         // Purchases Table
         VBox purchasesSection = createStyledBox("Customer Purchases");
         TableView<CustomerProduct> purchasesTable = new TableView<>();
-        TableColumn<CustomerProduct, String> purchaseKeyCol = new TableColumn<>("Details");
-        purchaseKeyCol.setCellValueFactory(cellData ->
-                new javafx.beans.property.SimpleStringProperty(cellData.getValue().getSearchKey()));
 
-        purchasesTable.getColumns().add(purchaseKeyCol);
+        TableColumn<CustomerProduct, String> ssnCol = new TableColumn<>("Customer SSN");
+        ssnCol.setCellValueFactory(cellData ->
+                new javafx.beans.property.SimpleStringProperty(cellData.getValue().getCustomerSSN()));
+
+        TableColumn<CustomerProduct, String> prodIdPurCol = new TableColumn<>("Product ID");
+        prodIdPurCol.setCellValueFactory(cellData ->
+                new javafx.beans.property.SimpleStringProperty(cellData.getValue().getProductID()));
+
+        TableColumn<CustomerProduct, String> dateCol = new TableColumn<>("Purchase Date");
+        dateCol.setCellValueFactory(cellData ->
+                new javafx.beans.property.SimpleStringProperty(cellData.getValue().getPurchaseDate().toString()));
+
+        TableColumn<CustomerProduct, String> paidCol = new TableColumn<>("Paid");
+        paidCol.setCellValueFactory(cellData ->
+                new javafx.beans.property.SimpleStringProperty(cellData.getValue().isPaid() ? "Yes" : "No"));
+
+        purchasesTable.getColumns().addAll(ssnCol, prodIdPurCol, dateCol, paidCol);
         purchasesTable.getItems().addAll(employee.getListOfPurchasingOperations());
 
-        purchasesSection.getChildren().add(purchasesTable);
+        Button refreshPurchasesBtn = createStyledButton("Refresh Purchases");
+        refreshPurchasesBtn.setOnAction(e -> {
+            customerProductDB = new CustomerProductDatabase("CustomersProducts.txt");
+            customerProductDB.readFromFile();
+            employee = new EmployeeRole(productDB, customerProductDB);
+            purchasesTable.getItems().clear();
+            purchasesTable.getItems().addAll(employee.getListOfPurchasingOperations());
+            updateStatus("Purchases refreshed");
+        });
+
+        VBox purchasesBox = new VBox(5);
+        purchasesBox.getChildren().addAll(refreshPurchasesBtn, purchasesTable);
+        purchasesSection.getChildren().add(purchasesBox);
 
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(new VBox(15, productsSection, purchasesSection));
