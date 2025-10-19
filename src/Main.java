@@ -169,7 +169,19 @@ public class Main extends Application {
         nameCol.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleStringProperty(cellData.getValue().lineRepresentation().split(",")[1]));
 
-        empTable.getColumns().addAll(idCol, nameCol);
+        TableColumn<EmployeeUser, String> emailCol = new TableColumn<>("EMAIL");
+        emailCol.setCellValueFactory(cellData ->
+                new javafx.beans.property.SimpleStringProperty(cellData.getValue().lineRepresentation().split(",")[2]));
+
+        TableColumn<EmployeeUser, String> addressCol = new TableColumn<>("ADDRESS");
+        addressCol.setCellValueFactory(cellData ->
+                new javafx.beans.property.SimpleStringProperty(cellData.getValue().lineRepresentation().split(",")[3]));
+
+        TableColumn<EmployeeUser, String> phoneNumCol = new TableColumn<>("PHONE NUMBER");
+        phoneNumCol.setCellValueFactory(cellData ->
+                new javafx.beans.property.SimpleStringProperty(cellData.getValue().lineRepresentation().split(",")[4]));
+
+        empTable.getColumns().addAll(idCol, nameCol ,  emailCol, addressCol, phoneNumCol);
 
         Button refreshEmpBtn = createStyledButton("Refresh");
         refreshEmpBtn.setOnAction(e -> {
