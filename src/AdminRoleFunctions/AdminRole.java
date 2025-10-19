@@ -38,7 +38,6 @@ public EmployeeUser[] getListOfEmployees()
         employees.toArray(arr);
         return arr;
 }
-
 public void logout() 
 {
     database.saveToFile();
