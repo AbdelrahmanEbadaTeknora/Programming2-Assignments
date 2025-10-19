@@ -1,0 +1,4 @@
+222,jfjyh,333,1112,5153,1.0
+P1001,Laptop,Dell,TechSupplier,5,3000.0
+P1002,Mouse,Logitech,TechSupplier,20,150.0
+P1003,Keyboard,Razer,GamingSupplier,15,500.0
