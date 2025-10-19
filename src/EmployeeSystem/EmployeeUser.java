@@ -1,31 +1,35 @@
 package EmployeeSystem;
 
-public class EmployeeUser
-{
-    //employeeId, Name, Email, Address, PhoneNumber 
-    private String employeeId;
-    private String Name;
-    private String Email;
-    private String Address;
-    private String PhoneNumber;
+import Common.IRecord;
 
-    
-    public EmployeeUser(String employeeId, String name, String email, String address, String phoneNumber) 
-    {
-        this.employeeId = employeeId ;
-        this.Name = name ;
-        this.Email = email;
-        this.Address = address;
-        this.PhoneNumber = phoneNumber;
+public class EmployeeUser implements IRecord {
+    private String employeeId;
+    private String name;
+    private String email;
+    private String address;
+    private String phoneNumber;
+
+    public EmployeeUser(String employeeId, String name, String email, String address, String phoneNumber) {
+        this.employeeId = employeeId;
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
     }
 
-     public String lineRepresentation()
-     {
-        return employeeId + ',' + Name + ',' + Email + ',' + Address + ',' + PhoneNumber;
-     }
+    public String getEmployeeId() { return employeeId; }
+    public String getName() { return name; }
+    public String getEmail() { return email; }
+    public String getAddress() { return address; }
+    public String getPhoneNumber() { return phoneNumber; }
 
-     public String getSearchKey()
-     {
+    @Override
+    public String lineRepresentation() {
+        return employeeId + "," + name + "," + email + "," + address + "," + phoneNumber;
+    }
+
+    @Override
+    public String getSearchKey() {
         return employeeId;
-     }
+    }
 }
