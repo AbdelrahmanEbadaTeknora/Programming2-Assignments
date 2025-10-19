@@ -4,6 +4,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class CustomerProductDatabase {
 
@@ -65,9 +66,11 @@ public class CustomerProductDatabase {
 
     // Removes a CustomerProduct by search key
     public boolean removeCustomerProduct(String searchKey) {
-        for (CustomerProduct cp : customerProducts) {
+        Iterator<CustomerProduct> iterator = customerProducts.iterator();
+        while (iterator.hasNext()) {
+            CustomerProduct cp = iterator.next();
             if (cp.getSearchKey().equals(searchKey)) {
-                customerProducts.remove(cp);
+                iterator.remove();  // Safe way to remove
                 return true;
             }
         }

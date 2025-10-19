@@ -48,8 +48,8 @@ public class CustomerProduct {
     // Returns the object's data as a line of text (comma-separated)
     // This will be used when saving to CustomersProducts.txt
     public String lineRepresentation() {
-        // LocalDate.toString() gives "YYYY-MM-DD"
-        return customerSSN + "," + productID + "," + purchaseDate + "," + paid;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        return customerSSN + "," + productID + "," + purchaseDate.format(formatter) + "," + paid;
     }
 
     // Returns a search key in format: customerSSN,productID,DD-MM-YYYY
