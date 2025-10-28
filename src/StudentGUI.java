@@ -46,7 +46,7 @@ public class StudentGUI extends JFrame {
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         
-        // Title
+
         JLabel titleLabel = new JLabel("Student Management System");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setForeground(PRIMARY_COLOR);
@@ -114,7 +114,6 @@ public class StudentGUI extends JFrame {
             loginDialog.dispose();
         });
         
-        // Enter key to login
         passField.addActionListener(e -> loginBtn.doClick());
         
         buttonPanel.add(loginBtn);

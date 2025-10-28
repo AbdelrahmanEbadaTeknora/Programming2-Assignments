@@ -43,7 +43,7 @@ public class StatisticsManager {
     public static Map<String, Integer> countByDepartment(List<student> students)
     {
         if (students == null || students.isEmpty()) {
-            return null;
+            return new java.util.HashMap<>();  // Return empty map instead of null
         }
         Map<String, Integer> departmentCount = new java.util.HashMap<>();
         for (student student : students) {
