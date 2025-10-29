@@ -3,7 +3,7 @@ public class Validator {
         if (name == null || name.trim().isEmpty()) {
             return false;
         }
-        return name.matches("[a-zA-Z\\u0600-\\u06FF ]+");
+        return name.matches("[a-zA-Z]+");
     }
 
     public static boolean isValidAge(int age) {
