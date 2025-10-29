@@ -797,7 +797,7 @@ public class MainGUI extends BaseGUI {
         contentPanel.revalidate();
         contentPanel.repaint();
     }
-
+ 
     private void addStatRow(JPanel panel, GridBagConstraints gbc, int row, String label, String value, Color color) {
         JLabel lblLabel = new JLabel(label);
         lblLabel.setFont(new Font("Arial", Font.BOLD, 15));
