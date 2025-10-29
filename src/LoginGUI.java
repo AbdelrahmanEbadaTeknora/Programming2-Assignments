@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 
-public class LoginGUI extends JFrame {
+public class LoginGUI extends BaseGUI {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
@@ -13,17 +13,20 @@ public class LoginGUI extends JFrame {
 
     public LoginGUI() {
         userManager = new UserFileManager("src/data/users.csv");
+        initializeComponents();
+    }
 
+    @Override
+    protected void initializeComponents() {
         setTitle("Student Management System - Login");
         setSize(750, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        centerWindow();
         setResizable(false);
 
         setLayout(new BorderLayout(10, 10));
-        getContentPane().setBackground(new Color(41, 128, 185)); // Professional blue
+        getContentPane().setBackground(PRIMARY_COLOR);
 
-        // Title Panel
         JPanel titlePanel = new JPanel();
         titlePanel.setOpaque(false);
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
@@ -36,14 +39,13 @@ public class LoginGUI extends JFrame {
 
         JLabel subtitleLabel = new JLabel("Please login to continue");
         subtitleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        subtitleLabel.setForeground(new Color(236, 240, 241));
+        subtitleLabel.setForeground(BG_COLOR);
         subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         titlePanel.add(titleLabel);
         titlePanel.add(Box.createRigidArea(new Dimension(0, 8)));
         titlePanel.add(subtitleLabel);
 
-        // Form Panel
         JPanel formPanel = new JPanel(new GridLayout(2, 2, 20, 20));
         formPanel.setOpaque(false);
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 60, 20, 60));
@@ -57,7 +59,7 @@ public class LoginGUI extends JFrame {
         usernameField.setPreferredSize(new Dimension(450, 55));
         usernameField.setMargin(new Insets(12, 18, 12, 18));
         usernameField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(52, 152, 219), 3),
+                BorderFactory.createLineBorder(INFO_COLOR, 3),
                 BorderFactory.createEmptyBorder(10, 15, 10, 15)
         ));
 
@@ -70,7 +72,7 @@ public class LoginGUI extends JFrame {
         passwordField.setPreferredSize(new Dimension(450, 55));
         passwordField.setMargin(new Insets(12, 18, 12, 18));
         passwordField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(52, 152, 219), 3),
+                BorderFactory.createLineBorder(INFO_COLOR, 3),
                 BorderFactory.createEmptyBorder(10, 15, 10, 15)
         ));
 
@@ -79,26 +81,23 @@ public class LoginGUI extends JFrame {
         formPanel.add(passLabel);
         formPanel.add(passwordField);
 
-        // Button Panel with enhanced styling
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
         buttonPanel.setOpaque(false);
 
-        // Login Button - Beautiful Green
         loginButton = new JButton("LOGIN");
         loginButton.setFont(new Font("Segoe UI", Font.BOLD, 18));
         loginButton.setPreferredSize(new Dimension(180, 60));
-        loginButton.setBackground(new Color(46, 204, 113)); // Emerald green
+        loginButton.setBackground(SUCCESS_COLOR);
         loginButton.setForeground(Color.WHITE);
         loginButton.setFocusPainted(false);
         loginButton.setBorderPainted(false);
         loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         loginButton.addActionListener(e -> handleLogin());
 
-        // Exit Button - Deep Red
         exitButton = new JButton("EXIT");
         exitButton.setFont(new Font("Segoe UI", Font.BOLD, 18));
         exitButton.setPreferredSize(new Dimension(180, 60));
-        exitButton.setBackground(new Color(231, 76, 60)); // Alizarin red
+        exitButton.setBackground(DANGER_COLOR);
         exitButton.setForeground(Color.WHITE);
         exitButton.setFocusPainted(false);
         exitButton.setBorderPainted(false);
@@ -108,32 +107,9 @@ public class LoginGUI extends JFrame {
         buttonPanel.add(loginButton);
         buttonPanel.add(exitButton);
 
-        // Enhanced hover effects with color transitions
-        loginButton.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                loginButton.setBackground(new Color(39, 174, 96)); // Darker green
-            }
-            public void mouseExited(MouseEvent e) {
-                loginButton.setBackground(new Color(46, 204, 113));
-            }
-            public void mousePressed(MouseEvent e) {
-                loginButton.setBackground(new Color(30, 140, 76)); // Even darker when pressed
-            }
-        });
+        addHoverEffect(loginButton, SUCCESS_COLOR, new Color(39, 174, 96));
+        addHoverEffect(exitButton, DANGER_COLOR, new Color(192, 57, 43));
 
-        exitButton.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                exitButton.setBackground(new Color(192, 57, 43)); // Darker red
-            }
-            public void mouseExited(MouseEvent e) {
-                exitButton.setBackground(new Color(231, 76, 60));
-            }
-            public void mousePressed(MouseEvent e) {
-                exitButton.setBackground(new Color(150, 40, 27)); // Even darker when pressed
-            }
-        });
-
-        // Bottom Panel
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
         bottomPanel.setOpaque(false);
@@ -146,14 +122,13 @@ public class LoginGUI extends JFrame {
 
         JLabel infoLabel = new JLabel("Default credentials: admin / admin123");
         infoLabel.setFont(new Font("Segoe UI", Font.ITALIC, 11));
-        infoLabel.setForeground(new Color(236, 240, 241));
+        infoLabel.setForeground(BG_COLOR);
         infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         bottomPanel.add(statusLabel);
         bottomPanel.add(Box.createRigidArea(new Dimension(0, 8)));
         bottomPanel.add(infoLabel);
 
-        // Add all panels
         add(titlePanel, BorderLayout.NORTH);
         add(formPanel, BorderLayout.CENTER);
 
@@ -163,11 +138,9 @@ public class LoginGUI extends JFrame {
         southContainer.add(bottomPanel, BorderLayout.SOUTH);
         add(southContainer, BorderLayout.SOUTH);
 
-        // Enter key support
         usernameField.addActionListener(e -> passwordField.requestFocus());
         passwordField.addActionListener(e -> handleLogin());
 
-        // Auto-focus username
         addWindowListener(new WindowAdapter() {
             public void windowOpened(WindowEvent e) {
                 usernameField.requestFocus();
@@ -202,12 +175,7 @@ public class LoginGUI extends JFrame {
                         dispose();
 
                     } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(
-                                LoginGUI.this,
-                                "Error loading system: " + ex.getMessage(),
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE
-                        );
+                        showError("Error loading system: " + ex.getMessage());
                         loginButton.setEnabled(true);
                         exitButton.setEnabled(true);
                     }
@@ -225,12 +193,6 @@ public class LoginGUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         SwingUtilities.invokeLater(() -> {
             LoginGUI loginGUI = new LoginGUI();
             loginGUI.setVisible(true);

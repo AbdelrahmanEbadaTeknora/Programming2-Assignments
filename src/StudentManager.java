@@ -4,15 +4,12 @@ import java.util.*;
 public class StudentManager implements ISearchable {
     private List<student> students;
     private IDataStorage dataStorage;
-
     public StudentManager(IDataStorage storage) throws IOException {
         this.dataStorage = storage;
         this.students = dataStorage.loadData();
     }
 
     public boolean addStudent(student student) {
-        // Use the ID that's already set in the student object
-        // No auto-generation - user provides the ID
         students.add(student);
         try {
             dataStorage.saveData(students);
@@ -72,7 +69,6 @@ public class StudentManager implements ISearchable {
         return null;
     }
 
-    // Added method to search by string ID (for manual IDs like "1001")
     public student searchByFormattedId(String id) {
         for (student student : students) {
             if (student.getStudentId().equals(id)) {

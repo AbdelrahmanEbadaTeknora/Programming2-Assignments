@@ -1,2 +1,0 @@
-teacher,teach123
-admin,admin123

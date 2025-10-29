@@ -5,7 +5,7 @@ import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 
-public class MainGUI extends JFrame {
+public class MainGUI extends BaseGUI {
     private StudentManager studentManager;
     private String currentUser;
     private JPanel contentPanel;
@@ -13,14 +13,18 @@ public class MainGUI extends JFrame {
     public MainGUI(StudentManager manager, String username) {
         this.studentManager = manager;
         this.currentUser = username;
+        initializeComponents();
+    }
 
+    @Override
+    protected void initializeComponents() {
         setTitle("Student Management System - Main Dashboard");
         setSize(1200, 750);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        centerWindow();
 
         JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(new Color(236, 240, 241));
+        mainPanel.setBackground(BG_COLOR);
 
         JPanel headerPanel = createHeaderPanel();
         mainPanel.add(headerPanel, BorderLayout.NORTH);
@@ -40,7 +44,7 @@ public class MainGUI extends JFrame {
 
     private JPanel createHeaderPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(new Color(41, 128, 185)); // Professional blue
+        panel.setBackground(PRIMARY_COLOR);
         panel.setPreferredSize(new Dimension(0, 70));
         panel.setBorder(BorderFactory.createEmptyBorder(15, 25, 15, 25));
 
@@ -57,25 +61,9 @@ public class MainGUI extends JFrame {
         userLabel.setForeground(Color.WHITE);
         userPanel.add(userLabel);
 
-        JButton logoutButton = new JButton("Logout");
+        JButton logoutButton = createStyledButton("Logout", DANGER_COLOR, new Dimension(100, 35));
         logoutButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        logoutButton.setBackground(new Color(231, 76, 60));
-        logoutButton.setForeground(Color.WHITE);
-        logoutButton.setFocusPainted(false);
-        logoutButton.setBorderPainted(false);
-        logoutButton.setPreferredSize(new Dimension(100, 35));
-        logoutButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         logoutButton.addActionListener(e -> handleLogout());
-
-        // Hover effect for logout button
-        logoutButton.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                logoutButton.setBackground(new Color(192, 57, 43));
-            }
-            public void mouseExited(MouseEvent e) {
-                logoutButton.setBackground(new Color(231, 76, 60));
-            }
-        });
 
         userPanel.add(logoutButton);
 
@@ -86,17 +74,17 @@ public class MainGUI extends JFrame {
     private JPanel createMenuPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(new Color(44, 62, 80)); // Dark blue-gray
+        panel.setBackground(SECONDARY_COLOR);
         panel.setPreferredSize(new Dimension(220, 0));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
 
-        addMenuButton(panel, "Dashboard", e -> showWelcomeScreen(), new Color(52, 152, 219));
-        addMenuButton(panel, "Add Student", e -> showAddStudentForm(), new Color(46, 204, 113));
-        addMenuButton(panel, "View All Students", e -> showAllStudents(), new Color(155, 89, 182));
-        addMenuButton(panel, "Search Student", e -> showSearchForm(), new Color(52, 152, 219));
-        addMenuButton(panel, "Update Student", e -> showUpdateForm(), new Color(241, 196, 15));
-        addMenuButton(panel, "Delete Student", e -> showDeleteForm(), new Color(231, 76, 60));
-        addMenuButton(panel, "Statistics", e -> showStatistics(), new Color(26, 188, 156));
+        addMenuButton(panel, "Dashboard", e -> showWelcomeScreen(), INFO_COLOR);
+        addMenuButton(panel, "Add Student", e -> showAddStudentForm(), SUCCESS_COLOR);
+        addMenuButton(panel, "View All Students", e -> showAllStudents(), PURPLE_COLOR);
+        addMenuButton(panel, "Search Student", e -> showSearchForm(), INFO_COLOR);
+        addMenuButton(panel, "Update Student", e -> showUpdateForm(), WARNING_COLOR);
+        addMenuButton(panel, "Delete Student", e -> showDeleteForm(), DANGER_COLOR);
+        addMenuButton(panel, "Statistics", e -> showStatistics(), TEAL_COLOR);
 
         panel.add(Box.createVerticalGlue());
         return panel;
@@ -140,7 +128,7 @@ public class MainGUI extends JFrame {
 
         JLabel welcomeLabel = new JLabel("Welcome to Student Management System");
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 28));
-        welcomeLabel.setForeground(new Color(52, 73, 94));
+        welcomeLabel.setForeground(SECONDARY_COLOR);
         gbc.gridx = 0;
         gbc.gridy = 0;
         welcomePanel.add(welcomeLabel, gbc);
@@ -161,9 +149,9 @@ public class MainGUI extends JFrame {
         Map<String, Integer> deptMap = StatisticsManager.countByDepartment(allStudents);
         int deptCount = (deptMap != null) ? deptMap.size() : 0;
 
-        statsPanel.add(createStatCard("Total Students", String.valueOf(totalStudents), new Color(52, 152, 219)));
-        statsPanel.add(createStatCard("Average GPA", String.format("%.2f", avgGPA), new Color(46, 204, 113)));
-        statsPanel.add(createStatCard("Departments", String.valueOf(deptCount), new Color(155, 89, 182)));
+        statsPanel.add(createStatCard("Total Students", String.valueOf(totalStudents), INFO_COLOR));
+        statsPanel.add(createStatCard("Average GPA", String.format("%.2f", avgGPA), SUCCESS_COLOR));
+        statsPanel.add(createStatCard("Departments", String.valueOf(deptCount), PURPLE_COLOR));
 
         gbc.gridy = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -203,7 +191,7 @@ public class MainGUI extends JFrame {
 
         JLabel titleLabel = new JLabel("Add New Student");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(52, 73, 94));
+        titleLabel.setForeground(SECONDARY_COLOR);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         formPanel.add(titleLabel, BorderLayout.NORTH);
 
@@ -230,91 +218,12 @@ public class MainGUI extends JFrame {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         buttonPanel.setBackground(Color.WHITE);
 
-        JButton addButton = new JButton("Add Student");
-        styleButton(addButton, new Color(46, 204, 113));
-        addButton.addActionListener(e -> {
-            try {
-                String id = idField.getText().trim();
-                String name = nameField.getText().trim();
-                String ageStr = ageField.getText().trim();
-                String gender = (String) genderBox.getSelectedItem();
-                String dept = deptField.getText().trim();
-                String gpaStr = gpaField.getText().trim();
+        JButton addButton = createStyledButton("Add Student", SUCCESS_COLOR);
+        styleButton(addButton, SUCCESS_COLOR);
+        addButton.addActionListener(e -> handleAddStudent(idField, nameField, ageField, genderBox, deptField, gpaField));
 
-                // Validate ID first
-                if (!Validator.isValidStudentId(id)) {
-                    JOptionPane.showMessageDialog(this, Validator.getErrorMessage("id"), "Validation Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                // Check if ID already exists
-                if (studentManager.searchByFormattedId(id) != null) {
-                    JOptionPane.showMessageDialog(this, "Student ID already exists! Please use a different ID.", "Duplicate ID", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                // Parse age and GPA
-                int age;
-                double gpa;
-                try {
-                    age = Integer.parseInt(ageStr);
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "Age must be a valid number!", "Input Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                try {
-                    gpa = Double.parseDouble(gpaStr);
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "GPA must be a valid number!", "Input Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                // Validate name
-                if (!Validator.isValidName(name)) {
-                    JOptionPane.showMessageDialog(this, Validator.getErrorMessage("name"), "Validation Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                // Validate age
-                if (!Validator.isValidAge(age)) {
-                    JOptionPane.showMessageDialog(this, Validator.getErrorMessage("age"), "Validation Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                // Validate department
-                if (!Validator.isValidDepartment(dept)) {
-                    JOptionPane.showMessageDialog(this, Validator.getErrorMessage("department"), "Validation Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                // Validate GPA
-                if (!Validator.isValidGPA(gpa)) {
-                    JOptionPane.showMessageDialog(this, Validator.getErrorMessage("gpa"), "Validation Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                // All validations passed - create student
-                student newStudent = new student(name, age, gender, id, dept, gpa);
-                if (studentManager.addStudent(newStudent)) {
-                    JOptionPane.showMessageDialog(this, "✓ Student added successfully!\nID: " + newStudent.getStudentId(), "Success", JOptionPane.INFORMATION_MESSAGE);
-                    idField.setText("");
-                    nameField.setText("");
-                    ageField.setText("");
-                    deptField.setText("");
-                    gpaField.setText("");
-                    showWelcomeScreen();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Failed to add student!", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "An error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        JButton cancelButton = new JButton("Cancel");
-        styleButton(cancelButton, new Color(231, 76, 60));
+        JButton cancelButton = createStyledButton("Cancel", DANGER_COLOR);
+        styleButton(cancelButton, DANGER_COLOR);
         cancelButton.addActionListener(e -> showWelcomeScreen());
 
         buttonPanel.add(addButton);
@@ -332,29 +241,78 @@ public class MainGUI extends JFrame {
         contentPanel.repaint();
     }
 
-    private void addFormField(JPanel panel, GridBagConstraints gbc, int row, String label, JComponent field) {
-        JLabel lbl = new JLabel(label);
-        lbl.setFont(new Font("Arial", Font.BOLD, 14));
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        panel.add(lbl, gbc);
+    private void handleAddStudent(JTextField idField, JTextField nameField, JTextField ageField,
+                                  JComboBox<String> genderBox, JTextField deptField, JTextField gpaField) {
+        try {
+            String id = idField.getText().trim();
+            String name = nameField.getText().trim();
+            String ageStr = ageField.getText().trim();
+            String gender = (String) genderBox.getSelectedItem();
+            String dept = deptField.getText().trim();
+            String gpaStr = gpaField.getText().trim();
 
-        field.setFont(new Font("Arial", Font.PLAIN, 14));
-        if (field instanceof JTextField) {
-            ((JTextField) field).setPreferredSize(new Dimension(300, 30));
+            if (!Validator.isValidStudentId(id)) {
+                showError(Validator.getErrorMessage("id"));
+                return;
+            }
+
+            if (studentManager.searchByFormattedId(id) != null) {
+                showError("Student ID already exists! Please use a different ID.");
+                return;
+            }
+
+            int age;
+            double gpa;
+            try {
+                age = Integer.parseInt(ageStr);
+            } catch (NumberFormatException ex) {
+                showError("Age must be a valid number!");
+                return;
+            }
+
+            try {
+                gpa = Double.parseDouble(gpaStr);
+            } catch (NumberFormatException ex) {
+                showError("GPA must be a valid number!");
+                return;
+            }
+
+            if (!Validator.isValidName(name)) {
+                showError(Validator.getErrorMessage("name"));
+                return;
+            }
+
+            if (!Validator.isValidAge(age)) {
+                showError(Validator.getErrorMessage("age"));
+                return;
+            }
+
+            if (!Validator.isValidDepartment(dept)) {
+                showError(Validator.getErrorMessage("department"));
+                return;
+            }
+
+            if (!Validator.isValidGPA(gpa)) {
+                showError(Validator.getErrorMessage("gpa"));
+                return;
+            }
+
+            student newStudent = new student(name, age, gender, id, dept, gpa);
+            if (studentManager.addStudent(newStudent)) {
+                showSuccess("✓ Student added successfully!\nID: " + newStudent.getStudentId());
+                idField.setText("");
+                nameField.setText("");
+                ageField.setText("");
+                deptField.setText("");
+                gpaField.setText("");
+                showWelcomeScreen();
+            } else {
+                showError("Failed to add student!");
+            }
+
+        } catch (Exception ex) {
+            showError("An error occurred: " + ex.getMessage());
         }
-        gbc.gridx = 1;
-        panel.add(field, gbc);
-    }
-
-    private void styleButton(JButton button, Color color) {
-        button.setFont(new Font("Arial", Font.BOLD, 14));
-        button.setBackground(color);
-        button.setForeground(Color.WHITE);
-        button.setFocusPainted(false);
-        button.setBorderPainted(false);
-        button.setPreferredSize(new Dimension(150, 40));
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
     private void showAllStudents() {
@@ -365,7 +323,7 @@ public class MainGUI extends JFrame {
 
         JLabel titleLabel = new JLabel("All Students");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(52, 73, 94));
+        titleLabel.setForeground(SECONDARY_COLOR);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         tablePanel.add(titleLabel, BorderLayout.NORTH);
 
@@ -393,13 +351,12 @@ public class MainGUI extends JFrame {
         table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         table.setRowHeight(35);
         table.setGridColor(new Color(189, 195, 199));
-        table.setSelectionBackground(new Color(52, 152, 219));
+        table.setSelectionBackground(INFO_COLOR);
         table.setSelectionForeground(Color.WHITE);
 
-        // Enhanced header styling
         JTableHeader header = table.getTableHeader();
         header.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        header.setBackground(new Color(41, 128, 185)); // Bright blue
+        header.setBackground(PRIMARY_COLOR);
         header.setForeground(Color.WHITE);
         header.setPreferredSize(new Dimension(header.getWidth(), 40));
 
@@ -424,7 +381,7 @@ public class MainGUI extends JFrame {
 
         JLabel titleLabel = new JLabel("Search Student");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(52, 73, 94));
+        titleLabel.setForeground(SECONDARY_COLOR);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         searchPanel.add(titleLabel, BorderLayout.NORTH);
 
@@ -437,8 +394,8 @@ public class MainGUI extends JFrame {
         JTextField searchField = new JTextField(20);
         searchField.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        JButton searchButton = new JButton("Search");
-        styleButton(searchButton, new Color(52, 152, 219));
+        JButton searchButton = createStyledButton("Search", INFO_COLOR);
+        styleButton(searchButton, INFO_COLOR);
 
         inputPanel.add(searchLabel);
         inputPanel.add(searchType);
@@ -448,84 +405,7 @@ public class MainGUI extends JFrame {
         JPanel resultPanel = new JPanel(new BorderLayout());
         resultPanel.setBackground(Color.WHITE);
 
-        searchButton.addActionListener(e -> {
-            String type = (String) searchType.getSelectedItem();
-            String query = searchField.getText().trim();
-
-            if (query.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please enter a search term!", "Input Error", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            List<student> results = new ArrayList<>();
-
-            if (type.equals("ID")) {
-                try {
-                    int id = Integer.parseInt(query);
-                    student found = studentManager.searchById(id);
-                    if (found != null) results.add(found);
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "ID must be a number!", "Input Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-            } else if (type.equals("Name")) {
-                results = studentManager.searchByName(query);
-            } else {
-                results = studentManager.searchByDepartment(query);
-            }
-
-            resultPanel.removeAll();
-
-            if (results.isEmpty()) {
-                JLabel noResults = new JLabel("No students found!");
-                noResults.setFont(new Font("Arial", Font.PLAIN, 16));
-                noResults.setHorizontalAlignment(SwingConstants.CENTER);
-                resultPanel.add(noResults, BorderLayout.CENTER);
-            } else {
-                String[] columns = {"ID", "Name", "Age", "Gender", "Department", "GPA"};
-                DefaultTableModel model = new DefaultTableModel(columns, 0) {
-                    @Override
-                    public boolean isCellEditable(int row, int column) {
-                        return false;
-                    }
-                };
-
-                for (student s : results) {
-                    model.addRow(new Object[]{
-                            s.getStudentId(),
-                            s.getName(),
-                            s.getAge(),
-                            s.getGender(),
-                            s.getDepartment(),
-                            String.format("%.2f", s.getGpa())
-                    });
-                }
-
-                JTable table = new JTable(model);
-                table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                table.setRowHeight(35);
-                table.setGridColor(new Color(189, 195, 199));
-                table.setSelectionBackground(new Color(52, 152, 219));
-                table.setSelectionForeground(Color.WHITE);
-
-                JTableHeader header = table.getTableHeader();
-                header.setFont(new Font("Segoe UI", Font.BOLD, 14));
-                header.setBackground(new Color(41, 128, 185)); // Bright blue
-                header.setForeground(Color.WHITE);
-                header.setPreferredSize(new Dimension(header.getWidth(), 40));
-
-                JScrollPane scrollPane = new JScrollPane(table);
-                resultPanel.add(scrollPane, BorderLayout.CENTER);
-
-                JLabel countLabel = new JLabel("Found: " + results.size() + " student(s)");
-                countLabel.setFont(new Font("Arial", Font.BOLD, 14));
-                countLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-                resultPanel.add(countLabel, BorderLayout.SOUTH);
-            }
-
-            resultPanel.revalidate();
-            resultPanel.repaint();
-        });
+        searchButton.addActionListener(e -> handleSearch(searchType, searchField, resultPanel));
 
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setBackground(Color.WHITE);
@@ -538,6 +418,85 @@ public class MainGUI extends JFrame {
         contentPanel.repaint();
     }
 
+    private void handleSearch(JComboBox<String> searchType, JTextField searchField, JPanel resultPanel) {
+        String type = (String) searchType.getSelectedItem();
+        String query = searchField.getText().trim();
+
+        if (query.isEmpty()) {
+            showWarning("Please enter a search term!");
+            return;
+        }
+
+        List<student> results = new ArrayList<>();
+
+        if (type.equals("ID")) {
+            try {
+                int id = Integer.parseInt(query);
+                student found = studentManager.searchById(id);
+                if (found != null) results.add(found);
+            } catch (NumberFormatException ex) {
+                showError("ID must be a number!");
+                return;
+            }
+        } else if (type.equals("Name")) {
+            results = studentManager.searchByName(query);
+        } else {
+            results = studentManager.searchByDepartment(query);
+        }
+
+        resultPanel.removeAll();
+
+        if (results.isEmpty()) {
+            JLabel noResults = new JLabel("No students found!");
+            noResults.setFont(new Font("Arial", Font.PLAIN, 16));
+            noResults.setHorizontalAlignment(SwingConstants.CENTER);
+            resultPanel.add(noResults, BorderLayout.CENTER);
+        } else {
+            String[] columns = {"ID", "Name", "Age", "Gender", "Department", "GPA"};
+            DefaultTableModel model = new DefaultTableModel(columns, 0) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+
+            for (student s : results) {
+                model.addRow(new Object[]{
+                        s.getStudentId(),
+                        s.getName(),
+                        s.getAge(),
+                        s.getGender(),
+                        s.getDepartment(),
+                        String.format("%.2f", s.getGpa())
+                });
+            }
+
+            JTable table = new JTable(model);
+            table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            table.setRowHeight(35);
+            table.setGridColor(new Color(189, 195, 199));
+            table.setSelectionBackground(INFO_COLOR);
+            table.setSelectionForeground(Color.WHITE);
+
+            JTableHeader header = table.getTableHeader();
+            header.setFont(new Font("Segoe UI", Font.BOLD, 14));
+            header.setBackground(PRIMARY_COLOR);
+            header.setForeground(Color.WHITE);
+            header.setPreferredSize(new Dimension(header.getWidth(), 40));
+
+            JScrollPane scrollPane = new JScrollPane(table);
+            resultPanel.add(scrollPane, BorderLayout.CENTER);
+
+            JLabel countLabel = new JLabel("Found: " + results.size() + " student(s)");
+            countLabel.setFont(new Font("Arial", Font.BOLD, 14));
+            countLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+            resultPanel.add(countLabel, BorderLayout.SOUTH);
+        }
+
+        resultPanel.revalidate();
+        resultPanel.repaint();
+    }
+
     private void showUpdateForm() {
         contentPanel.removeAll();
 
@@ -546,7 +505,7 @@ public class MainGUI extends JFrame {
 
         JLabel titleLabel = new JLabel("Update Student");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(52, 73, 94));
+        titleLabel.setForeground(SECONDARY_COLOR);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         updatePanel.add(titleLabel, BorderLayout.NORTH);
 
@@ -558,8 +517,8 @@ public class MainGUI extends JFrame {
         JTextField idField = new JTextField(10);
         idField.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        JButton searchButton = new JButton("Find Student");
-        styleButton(searchButton, new Color(52, 152, 219));
+        JButton searchButton = createStyledButton("Find Student", INFO_COLOR);
+        styleButton(searchButton, INFO_COLOR);
 
         searchPanel.add(idLabel);
         searchPanel.add(idField);
@@ -568,85 +527,7 @@ public class MainGUI extends JFrame {
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBackground(Color.WHITE);
 
-        searchButton.addActionListener(e -> {
-            try {
-                int id = Integer.parseInt(idField.getText().trim());
-                student existing = studentManager.searchById(id);
-
-                if (existing == null) {
-                    JOptionPane.showMessageDialog(this, "Student not found with ID: " + id, "Not Found", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-
-                formPanel.removeAll();
-                GridBagConstraints gbc = new GridBagConstraints();
-                gbc.insets = new Insets(10, 10, 10, 10);
-                gbc.anchor = GridBagConstraints.WEST;
-
-                JTextField nameField = new JTextField(existing.getName(), 20);
-                JTextField ageField = new JTextField(String.valueOf(existing.getAge()), 20);
-                JComboBox<String> genderBox = new JComboBox<>(new String[]{"Male", "Female"});
-                genderBox.setSelectedItem(existing.getGender());
-                JTextField deptField = new JTextField(existing.getDepartment(), 20);
-                JTextField gpaField = new JTextField(String.format("%.2f", existing.getGpa()), 20);
-
-                addFormField(formPanel, gbc, 0, "Name:", nameField);
-                addFormField(formPanel, gbc, 1, "Age:", ageField);
-                addFormField(formPanel, gbc, 2, "Gender:", genderBox);
-                addFormField(formPanel, gbc, 3, "Department:", deptField);
-                addFormField(formPanel, gbc, 4, "GPA:", gpaField);
-
-                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-                buttonPanel.setBackground(Color.WHITE);
-
-                JButton updateButton = new JButton("Update");
-                styleButton(updateButton, new Color(46, 204, 113));
-                updateButton.addActionListener(ev -> {
-                    try {
-                        String name = nameField.getText().trim();
-                        int age = Integer.parseInt(ageField.getText().trim());
-                        String gender = (String) genderBox.getSelectedItem();
-                        String dept = deptField.getText().trim();
-                        double gpa = Double.parseDouble(gpaField.getText().trim());
-
-                        if (!Validator.isValidName(name) || !Validator.isValidAge(age) ||
-                                !Validator.isValidDepartment(dept) || !Validator.isValidGPA(gpa)) {
-                            JOptionPane.showMessageDialog(this, "Invalid input! Please check all fields.", "Validation Error", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-
-                        student updatedStudent = new student(name, age, gender, "", dept, gpa);
-                        if (studentManager.updateStudent(id, updatedStudent)) {
-                            JOptionPane.showMessageDialog(this, "Student updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                            showWelcomeScreen();
-                        } else {
-                            JOptionPane.showMessageDialog(this, "Failed to update student!", "Error", JOptionPane.ERROR_MESSAGE);
-                        }
-                    } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(this, "Please enter valid numbers!", "Input Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                });
-
-                JButton cancelButton = new JButton("Cancel");
-                styleButton(cancelButton, new Color(231, 76, 60));
-                cancelButton.addActionListener(ev -> showWelcomeScreen());
-
-                buttonPanel.add(updateButton);
-                buttonPanel.add(cancelButton);
-
-                gbc.gridx = 0;
-                gbc.gridy = 5;
-                gbc.gridwidth = 2;
-                gbc.anchor = GridBagConstraints.CENTER;
-                formPanel.add(buttonPanel, gbc);
-
-                formPanel.revalidate();
-                formPanel.repaint();
-
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid ID number!", "Input Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        searchButton.addActionListener(e -> handleFindStudentForUpdate(idField, formPanel));
 
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setBackground(Color.WHITE);
@@ -659,6 +540,89 @@ public class MainGUI extends JFrame {
         contentPanel.repaint();
     }
 
+    private void handleFindStudentForUpdate(JTextField idField, JPanel formPanel) {
+        try {
+            int id = Integer.parseInt(idField.getText().trim());
+            student existing = studentManager.searchById(id);
+
+            if (existing == null) {
+                showWarning("Student not found with ID: " + id);
+                return;
+            }
+
+            formPanel.removeAll();
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(10, 10, 10, 10);
+            gbc.anchor = GridBagConstraints.WEST;
+
+            JTextField nameField = new JTextField(existing.getName(), 20);
+            JTextField ageField = new JTextField(String.valueOf(existing.getAge()), 20);
+            JComboBox<String> genderBox = new JComboBox<>(new String[]{"Male", "Female"});
+            genderBox.setSelectedItem(existing.getGender());
+            JTextField deptField = new JTextField(existing.getDepartment(), 20);
+            JTextField gpaField = new JTextField(String.format("%.2f", existing.getGpa()), 20);
+
+            addFormField(formPanel, gbc, 0, "Name:", nameField);
+            addFormField(formPanel, gbc, 1, "Age:", ageField);
+            addFormField(formPanel, gbc, 2, "Gender:", genderBox);
+            addFormField(formPanel, gbc, 3, "Department:", deptField);
+            addFormField(formPanel, gbc, 4, "GPA:", gpaField);
+
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+            buttonPanel.setBackground(Color.WHITE);
+
+            JButton updateButton = createStyledButton("Update", SUCCESS_COLOR);
+            styleButton(updateButton, SUCCESS_COLOR);
+            updateButton.addActionListener(ev -> handleUpdateStudent(id, nameField, ageField, genderBox, deptField, gpaField));
+
+            JButton cancelButton = createStyledButton("Cancel", DANGER_COLOR);
+            styleButton(cancelButton, DANGER_COLOR);
+            cancelButton.addActionListener(ev -> showWelcomeScreen());
+
+            buttonPanel.add(updateButton);
+            buttonPanel.add(cancelButton);
+
+            gbc.gridx = 0;
+            gbc.gridy = 5;
+            gbc.gridwidth = 2;
+            gbc.anchor = GridBagConstraints.CENTER;
+            formPanel.add(buttonPanel, gbc);
+
+            formPanel.revalidate();
+            formPanel.repaint();
+
+        } catch (NumberFormatException ex) {
+            showError("Please enter a valid ID number!");
+        }
+    }
+
+    private void handleUpdateStudent(int id, JTextField nameField, JTextField ageField,
+                                     JComboBox<String> genderBox, JTextField deptField, JTextField gpaField) {
+        try {
+            String name = nameField.getText().trim();
+            int age = Integer.parseInt(ageField.getText().trim());
+            String gender = (String) genderBox.getSelectedItem();
+            String dept = deptField.getText().trim();
+            double gpa = Double.parseDouble(gpaField.getText().trim());
+
+            if (!Validator.isValidName(name) || !Validator.isValidAge(age) ||
+                    !Validator.isValidDepartment(dept) || !Validator.isValidGPA(gpa)) {
+                showError("Invalid input! Please check all fields.");
+                return;
+            }
+
+            student updatedStudent = new student(name, age, gender, "", dept, gpa);
+            if (studentManager.updateStudent(id, updatedStudent)) {
+                showSuccess("Student updated successfully!");
+                showWelcomeScreen();
+            } else {
+                showError("Failed to update student!");
+            }
+        } catch (NumberFormatException ex) {
+            showError("Please enter valid numbers!");
+        }
+    }
+
     private void showDeleteForm() {
         contentPanel.removeAll();
 
@@ -667,7 +631,7 @@ public class MainGUI extends JFrame {
 
         JLabel titleLabel = new JLabel("Delete Student");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(52, 73, 94));
+        titleLabel.setForeground(SECONDARY_COLOR);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         deletePanel.add(titleLabel, BorderLayout.NORTH);
 
@@ -679,8 +643,8 @@ public class MainGUI extends JFrame {
         JTextField idField = new JTextField(10);
         idField.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        JButton searchButton = new JButton("Find Student");
-        styleButton(searchButton, new Color(52, 152, 219));
+        JButton searchButton = createStyledButton("Find Student", INFO_COLOR);
+        styleButton(searchButton, INFO_COLOR);
 
         searchPanel.add(idLabel);
         searchPanel.add(idField);
@@ -689,68 +653,7 @@ public class MainGUI extends JFrame {
         JPanel infoPanel = new JPanel(new BorderLayout());
         infoPanel.setBackground(Color.WHITE);
 
-        searchButton.addActionListener(e -> {
-            try {
-                int id = Integer.parseInt(idField.getText().trim());
-                student existing = studentManager.searchById(id);
-
-                if (existing == null) {
-                    JOptionPane.showMessageDialog(this, "Student not found with ID: " + id, "Not Found", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-
-                infoPanel.removeAll();
-
-                JPanel detailsPanel = new JPanel(new GridLayout(6, 2, 10, 10));
-                detailsPanel.setBackground(Color.WHITE);
-                detailsPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-                addDetailRow(detailsPanel, "ID:", existing.getStudentId());
-                addDetailRow(detailsPanel, "Name:", existing.getName());
-                addDetailRow(detailsPanel, "Age:", String.valueOf(existing.getAge()));
-                addDetailRow(detailsPanel, "Gender:", existing.getGender());
-                addDetailRow(detailsPanel, "Department:", existing.getDepartment());
-                addDetailRow(detailsPanel, "GPA:", String.format("%.2f", existing.getGpa()));
-
-                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-                buttonPanel.setBackground(Color.WHITE);
-
-                JButton deleteButton = new JButton("Delete Student");
-                styleButton(deleteButton, new Color(231, 76, 60));
-                deleteButton.addActionListener(ev -> {
-                    int confirm = JOptionPane.showConfirmDialog(this,
-                            "Are you sure you want to delete this student?",
-                            "Confirm Deletion",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.WARNING_MESSAGE);
-
-                    if (confirm == JOptionPane.YES_OPTION) {
-                        if (studentManager.deleteStudent(id)) {
-                            JOptionPane.showMessageDialog(this, "Student deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                            showWelcomeScreen();
-                        } else {
-                            JOptionPane.showMessageDialog(this, "Failed to delete student!", "Error", JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
-                });
-
-                JButton cancelButton = new JButton("Cancel");
-                styleButton(cancelButton, new Color(52, 152, 219));
-                cancelButton.addActionListener(ev -> showWelcomeScreen());
-
-                buttonPanel.add(deleteButton);
-                buttonPanel.add(cancelButton);
-
-                infoPanel.add(detailsPanel, BorderLayout.CENTER);
-                infoPanel.add(buttonPanel, BorderLayout.SOUTH);
-
-                infoPanel.revalidate();
-                infoPanel.repaint();
-
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid ID number!", "Input Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        searchButton.addActionListener(e -> handleFindStudentForDelete(idField, infoPanel));
 
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setBackground(Color.WHITE);
@@ -761,6 +664,70 @@ public class MainGUI extends JFrame {
         contentPanel.add(deletePanel, BorderLayout.CENTER);
         contentPanel.revalidate();
         contentPanel.repaint();
+    }
+
+    private void handleFindStudentForDelete(JTextField idField, JPanel infoPanel) {
+        try {
+            int id = Integer.parseInt(idField.getText().trim());
+            student existing = studentManager.searchById(id);
+
+            if (existing == null) {
+                showWarning("Student not found with ID: " + id);
+                return;
+            }
+
+            infoPanel.removeAll();
+
+            JPanel detailsPanel = new JPanel(new GridLayout(6, 2, 10, 10));
+            detailsPanel.setBackground(Color.WHITE);
+            detailsPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+            addDetailRow(detailsPanel, "ID:", existing.getStudentId());
+            addDetailRow(detailsPanel, "Name:", existing.getName());
+            addDetailRow(detailsPanel, "Age:", String.valueOf(existing.getAge()));
+            addDetailRow(detailsPanel, "Gender:", existing.getGender());
+            addDetailRow(detailsPanel, "Department:", existing.getDepartment());
+            addDetailRow(detailsPanel, "GPA:", String.format("%.2f", existing.getGpa()));
+
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+            buttonPanel.setBackground(Color.WHITE);
+
+            JButton deleteButton = createStyledButton("Delete Student", DANGER_COLOR);
+            styleButton(deleteButton, DANGER_COLOR);
+            deleteButton.addActionListener(ev -> handleDeleteStudent(id));
+
+            JButton cancelButton = createStyledButton("Cancel", INFO_COLOR);
+            styleButton(cancelButton, INFO_COLOR);
+            cancelButton.addActionListener(ev -> showWelcomeScreen());
+
+            buttonPanel.add(deleteButton);
+            buttonPanel.add(cancelButton);
+
+            infoPanel.add(detailsPanel, BorderLayout.CENTER);
+            infoPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+            infoPanel.revalidate();
+            infoPanel.repaint();
+
+        } catch (NumberFormatException ex) {
+            showError("Please enter a valid ID number!");
+        }
+    }
+
+    private void handleDeleteStudent(int id) {
+        int confirm = showConfirmDialog(
+                "Are you sure you want to delete this student?",
+                "Confirm Deletion"
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (studentManager.deleteStudent(id)) {
+                showSuccess("Student deleted successfully!");
+                showWelcomeScreen();
+            } else {
+                showError("Failed to delete student!");
+            }
+        }
     }
 
     private void addDetailRow(JPanel panel, String label, String value) {
@@ -781,7 +748,7 @@ public class MainGUI extends JFrame {
 
         JLabel titleLabel = new JLabel("Student Statistics");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(52, 73, 94));
+        titleLabel.setForeground(SECONDARY_COLOR);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         statsPanel.add(titleLabel, BorderLayout.NORTH);
 
@@ -805,14 +772,14 @@ public class MainGUI extends JFrame {
             Map<String, Integer> deptCount = StatisticsManager.countByDepartment(students);
 
             int row = 0;
-            addStatRow(detailsPanel, gbc, row++, "Total Students:", String.valueOf(students.size()), new Color(52, 152, 219));
-            addStatRow(detailsPanel, gbc, row++, "Average GPA:", String.format("%.2f", avgGPA), new Color(46, 204, 113));
-            addStatRow(detailsPanel, gbc, row++, "Highest GPA:", highest.getName() + " (" + highest.getGpa() + ")", new Color(155, 89, 182));
+            addStatRow(detailsPanel, gbc, row++, "Total Students:", String.valueOf(students.size()), INFO_COLOR);
+            addStatRow(detailsPanel, gbc, row++, "Average GPA:", String.format("%.2f", avgGPA), SUCCESS_COLOR);
+            addStatRow(detailsPanel, gbc, row++, "Highest GPA:", highest.getName() + " (" + highest.getGpa() + ")", PURPLE_COLOR);
             addStatRow(detailsPanel, gbc, row++, "Lowest GPA:", lowest.getName() + " (" + lowest.getGpa() + ")", new Color(230, 126, 34));
 
             JLabel deptLabel = new JLabel("Students by Department:");
             deptLabel.setFont(new Font("Arial", Font.BOLD, 16));
-            deptLabel.setForeground(new Color(52, 73, 94));
+            deptLabel.setForeground(SECONDARY_COLOR);
             gbc.gridx = 0;
             gbc.gridy = row++;
             gbc.gridwidth = 2;
@@ -820,7 +787,7 @@ public class MainGUI extends JFrame {
 
             for (Map.Entry<String, Integer> entry : deptCount.entrySet()) {
                 gbc.gridwidth = 1;
-                addStatRow(detailsPanel, gbc, row++, "  " + entry.getKey() + ":", entry.getValue() + " students", new Color(52, 152, 219));
+                addStatRow(detailsPanel, gbc, row++, "  " + entry.getKey() + ":", entry.getValue() + " students", INFO_COLOR);
             }
 
             statsPanel.add(detailsPanel, BorderLayout.CENTER);
@@ -846,11 +813,9 @@ public class MainGUI extends JFrame {
     }
 
     private void handleLogout() {
-        int choice = JOptionPane.showConfirmDialog(
-                this,
+        int choice = showConfirmDialog(
                 "Are you sure you want to logout?",
-                "Confirm Logout",
-                JOptionPane.YES_NO_OPTION
+                "Confirm Logout"
         );
 
         if (choice == JOptionPane.YES_OPTION) {
