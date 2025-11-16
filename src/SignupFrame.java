@@ -14,31 +14,31 @@ public class SignupFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Panel
+
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(6, 2, 5, 5));
 
-        // Username
+
         panel.add(new JLabel("Username:"));
         usernameField = new JTextField();
         panel.add(usernameField);
 
-        // Email
+
         panel.add(new JLabel("Email:"));
         emailField = new JTextField();
         panel.add(emailField);
 
-        // Password
+
         panel.add(new JLabel("Password:"));
         passwordField = new JPasswordField();
         panel.add(passwordField);
 
-        // Role
+
         panel.add(new JLabel("Role:"));
         roleBox = new JComboBox<>(new String[]{"student", "instructor"});
         panel.add(roleBox);
 
-        // Buttons
+
         JButton signupButton = new JButton("Sign Up");
         panel.add(signupButton);
 
@@ -47,7 +47,7 @@ public class SignupFrame extends JFrame {
 
         add(panel);
 
-        // Signup action
+
         signupButton.addActionListener(e -> {
             String username = usernameField.getText();
             String email = emailField.getText();
@@ -68,7 +68,7 @@ public class SignupFrame extends JFrame {
             }
         });
 
-        // Back to login
+
         backButton.addActionListener(e -> {
             dispose();
             new LoginFrame().setVisible(true);

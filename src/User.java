@@ -4,9 +4,9 @@ public abstract class User {
     protected String username;
     protected String email;
     protected String passwordHash;
-    protected String role;  // "student" or "instructor"
+    protected String role;
 
-    // Constructor
+
     public User(String userId, String username, String email, String passwordHash, String role) {
         this.userId = userId;
         this.username = username;
@@ -15,7 +15,7 @@ public abstract class User {
         this.role = role;
     }
 
-    // Getters
+
     public String getUserId() {
         return userId;
     }
@@ -36,7 +36,7 @@ public abstract class User {
         return role;
     }
 
-    // Setters
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -49,7 +49,7 @@ public abstract class User {
         this.passwordHash = passwordHash;
     }
 
-    // Optional but useful
+
     @Override
     public String toString() {
         return "User{" +

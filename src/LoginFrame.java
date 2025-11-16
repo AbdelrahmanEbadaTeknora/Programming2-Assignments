@@ -14,31 +14,31 @@ public class LoginFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Panel
+
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(4, 2, 5, 5));
 
-        // Email
+
         panel.add(new JLabel("Email:"));
         emailField = new JTextField();
         panel.add(emailField);
 
-        // Password
+
         panel.add(new JLabel("Password:"));
         passwordField = new JPasswordField();
         panel.add(passwordField);
 
-        // Login Button
+
         JButton loginButton = new JButton("Login");
         panel.add(loginButton);
 
-        // Signup Button
+
         JButton signupButton = new JButton("Go to Signup");
         panel.add(signupButton);
 
         add(panel);
 
-        // Login action
+
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -55,7 +55,7 @@ public class LoginFrame extends JFrame {
                 } else {
                     JOptionPane.showMessageDialog(null, "Login successful!");
 
-                    dispose(); // close login window
+                    dispose();
 
                     if (user.getRole().equals("student")) {
                         new StudentDashboardFrame().setVisible(true);
@@ -66,14 +66,14 @@ public class LoginFrame extends JFrame {
             }
         });
 
-        // Switch to signup
+
         signupButton.addActionListener(e -> {
             dispose();
             new SignupFrame().setVisible(true);
         });
     }
 
-    // Start here
+
     public static void main(String[] args) {
         new LoginFrame().setVisible(true);
     }

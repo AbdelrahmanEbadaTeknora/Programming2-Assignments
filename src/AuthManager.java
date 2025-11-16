@@ -4,14 +4,12 @@ import java.util.List;
 
 public class AuthManager {
 
-    private static User currentUser = null;   // Stores the logged-in user
+    private static User currentUser = null;
 
-    // --------------------------
-    // SIGNUP
-    // --------------------------
+
     public static boolean signup(String username, String email, String password, String role) {
 
-        // Basic validation
+
         if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
             System.out.println("All fields are required.");
             return false;
@@ -22,10 +20,10 @@ public class AuthManager {
             return false;
         }
 
-        // Load all users from JSON (Member 4 handles this part)
+
         List<User> users = JsonDatabaseManager.loadUsers();
 
-        // Check if email already exists
+
         for (User u : users) {
             if (u.getEmail().equalsIgnoreCase(email)) {
                 System.out.println("Email already exists.");
@@ -33,11 +31,11 @@ public class AuthManager {
             }
         }
 
-        // Hash password
+
         String hashedPassword = hashPassword(password);
 
-        // Create new user
-        String userId = String.valueOf(System.currentTimeMillis()); // simple unique ID
+
+        String userId = String.valueOf(System.currentTimeMillis());
 
         User newUser;
         if (role.equalsIgnoreCase("student")) {
@@ -46,7 +44,7 @@ public class AuthManager {
             newUser = new Instructor(userId, username, email, hashedPassword);
         }
 
-        // Save new user in JSON
+
         JsonDatabaseManager.addUser(newUser);
 
         System.out.println("Signup successful!");
@@ -54,9 +52,7 @@ public class AuthManager {
     }
 
 
-    // --------------------------
-    // LOGIN
-    // --------------------------
+
     public static User login(String email, String password) {
 
         List<User> users = JsonDatabaseManager.loadUsers();
@@ -67,7 +63,7 @@ public class AuthManager {
             if (u.getEmail().equalsIgnoreCase(email) &&
                     u.getPasswordHash().equals(hashedPassword)) {
 
-                currentUser = u;   // set current logged-in user
+                currentUser = u;
                 System.out.println("Login successful!");
                 return u;
             }
@@ -78,18 +74,14 @@ public class AuthManager {
     }
 
 
-    // --------------------------
-    // LOGOUT
-    // --------------------------
+
     public static void logout() {
         currentUser = null;
         System.out.println("Logged out successfully.");
     }
 
 
-    // --------------------------
-    // SHA-256 PASSWORD HASHING
-    // --------------------------
+
     public static String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -110,17 +102,13 @@ public class AuthManager {
     }
 
 
-    // --------------------------
-    // SIMPLE EMAIL VALIDATION
-    // --------------------------
+
     public static boolean isValidEmail(String email) {
         return email.contains("@") && email.contains(".") && email.length() >= 5;
     }
 
 
-    // --------------------------
-    // GET CURRENT USER
-    // --------------------------
+
     public static User getCurrentUser() {
         return currentUser;
     }
