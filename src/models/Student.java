@@ -1,3 +1,5 @@
+package models;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +56,7 @@ public class Student extends User {
 
     @Override
     public String toString() {
-        return "Student{" +
+        return "models.Student{" +
                 "userId='" + userId + '\'' +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +

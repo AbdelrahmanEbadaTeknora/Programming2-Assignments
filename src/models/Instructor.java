@@ -1,4 +1,4 @@
-import models.User;
+package models;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class Instructor extends User {
 
     @Override
     public String toString() {
-        return "Instructor{" +
+        return "models.Instructor{" +
                 "userId='" + userId + '\'' +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +

@@ -1,3 +1,7 @@
+package ui;
+
+import utils.AuthManager;
+
 import javax.swing.*;
 import java.awt.*;
 

@@ -1,5 +1,6 @@
-package ui;
+package utils;
 
+import database.*;
 import models.Instructor;
 import models.Student;
 import models.User;

@@ -1,3 +1,5 @@
+package models;
+
 public abstract class User {
 
     protected String userId;
@@ -52,7 +54,7 @@ public abstract class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "models.User{" +
                 "userId='" + userId + '\'' +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +

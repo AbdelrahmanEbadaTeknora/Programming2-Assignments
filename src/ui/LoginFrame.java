@@ -1,4 +1,7 @@
+package ui;
+
 import models.User;
+import utils.AuthManager;
 
 import javax.swing.*;
 import java.awt.*;

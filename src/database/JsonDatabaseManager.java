@@ -1,6 +1,9 @@
 package database;
 
-import models.*;
+import models.Instructor;
+import models.Lesson;
+import models.Student;
+import models.User;
 import org.json.*;
 import java.io.*;
 import java.nio.file.*;
@@ -46,7 +49,7 @@ public class JsonDatabaseManager {
 
     // ========== USER OPERATIONS ==========
 
-    // Save a new user (Student or Instructor)
+    // Save a new user (models.Student or models.Instructor)
     public boolean saveUser(User user) {
         try {
             String content = readFile(USERS_FILE);
@@ -59,9 +62,9 @@ public class JsonDatabaseManager {
 
             JSONObject userJson = userToJson(user);
 
-            if (user.getRole().equals("Student")) {
+            if (user.getRole().equals("models.Student")) {
                 root.getJSONArray("students").put(userJson);
-            } else if (user.getRole().equals("Instructor")) {
+            } else if (user.getRole().equals("models.Instructor")) {
                 root.getJSONArray("instructors").put(userJson);
             }
 
@@ -137,7 +140,7 @@ public class JsonDatabaseManager {
             String content = readFile(USERS_FILE);
             JSONObject root = new JSONObject(content);
 
-            String arrayName = user.getRole().equals("Student") ? "students" : "instructors";
+            String arrayName = user.getRole().equals("models.Student") ? "students" : "instructors";
             JSONArray users = root.getJSONArray(arrayName);
 
             for (int i = 0; i < users.length(); i++) {
