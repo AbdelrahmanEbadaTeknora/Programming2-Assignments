@@ -1,3 +1,9 @@
+package ui;
+
+import models.Instructor;
+import models.Student;
+import models.User;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
