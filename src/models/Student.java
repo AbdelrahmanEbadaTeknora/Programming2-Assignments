@@ -1,3 +1,5 @@
+package models;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,15 +10,12 @@ public class Student extends User {
     private List<String> enrolledCourses;
     private Map<String, List<String>> progress;
 
-
     public Student(String userId, String username, String email, String passwordHash) {
         super(userId, username, email, passwordHash, "student");
-
 
         this.enrolledCourses = new ArrayList<>();
         this.progress = new HashMap<>();
     }
-
 
     public List<String> getEnrolledCourses() {
         return enrolledCourses;
@@ -26,7 +25,6 @@ public class Student extends User {
         return progress;
     }
 
-
     public void setEnrolledCourses(List<String> enrolledCourses) {
         this.enrolledCourses = enrolledCourses;
     }
@@ -35,13 +33,11 @@ public class Student extends User {
         this.progress = progress;
     }
 
-
     public void enrollInCourse(String courseId) {
         if (!enrolledCourses.contains(courseId)) {
             enrolledCourses.add(courseId);
         }
     }
-
 
     public void markLessonCompleted(String courseId, String lessonId) {
         progress.putIfAbsent(courseId, new ArrayList<>());
