@@ -11,6 +11,7 @@ public class Lesson {
         this.resources = new String[0];
     }
 
+
     public Lesson(String lessonId, String title, String content) {
         this.lessonId = lessonId;
         this.title = title;

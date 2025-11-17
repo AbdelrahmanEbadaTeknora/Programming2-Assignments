@@ -8,104 +8,71 @@ public class Course {
     private String title;
     private String description;
     private String instructorId;
-    private List<Lesson> lessons;
-    private List<String> enrolledStudentIds;
+    private Lesson[] lessons;  // Must be array for JsonDatabaseManager
+    private List<String> students;  // Must be named "students" for JsonDatabaseManager
 
-    // Constructor
+    // Default constructor
+    public Course() {
+        this.students = new ArrayList<>();
+        this.lessons = new Lesson[0];
+    }
+
     public Course(String courseId, String title, String description, String instructorId) {
+        this();
         this.courseId = courseId;
         this.title = title;
         this.description = description;
         this.instructorId = instructorId;
-        this.lessons = new ArrayList<>();
-        this.enrolledStudentIds = new ArrayList<>();
     }
 
-    // Getters and Setters
-    public String getCourseId() {
-        return courseId;
+    // Getters and setters
+    public String getCourseId() { return courseId; }
+    public void setCourseId(String courseId) { this.courseId = courseId; }
+
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public String getInstructorId() { return instructorId; }
+    public void setInstructorId(String instructorId) { this.instructorId = instructorId; }
+
+    public Lesson[] getLessons() { return lessons; }
+    public void setLessons(Lesson[] lessons) {
+        this.lessons = lessons != null ? lessons : new Lesson[0];
     }
 
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
+    public List<String> getStudents() { return students; }
+    public void setStudents(List<String> students) {
+        this.students = students != null ? students : new ArrayList<>();
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getInstructorId() {
-        return instructorId;
-    }
-
-    public void setInstructorId(String instructorId) {
-        this.instructorId = instructorId;
-    }
-
-    public List<Lesson> getLessons() {
-        return lessons;
-    }
-
-    public void setLessons(List<Lesson> lessons) {
-        this.lessons = lessons;
-    }
-
-    public List<String> getEnrolledStudentIds() {
-        return enrolledStudentIds;
-    }
-
-    public void setEnrolledStudentIds(List<String> enrolledStudentIds) {
-        this.enrolledStudentIds = enrolledStudentIds;
-    }
-
-    // Business Methods
+    // Business methods
     public void addLesson(Lesson lesson) {
-        if (lesson != null && !lessons.contains(lesson)) {
-            lessons.add(lesson);
-        }
-    }
+        if (lesson != null) {
+            // Check for duplicate
+            for (Lesson l : lessons) {
+                if (l != null && l.getLessonId().equals(lesson.getLessonId())) {
+                    return;
+                }
+            }
 
-    public void removeLesson(Lesson lesson) {
-        lessons.remove(lesson);
+            Lesson[] newLessons = new Lesson[lessons.length + 1];
+            System.arraycopy(lessons, 0, newLessons, 0, lessons.length);
+            newLessons[lessons.length] = lesson;
+            this.lessons = newLessons;
+        }
     }
 
     public void enrollStudent(String studentId) {
-        if (!enrolledStudentIds.contains(studentId)) {
-            enrolledStudentIds.add(studentId);
+        if (studentId != null && !students.contains(studentId)) {
+            students.add(studentId);
         }
-    }
-
-    public void unenrollStudent(String studentId) {
-        enrolledStudentIds.remove(studentId);
     }
 
     public boolean isStudentEnrolled(String studentId) {
-        return enrolledStudentIds.contains(studentId);
-    }
-
-    public int getEnrollmentCount() {
-        return enrolledStudentIds.size();
-    }
-
-    public Lesson getLessonById(String lessonId) {
-        for (Lesson lesson : lessons) {
-            if (lesson.getLessonId().equals(lessonId)) {
-                return lesson;
-            }
-        }
-        return null;
+        return students.contains(studentId);
     }
 
     @Override
@@ -114,8 +81,8 @@ public class Course {
                 "courseId='" + courseId + '\'' +
                 ", title='" + title + '\'' +
                 ", instructorId='" + instructorId + '\'' +
-                ", lessons=" + lessons.size() +
-                ", enrolledStudents=" + enrolledStudentIds.size() +
+                ", lessons=" + (lessons != null ? lessons.length : 0) +
+                ", students=" + students.size() +
                 '}';
     }
 }

@@ -1,9 +1,4 @@
 package models;
-<<<<<<< HEAD
-=======
-
-import models.User;
->>>>>>> a1dad05914a3deff87d54a39da36425eb96df410
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +7,10 @@ public class Instructor extends User {
 
     private List<String> createdCourses;
 
+    public Instructor() {
+        super("", "", "", "", "instructor");
+        this.createdCourses = new ArrayList<>();
+    }
 
     public Instructor(String userId, String username, String email, String passwordHash) {
         super(userId, username, email, passwordHash, "instructor");
@@ -35,6 +34,10 @@ public class Instructor extends User {
         if (!createdCourses.contains(courseId)) {
             createdCourses.add(courseId);
         }
+    }
+
+    public String getName() {
+        return this.getUsername();  // Use existing username as name
     }
 
     @Override

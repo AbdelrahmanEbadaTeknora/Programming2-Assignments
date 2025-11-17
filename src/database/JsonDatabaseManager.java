@@ -1,6 +1,7 @@
 package database;
 
 import models.Instructor;
+import models.Course;
 import models.Lesson;
 import models.Student;
 import models.User;
@@ -62,9 +63,9 @@ public class JsonDatabaseManager {
 
             JSONObject userJson = userToJson(user);
 
-            if (user.getRole().equals("models.Student")) {
+            if (user.getRole().equals("student")) {  // WAS: "models.Student"
                 root.getJSONArray("students").put(userJson);
-            } else if (user.getRole().equals("models.Instructor")) {
+            } else if (user.getRole().equals("instructor")) {  // WAS: "models.Instructor"
                 root.getJSONArray("instructors").put(userJson);
             }
 
@@ -140,7 +141,7 @@ public class JsonDatabaseManager {
             String content = readFile(USERS_FILE);
             JSONObject root = new JSONObject(content);
 
-            String arrayName = user.getRole().equals("models.Student") ? "students" : "instructors";
+            String arrayName = user.getRole().equals("student") ? "students" : "instructors";
             JSONArray users = root.getJSONArray(arrayName);
 
             for (int i = 0; i < users.length(); i++) {
@@ -439,8 +440,6 @@ public class JsonDatabaseManager {
         return true; // Already enrolled
     }
 
-    // ========== JSON CONVERSION METHODS ==========
-
     private JSONObject userToJson(User user) {
         JSONObject json = new JSONObject();
         json.put("userId", user.getUserId());
@@ -455,7 +454,7 @@ public class JsonDatabaseManager {
                     student.getEnrolledCourses() != null ? student.getEnrolledCourses() : new ArrayList<>()
             ));
 
-            // Convert progress map to JSON
+
             JSONObject progressJson = new JSONObject();
             if (student.getProgress() != null) {
                 for (Map.Entry<String, List<String>> entry : student.getProgress().entrySet()) {
@@ -482,7 +481,7 @@ public class JsonDatabaseManager {
         student.setEmail(json.getString("email"));
         student.setPasswordHash(json.getString("passwordHash"));
 
-        // Parse enrolled courses
+
         JSONArray enrolledArray = json.optJSONArray("enrolledCourses");
         if (enrolledArray != null) {
             List<String> enrolled = new ArrayList<>();

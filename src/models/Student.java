@@ -7,8 +7,16 @@ import java.util.Map;
 
 public class Student extends User {
 
+
     private List<String> enrolledCourses;
     private Map<String, List<String>> progress;
+
+
+    public Student() {
+        super("", "", "", "", "student");
+        this.enrolledCourses = new ArrayList<>();
+        this.progress = new HashMap<>();
+    }
 
     public Student(String userId, String username, String email, String passwordHash) {
         super(userId, username, email, passwordHash, "student");

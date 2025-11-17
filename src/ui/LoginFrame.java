@@ -2,6 +2,7 @@ package ui;
 
 import models.User;
 import utils.AuthManager;
+import ui.components.StudentDashboardFrame;  // ADD IMPORT
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,41 +10,57 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class LoginFrame extends JFrame {
-
     private JTextField emailField;
     private JPasswordField passwordField;
 
     public LoginFrame() {
-        setTitle("Login");
-        setSize(350, 250);
+        setTitle("SkillForge - Login");
+        setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 2, 5, 5));
+        // Header
+        JLabel headerLabel = new JLabel("SkillForge Login", SwingConstants.CENTER);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        headerLabel.setForeground(new Color(59, 89, 182));
+        mainPanel.add(headerLabel, BorderLayout.NORTH);
 
+        // Form Panel
+        JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 10));
 
-        panel.add(new JLabel("Email:"));
+        formPanel.add(new JLabel("Email:"));
         emailField = new JTextField();
-        panel.add(emailField);
+        formPanel.add(emailField);
 
-
-        panel.add(new JLabel("Password:"));
+        formPanel.add(new JLabel("Password:"));
         passwordField = new JPasswordField();
-        panel.add(passwordField);
+        formPanel.add(passwordField);
 
+        mainPanel.add(formPanel, BorderLayout.CENTER);
+
+        // Button Panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
         JButton loginButton = new JButton("Login");
-        panel.add(loginButton);
-
+        loginButton.setBackground(new Color(59, 89, 182));
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setFocusPainted(false);
 
         JButton signupButton = new JButton("Go to Signup");
-        panel.add(signupButton);
+        signupButton.setBackground(new Color(76, 175, 80));
+        signupButton.setForeground(Color.WHITE);
+        signupButton.setFocusPainted(false);
 
-        add(panel);
+        buttonPanel.add(loginButton);
+        buttonPanel.add(signupButton);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
+        add(mainPanel);
 
+        // Event Handlers
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -53,24 +70,28 @@ public class LoginFrame extends JFrame {
                 User user = AuthManager.login(email, password);
 
                 if (user == null) {
-                    JOptionPane.showMessageDialog(null,
+                    JOptionPane.showMessageDialog(LoginFrame.this,
                             "Incorrect email or password.",
                             "Login Failed",
                             JOptionPane.ERROR_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(null, "Login successful!");
-
+                    JOptionPane.showMessageDialog(LoginFrame.this,
+                            "Login successful! Welcome " + user.getUsername() + "!");
                     dispose();
 
+                    // FIXED: Proper dashboard creation
                     if (user.getRole().equals("student")) {
-                        new StudentDashboardFrame().setVisible(true);
+                        new ui.components.StudentDashboardFrame((models.Student) user).setVisible(true);
                     } else {
-                        new InstructorDashboardFrame().setVisible(true);
+                        // For now, show message since InstructorDashboardFrame needs fixes
+                        JOptionPane.showMessageDialog(null,
+                                "Instructor dashboard will be available after integration fixes.",
+                                "Coming Soon",
+                                JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
             }
         });
-
 
         signupButton.addActionListener(e -> {
             dispose();
@@ -78,8 +99,16 @@ public class LoginFrame extends JFrame {
         });
     }
 
-
     public static void main(String[] args) {
-        new LoginFrame().setVisible(true);
+        // Set look and feel
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            new LoginFrame().setVisible(true);
+        });
     }
 }
