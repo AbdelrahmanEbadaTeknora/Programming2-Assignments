@@ -7,6 +7,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+<<<<<<< HEAD
     <orderEntry type="library" name="json-20240303" level="project" />
+=======
+    <orderEntry type="library" name="json-20230618" level="project" />
+>>>>>>> f3f4a0c1ea60b17c211928bda0ec4f75d2af85e5
   </component>
 </module>
