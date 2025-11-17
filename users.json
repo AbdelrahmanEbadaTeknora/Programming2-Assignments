@@ -1,0 +1,19 @@
+{
+    "students": [{
+        "role": "student",
+        "enrolledCourses": ["mpu-x1z"],
+        "progress": {"mpu-x1z": ["L663c26e2"]},
+        "userId": "1763358126326",
+        "email": "teknora@blabla.com",
+        "passwordHash": "0c67b2c1fcfba9fb71ff6feae41abd61d591df8ecabebefdba51db4d3cf9f1cf",
+        "username": "nabil"
+    }],
+    "instructors": [{
+        "role": "instructor",
+        "createdCourses": [],
+        "userId": "1763357938827",
+        "email": "marwaneltete12@gmail.com",
+        "passwordHash": "07123e1f482356c415f684407a3b8723e10b2cbbc0b8fcd6282c49d37c9c1abc",
+        "username": "maroo"
+    }]
+}

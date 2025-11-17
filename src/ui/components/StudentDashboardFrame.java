@@ -17,7 +17,6 @@ public class StudentDashboardFrame extends JFrame {
     private JsonDatabaseManager dbManager;
     private JTabbedPane tabbedPane;
 
-    // Colors for UI
     private static final Color PRIMARY_COLOR = new Color(59, 89, 182);
     private static final Color SECONDARY_COLOR = new Color(240, 242, 245);
     private static final Color SUCCESS_COLOR = new Color(67, 160, 71);
@@ -35,13 +34,10 @@ public class StudentDashboardFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Main layout
         setLayout(new BorderLayout(10, 10));
 
-        // Top panel with welcome message and logout
         add(createTopPanel(), BorderLayout.NORTH);
 
-        // Center panel with tabs
         tabbedPane = new JTabbedPane();
         tabbedPane.setFont(new Font("Arial", Font.BOLD, 14));
         tabbedPane.addTab("📚 Browse Courses", createBrowsePanel());
@@ -49,7 +45,6 @@ public class StudentDashboardFrame extends JFrame {
 
         add(tabbedPane, BorderLayout.CENTER);
 
-        // Add some padding
         ((JPanel)getContentPane()).setBorder(new EmptyBorder(10, 10, 10, 10));
     }
 
@@ -58,7 +53,6 @@ public class StudentDashboardFrame extends JFrame {
         panel.setBackground(PRIMARY_COLOR);
         panel.setBorder(new EmptyBorder(15, 20, 15, 20));
 
-        // Left side: Welcome message with stats
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         leftPanel.setBackground(PRIMARY_COLOR);
@@ -77,7 +71,6 @@ public class StudentDashboardFrame extends JFrame {
         leftPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         leftPanel.add(stats);
 
-        // Right side: Logout button
         JButton logoutButton = new JButton("Logout");
         logoutButton.setFont(new Font("Arial", Font.BOLD, 12));
         logoutButton.setFocusPainted(false);
@@ -96,14 +89,12 @@ public class StudentDashboardFrame extends JFrame {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBackground(SECONDARY_COLOR);
 
-        // Title with course count
         List<Course> availableCourses = getAvailableCourses();
         JLabel title = new JLabel("Available Courses (" + availableCourses.size() + ")");
         title.setFont(new Font("Arial", Font.BOLD, 18));
         title.setBorder(new EmptyBorder(10, 10, 10, 10));
         panel.add(title, BorderLayout.NORTH);
 
-        // Course list
         JPanel courseListPanel = new JPanel();
         courseListPanel.setLayout(new BoxLayout(courseListPanel, BoxLayout.Y_AXIS));
         courseListPanel.setBackground(SECONDARY_COLOR);
@@ -134,14 +125,12 @@ public class StudentDashboardFrame extends JFrame {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBackground(SECONDARY_COLOR);
 
-        // Title with course count
         List<Course> enrolledCourses = getEnrolledCourses();
         JLabel title = new JLabel("My Enrolled Courses (" + enrolledCourses.size() + ")");
         title.setFont(new Font("Arial", Font.BOLD, 18));
         title.setBorder(new EmptyBorder(10, 10, 10, 10));
         panel.add(title, BorderLayout.NORTH);
 
-        // Course list
         JPanel courseListPanel = new JPanel();
         courseListPanel.setLayout(new BoxLayout(courseListPanel, BoxLayout.Y_AXIS));
         courseListPanel.setBackground(SECONDARY_COLOR);
@@ -239,7 +228,6 @@ public class StudentDashboardFrame extends JFrame {
 
         card.add(infoPanel, BorderLayout.CENTER);
 
-        // Enroll button
         if (showEnrollButton) {
             JButton enrollButton = new JButton("Enroll Now");
             enrollButton.setFont(new Font("Arial", Font.BOLD, 12));
@@ -266,7 +254,6 @@ public class StudentDashboardFrame extends JFrame {
         ));
         card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 180));
 
-        // Course info panel
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.setBackground(Color.WHITE);
@@ -280,7 +267,6 @@ public class StudentDashboardFrame extends JFrame {
         instructorLabel.setFont(new Font("Arial", Font.ITALIC, 11));
         instructorLabel.setForeground(Color.GRAY);
 
-        // Progress section
         double progress = getCourseProgress(course.getCourseId());
         int completedLessons = getCompletedLessonCount(course.getCourseId());
         int totalLessons = dbManager.getLessonsByCourse(course.getCourseId()).size();
@@ -298,7 +284,6 @@ public class StudentDashboardFrame extends JFrame {
         progressBar.setPreferredSize(new Dimension(200, 25));
         progressBar.setBorder(BorderFactory.createLineBorder(SUCCESS_COLOR, 1));
 
-        // Completion badge
         if (progress == 100.0) {
             JLabel completedBadge = new JLabel("✅ Completed!");
             completedBadge.setFont(new Font("Arial", Font.BOLD, 11));
@@ -317,7 +302,6 @@ public class StudentDashboardFrame extends JFrame {
 
         card.add(infoPanel, BorderLayout.CENTER);
 
-        // Button panel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.setBackground(Color.WHITE);
@@ -342,11 +326,6 @@ public class StudentDashboardFrame extends JFrame {
         return card;
     }
 
-    // ========== BACKEND LOGIC METHODS ==========
-
-    /**
-     * Get all courses that the student is NOT enrolled in
-     */
     private List<Course> getAvailableCourses() {
         List<Course> allCourses = dbManager.getAllCourses();
         List<String> enrolledCourseIds = currentStudent.getEnrolledCourses();
@@ -361,9 +340,6 @@ public class StudentDashboardFrame extends JFrame {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Get all courses the student is enrolled in
-     */
     private List<Course> getEnrolledCourses() {
         List<String> enrolledCourseIds = currentStudent.getEnrolledCourses();
 
@@ -382,9 +358,6 @@ public class StudentDashboardFrame extends JFrame {
         return enrolledCourses;
     }
 
-    /**
-     * Calculate progress percentage for a course
-     */
     private double getCourseProgress(String courseId) {
         List<Lesson> lessons = dbManager.getLessonsByCourse(courseId);
 
@@ -403,9 +376,6 @@ public class StudentDashboardFrame extends JFrame {
         return (completedLessons * 100.0) / totalLessons;
     }
 
-    /**
-     * Get completed lesson count
-     */
     private int getCompletedLessonCount(String courseId) {
         List<String> completedLessons = dbManager.getCompletedLessons(
                 currentStudent.getUserId(),
@@ -414,9 +384,6 @@ public class StudentDashboardFrame extends JFrame {
         return completedLessons.size();
     }
 
-    /**
-     * Get instructor name by ID
-     */
     private String getInstructorName(String instructorId) {
         User user = dbManager.getUserById(instructorId);
         if (user != null) {
@@ -425,7 +392,6 @@ public class StudentDashboardFrame extends JFrame {
         return instructorId;
     }
 
-    // ========== EVENT HANDLERS ==========
 
     private void handleEnrollment(Course course) {
         int confirm = JOptionPane.showConfirmDialog(
@@ -478,7 +444,6 @@ public class StudentDashboardFrame extends JFrame {
     }
 
     private void viewCourseLessons(Course course) {
-        // Use Member 4's LessonViewerDialog component
         LessonViewerDialog dialog = new LessonViewerDialog(
                 this,
                 course.getCourseId(),
@@ -487,13 +452,11 @@ public class StudentDashboardFrame extends JFrame {
         );
         dialog.setVisible(true);
 
-        // Reload student data after viewing lessons (progress may have changed)
         User updatedUser = dbManager.getUserById(currentStudent.getUserId());
         if (updatedUser instanceof Student) {
             currentStudent = (Student) updatedUser;
         }
 
-        // Refresh panels to show updated progress
         refreshPanels();
     }
 
@@ -517,7 +480,6 @@ public class StudentDashboardFrame extends JFrame {
         if (confirm == JOptionPane.YES_OPTION) {
             this.dispose();
 
-            // Return to LoginFrame from Member 1
             SwingUtilities.invokeLater(() -> {
                 try {
                     Class<?> loginClass = Class.forName("ui.LoginFrame");
@@ -531,10 +493,8 @@ public class StudentDashboardFrame extends JFrame {
         }
     }
 
-    // ========== MAIN METHOD FOR TESTING ==========
 
     public static void main(String[] args) {
-        // Set look and feel
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
@@ -544,7 +504,6 @@ public class StudentDashboardFrame extends JFrame {
         SwingUtilities.invokeLater(() -> {
             JsonDatabaseManager db = JsonDatabaseManager.getInstance();
 
-            // Try to get an existing student
             Student testStudent = (Student) db.getUserById("S001");
 
             if (testStudent == null) {

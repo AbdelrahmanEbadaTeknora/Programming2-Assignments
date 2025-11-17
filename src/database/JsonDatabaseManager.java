@@ -473,7 +473,7 @@ public class JsonDatabaseManager {
         return json;
     }
 
-    private Student jsonToStudent(JSONObject json) {
+    private Student jsonToStudent(JSONObject    json) {
         Student student = new Student();
         student.setUserId(json.getString("userId"));
         student.setRole(json.getString("role"));

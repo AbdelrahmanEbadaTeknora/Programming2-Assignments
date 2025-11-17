@@ -4,6 +4,7 @@ import models.Course;
 import models.Instructor;
 import models.Lesson;
 import database.JsonDatabaseManager;
+import ui.components.LessonListDialog; // ADD THIS IMPORT
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -11,8 +12,8 @@ import java.awt.*;
 import java.util.List;
 
 public class InstructorDashboardFrame extends JFrame {
-    private Instructor instructor;
-    private JsonDatabaseManager dbManager;
+    private final Instructor instructor; // Made final
+    private final JsonDatabaseManager dbManager; // Made final
 
     private JTable coursesTable;
     private DefaultTableModel coursesTableModel;
@@ -55,13 +56,11 @@ public class InstructorDashboardFrame extends JFrame {
         JPanel coursesPanel = createCoursesPanel();
         splitPane.setLeftComponent(coursesPanel);
 
-        // Right - Course Details and Actions
         JPanel detailsPanel = createDetailsPanel();
         splitPane.setRightComponent(detailsPanel);
 
         add(splitPane, BorderLayout.CENTER);
 
-        // Bottom Panel - Action Buttons
         JPanel bottomPanel = createActionPanel();
         add(bottomPanel, BorderLayout.SOUTH);
     }
@@ -143,11 +142,15 @@ public class InstructorDashboardFrame extends JFrame {
         List<Course> allCourses = dbManager.getAllCourses();
         for (Course course : allCourses) {
             if (course.getInstructorId().equals(instructor.getUserId())) {
+                // FIXED: Use correct method names
+                int studentCount = course.getStudents() != null ? course.getStudents().size() : 0;
+                int lessonCount = course.getLessons() != null ? course.getLessons().length : 0;
+
                 Object[] rowData = {
                         course.getCourseId(),
                         course.getTitle(),
-                        course.getEnrollmentCount(),
-                        course.getLessons().size()
+                        studentCount, // FIXED: Use getStudents().size()
+                        lessonCount   // FIXED: Use getLessons().length
                 };
                 coursesTableModel.addRow(rowData);
             }
@@ -169,13 +172,18 @@ public class InstructorDashboardFrame extends JFrame {
             details.append("Course ID: ").append(course.getCourseId()).append("\n");
             details.append("Title: ").append(course.getTitle()).append("\n");
             details.append("Description: ").append(course.getDescription()).append("\n\n");
-            details.append("Enrolled Students: ").append(course.getEnrollmentCount()).append("\n");
-            details.append("Total Lessons: ").append(course.getLessons().size()).append("\n\n");
 
-            if (!course.getLessons().isEmpty()) {
+            // FIXED: Use correct method names
+            int studentCount = course.getStudents() != null ? course.getStudents().size() : 0;
+            int lessonCount = course.getLessons() != null ? course.getLessons().length : 0;
+
+            details.append("Enrolled Students: ").append(studentCount).append("\n");
+            details.append("Total Lessons: ").append(lessonCount).append("\n\n");
+
+            if (course.getLessons() != null && course.getLessons().length > 0) {
                 details.append("Lessons:\n");
-                for (int i = 0; i < course.getLessons().size(); i++) {
-                    Lesson lesson = course.getLessons().get(i);
+                for (int i = 0; i < course.getLessons().length; i++) {
+                    Lesson lesson = course.getLessons()[i]; // FIXED: Array access
                     details.append((i + 1)).append(". ").append(lesson.getTitle()).append("\n");
                 }
             }
@@ -217,13 +225,18 @@ public class InstructorDashboardFrame extends JFrame {
                 }
 
                 Course newCourse = new Course(courseId, title, description, instructor.getUserId());
-                dbManager.saveCourse(newCourse);
+                boolean success = dbManager.saveCourse(newCourse);
 
-                JOptionPane.showMessageDialog(
-                        this, "Course created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE
-                );
-
-                loadInstructorCourses();
+                if (success) {
+                    JOptionPane.showMessageDialog(
+                            this, "Course created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE
+                    );
+                    loadInstructorCourses();
+                } else {
+                    JOptionPane.showMessageDialog(
+                            this, "Failed to create course!", "Error", JOptionPane.ERROR_MESSAGE
+                    );
+                }
             }
         }
     }
@@ -264,14 +277,19 @@ public class InstructorDashboardFrame extends JFrame {
                 if (validateCourseInput(courseId, newTitle, newDescription)) {
                     course.setTitle(newTitle);
                     course.setDescription(newDescription);
-                    dbManager.updateCourse(course);
+                    boolean success = dbManager.updateCourse(course);
 
-                    JOptionPane.showMessageDialog(
-                            this, "Course updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE
-                    );
-
-                    loadInstructorCourses();
-                    displayCourseDetails();
+                    if (success) {
+                        JOptionPane.showMessageDialog(
+                                this, "Course updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE
+                        );
+                        loadInstructorCourses();
+                        displayCourseDetails();
+                    } else {
+                        JOptionPane.showMessageDialog(
+                                this, "Failed to update course!", "Error", JOptionPane.ERROR_MESSAGE
+                        );
+                    }
                 }
             }
         }
@@ -298,12 +316,18 @@ public class InstructorDashboardFrame extends JFrame {
         );
 
         if (confirm == JOptionPane.YES_OPTION) {
-            dbManager.deleteCourse(courseId);
-            JOptionPane.showMessageDialog(
-                    this, "Course deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE
-            );
-            loadInstructorCourses();
-            courseDetailsArea.setText("");
+            boolean success = dbManager.deleteCourse(courseId);
+            if (success) {
+                JOptionPane.showMessageDialog(
+                        this, "Course deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE
+                );
+                loadInstructorCourses();
+                courseDetailsArea.setText("");
+            } else {
+                JOptionPane.showMessageDialog(
+                        this, "Failed to delete course!", "Error", JOptionPane.ERROR_MESSAGE
+                );
+            }
         }
     }
 
@@ -320,7 +344,8 @@ public class InstructorDashboardFrame extends JFrame {
         Course course = dbManager.getCourseById(courseId);
 
         if (course != null) {
-            List<String> studentIds = course.getEnrolledStudentIds();
+            // FIXED: Use getStudents() instead of getEnrolledStudentIds()
+            List<String> studentIds = course.getStudents();
 
             if (studentIds.isEmpty()) {
                 JOptionPane.showMessageDialog(
@@ -359,15 +384,15 @@ public class InstructorDashboardFrame extends JFrame {
         }
 
         String courseId = (String) coursesTableModel.getValueAt(selectedRow, 0);
+        String courseTitle = (String) coursesTableModel.getValueAt(selectedRow, 1);
 
-        // This will be implemented by Member 4 with their lesson components
-        JOptionPane.showMessageDialog(
-                this,
-                "Lesson management interface will be integrated by Member 4.\n" +
-                        "Course ID: " + courseId,
-                "Coming Soon",
-                JOptionPane.INFORMATION_MESSAGE
-        );
+        // FIXED: Use Member 4's LessonListDialog component
+        LessonListDialog dialog = new LessonListDialog(this, courseId, courseTitle);
+        dialog.setVisible(true);
+
+        // Refresh course data after lesson management
+        loadInstructorCourses();
+        displayCourseDetails();
     }
 
     private boolean validateCourseInput(String courseId, String title, String description) {

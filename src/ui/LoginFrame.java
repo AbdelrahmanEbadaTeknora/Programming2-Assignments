@@ -46,12 +46,12 @@ public class LoginFrame extends JFrame {
 
         JButton loginButton = new JButton("Login");
         loginButton.setBackground(new Color(59, 89, 182));
-        loginButton.setForeground(Color.WHITE);
+        loginButton.setForeground(Color.BLACK);
         loginButton.setFocusPainted(false);
 
         JButton signupButton = new JButton("Go to Signup");
         signupButton.setBackground(new Color(76, 175, 80));
-        signupButton.setForeground(Color.WHITE);
+        signupButton.setForeground(Color.BLACK);
         signupButton.setFocusPainted(false);
 
         buttonPanel.add(loginButton);
@@ -83,11 +83,7 @@ public class LoginFrame extends JFrame {
                     if (user.getRole().equals("student")) {
                         new ui.components.StudentDashboardFrame((models.Student) user).setVisible(true);
                     } else {
-                        // For now, show message since InstructorDashboardFrame needs fixes
-                        JOptionPane.showMessageDialog(null,
-                                "Instructor dashboard will be available after integration fixes.",
-                                "Coming Soon",
-                                JOptionPane.INFORMATION_MESSAGE);
+                        new InstructorDashboardFrame((models.Instructor) user).setVisible(true);
                     }
                 }
             }
