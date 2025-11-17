@@ -1,4 +1,9 @@
 package models;
+<<<<<<< HEAD
+=======
+
+import models.User;
+>>>>>>> a1dad05914a3deff87d54a39da36425eb96df410
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,5 +1,8 @@
 package models;
+<<<<<<< HEAD
 
+=======
+>>>>>>> a1dad05914a3deff87d54a39da36425eb96df410
 public abstract class User {
 
     protected String userId;
