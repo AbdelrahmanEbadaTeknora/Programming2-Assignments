@@ -4,7 +4,9 @@ import models.Course;
 import models.Instructor;
 import models.Lesson;
 import database.JsonDatabaseManager;
-import ui.components.LessonListDialog; // ADD THIS IMPORT
+import services.AnalyticsService;
+import ui.components.LessonListDialog;
+import ui.components.InsightsPanel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -12,8 +14,9 @@ import java.awt.*;
 import java.util.List;
 
 public class InstructorDashboardFrame extends JFrame {
-    private final Instructor instructor; // Made final
-    private final JsonDatabaseManager dbManager; // Made final
+    private final Instructor instructor;
+    private final JsonDatabaseManager dbManager;
+    private final AnalyticsService analyticsService; // NEW
 
     private JTable coursesTable;
     private DefaultTableModel coursesTableModel;
@@ -22,6 +25,7 @@ public class InstructorDashboardFrame extends JFrame {
     public InstructorDashboardFrame(Instructor instructor) {
         this.instructor = instructor;
         this.dbManager = JsonDatabaseManager.getInstance();
+        this.analyticsService = new AnalyticsService(); // NEW
 
         initializeUI();
         loadInstructorCourses();
@@ -69,8 +73,8 @@ public class InstructorDashboardFrame extends JFrame {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
         panel.setBorder(BorderFactory.createTitledBorder("My Courses"));
 
-        // Table for courses
-        String[] columnNames = {"Course ID", "Title", "Students", "Lessons"};
+        // Table for courses - UPDATED: Added Status column
+        String[] columnNames = {"Course ID", "Title", "Students", "Lessons", "Status"};
         coursesTableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -127,11 +131,17 @@ public class InstructorDashboardFrame extends JFrame {
         JButton manageLessonsButton = new JButton("Manage Lessons");
         manageLessonsButton.addActionListener(e -> manageLessons());
 
+        // NEW: View Analytics Button
+        JButton viewAnalyticsButton = new JButton("View Analytics");
+        viewAnalyticsButton.setBackground(new Color(255, 140, 0));
+        viewAnalyticsButton.addActionListener(e -> viewAnalytics());
+
         panel.add(createCourseButton);
         panel.add(editCourseButton);
         panel.add(deleteCourseButton);
         panel.add(viewStudentsButton);
         panel.add(manageLessonsButton);
+        panel.add(viewAnalyticsButton); // NEW
 
         return panel;
     }
@@ -142,15 +152,16 @@ public class InstructorDashboardFrame extends JFrame {
         List<Course> allCourses = dbManager.getAllCourses();
         for (Course course : allCourses) {
             if (course.getInstructorId().equals(instructor.getUserId())) {
-                // FIXED: Use correct method names
                 int studentCount = course.getStudents() != null ? course.getStudents().size() : 0;
                 int lessonCount = course.getLessons() != null ? course.getLessons().length : 0;
+                String status = course.getApprovalStatus() != null ? course.getApprovalStatus() : "PENDING"; // NEW
 
                 Object[] rowData = {
                         course.getCourseId(),
                         course.getTitle(),
-                        studentCount, // FIXED: Use getStudents().size()
-                        lessonCount   // FIXED: Use getLessons().length
+                        studentCount,
+                        lessonCount,
+                        status // NEW
                 };
                 coursesTableModel.addRow(rowData);
             }
@@ -171,25 +182,86 @@ public class InstructorDashboardFrame extends JFrame {
             StringBuilder details = new StringBuilder();
             details.append("Course ID: ").append(course.getCourseId()).append("\n");
             details.append("Title: ").append(course.getTitle()).append("\n");
-            details.append("Description: ").append(course.getDescription()).append("\n\n");
+            details.append("Description: ").append(course.getDescription()).append("\n");
+            details.append("Status: ").append(course.getApprovalStatus()).append("\n\n"); // NEW
 
-            // FIXED: Use correct method names
             int studentCount = course.getStudents() != null ? course.getStudents().size() : 0;
             int lessonCount = course.getLessons() != null ? course.getLessons().length : 0;
 
             details.append("Enrolled Students: ").append(studentCount).append("\n");
             details.append("Total Lessons: ").append(lessonCount).append("\n\n");
 
+            // NEW: Add Analytics Summary
+            details.append("=== ANALYTICS ===\n");
+            double completionRate = analyticsService.getCourseCompletionRate(courseId);
+            double avgQuizScore = analyticsService.getAverageQuizScore(courseId);
+            int strugglingCount = analyticsService.getStrugglingStudents(courseId, 50.0).size();
+
+            details.append("Completion Rate: ").append(String.format("%.1f%%", completionRate)).append("\n");
+            details.append("Avg Quiz Score: ").append(String.format("%.1f%%", avgQuizScore)).append("\n");
+            details.append("Struggling Students: ").append(strugglingCount).append("\n\n");
+
             if (course.getLessons() != null && course.getLessons().length > 0) {
                 details.append("Lessons:\n");
                 for (int i = 0; i < course.getLessons().length; i++) {
-                    Lesson lesson = course.getLessons()[i]; // FIXED: Array access
+                    Lesson lesson = course.getLessons()[i];
                     details.append((i + 1)).append(". ").append(lesson.getTitle()).append("\n");
                 }
             }
 
             courseDetailsArea.setText(details.toString());
         }
+    }
+
+    // NEW: View Analytics method
+    private void viewAnalytics() {
+        int selectedRow = coursesTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(
+                    this, "Please select a course to view analytics.", "No Selection", JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        String courseId = (String) coursesTableModel.getValueAt(selectedRow, 0);
+        String courseTitle = (String) coursesTableModel.getValueAt(selectedRow, 1);
+
+        openChartFrame(courseId, courseTitle);
+    }
+
+    // NEW: Open ChartFrame for a course
+    public void openChartFrame(String courseId, String courseTitle) {
+        ChartFrame chartFrame = new ChartFrame(courseId, courseTitle);
+        chartFrame.setVisible(true);
+    }
+
+    // NEW: Open InsightsPanel in a dialog
+    public void openInsightsPanel(Course course) {
+        JDialog dialog = new JDialog(this, "Analytics - " + course.getTitle(), true);
+        dialog.setSize(900, 700);
+        dialog.setLocationRelativeTo(this);
+
+        InsightsPanel insightsPanel = new InsightsPanel(course.getCourseId());
+        dialog.add(insightsPanel);
+        dialog.setVisible(true);
+    }
+
+    // NEW: Refresh analytics display
+    public void refreshAnalytics() {
+        displayCourseDetails();
+    }
+
+    // NEW: Create analytics panel (for potential tabbed interface)
+    public JPanel createAnalyticsPanel() {
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JLabel label = new JLabel("Select a course and click 'View Analytics' to see insights.");
+        label.setFont(new Font("Arial", Font.ITALIC, 14));
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(label, BorderLayout.CENTER);
+
+        return panel;
     }
 
     private void createNewCourse() {
@@ -216,7 +288,6 @@ public class InstructorDashboardFrame extends JFrame {
             String description = descriptionArea.getText().trim();
 
             if (validateCourseInput(courseId, title, description)) {
-                // Check for duplicate course ID
                 if (dbManager.getCourseById(courseId) != null) {
                     JOptionPane.showMessageDialog(
                             this, "Course ID already exists!", "Error", JOptionPane.ERROR_MESSAGE
@@ -225,11 +296,13 @@ public class InstructorDashboardFrame extends JFrame {
                 }
 
                 Course newCourse = new Course(courseId, title, description, instructor.getUserId());
+                newCourse.setApprovalStatus(Course.STATUS_PENDING); // NEW: Set initial status
                 boolean success = dbManager.saveCourse(newCourse);
 
                 if (success) {
                     JOptionPane.showMessageDialog(
-                            this, "Course created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE
+                            this, "Course created successfully!\nStatus: PENDING (awaiting admin approval)",
+                            "Success", JOptionPane.INFORMATION_MESSAGE
                     );
                     loadInstructorCourses();
                 } else {
@@ -344,7 +417,6 @@ public class InstructorDashboardFrame extends JFrame {
         Course course = dbManager.getCourseById(courseId);
 
         if (course != null) {
-            // FIXED: Use getStudents() instead of getEnrolledStudentIds()
             List<String> studentIds = course.getStudents();
 
             if (studentIds.isEmpty()) {
@@ -386,11 +458,9 @@ public class InstructorDashboardFrame extends JFrame {
         String courseId = (String) coursesTableModel.getValueAt(selectedRow, 0);
         String courseTitle = (String) coursesTableModel.getValueAt(selectedRow, 1);
 
-        // FIXED: Use Member 4's LessonListDialog component
         LessonListDialog dialog = new LessonListDialog(this, courseId, courseTitle);
         dialog.setVisible(true);
 
-        // Refresh course data after lesson management
         loadInstructorCourses();
         displayCourseDetails();
     }
