@@ -22,6 +22,7 @@ public class Main {
             System.out.println("Test Credentials:");
             System.out.println("- Student: ahmed@skillforge.com / student123");
             System.out.println("- Instructor: layla@skillforge.com / instructor123");
+            System.out.println("- Admin: Create a new admin account from signup!");
         });
     }
 }

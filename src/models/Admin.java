@@ -1,0 +1,24 @@
+package models;
+
+public class Admin extends User {
+
+    // Constructor with no parameters
+    public Admin() {
+        super("", "", "", "", "admin");
+    }
+
+    // Constructor with parameters
+    public Admin(String userId, String username, String email, String passwordHash) {
+        super(userId, username, email, passwordHash, "admin");
+    }
+
+    @Override
+    public String toString() {
+        return "Admin{" +
+                "userId='" + userId + '\'' +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", role='admin'" +
+                '}';
+    }
+}

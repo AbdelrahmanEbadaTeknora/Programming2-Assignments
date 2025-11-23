@@ -18,30 +18,25 @@ public class SignupFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(6, 2, 5, 5));
-
 
         panel.add(new JLabel("Username:"));
         usernameField = new JTextField();
         panel.add(usernameField);
 
-
         panel.add(new JLabel("Email:"));
         emailField = new JTextField();
         panel.add(emailField);
-
 
         panel.add(new JLabel("Password:"));
         passwordField = new JPasswordField();
         panel.add(passwordField);
 
-
         panel.add(new JLabel("Role:"));
-        roleBox = new JComboBox<>(new String[]{"student", "instructor"});
+        // UPDATED: Added "admin" option to the role dropdown
+        roleBox = new JComboBox<>(new String[]{"student", "instructor", "admin"});
         panel.add(roleBox);
-
 
         JButton signupButton = new JButton("Sign Up");
         panel.add(signupButton);
@@ -50,7 +45,6 @@ public class SignupFrame extends JFrame {
         panel.add(backButton);
 
         add(panel);
-
 
         signupButton.addActionListener(e -> {
             String username = usernameField.getText();
@@ -71,7 +65,6 @@ public class SignupFrame extends JFrame {
                         JOptionPane.ERROR_MESSAGE);
             }
         });
-
 
         backButton.addActionListener(e -> {
             dispose();

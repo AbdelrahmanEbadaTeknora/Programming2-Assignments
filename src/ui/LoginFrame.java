@@ -1,8 +1,11 @@
 package ui;
 
 import models.User;
+import models.Admin;
+import models.Instructor;
+import models.Student;
 import utils.AuthManager;
-import ui.components.StudentDashboardFrame;  // ADD IMPORT
+import ui.components.StudentDashboardFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,12 +49,12 @@ public class LoginFrame extends JFrame {
 
         JButton loginButton = new JButton("Login");
         loginButton.setBackground(new Color(59, 89, 182));
-        loginButton.setForeground(Color.BLACK);
+        loginButton.setForeground(Color.WHITE);
         loginButton.setFocusPainted(false);
 
         JButton signupButton = new JButton("Go to Signup");
         signupButton.setBackground(new Color(76, 175, 80));
-        signupButton.setForeground(Color.BLACK);
+        signupButton.setForeground(Color.WHITE);
         signupButton.setFocusPainted(false);
 
         buttonPanel.add(loginButton);
@@ -79,11 +82,14 @@ public class LoginFrame extends JFrame {
                             "Login successful! Welcome " + user.getUsername() + "!");
                     dispose();
 
-                    // FIXED: Proper dashboard creation
-                    if (user.getRole().equals("student")) {
-                        new ui.components.StudentDashboardFrame((models.Student) user).setVisible(true);
-                    } else {
-                        new InstructorDashboardFrame((models.Instructor) user).setVisible(true);
+                    // UPDATED: Handle all three roles including admin
+                    if (user instanceof Student) {
+                        new StudentDashboardFrame((Student) user).setVisible(true);
+                    } else if (user instanceof Instructor) {
+                        new InstructorDashboardFrame((Instructor) user).setVisible(true);
+                    } else if (user instanceof Admin) {
+                        // NEW: Open admin dashboard for admin users
+                        new AdminDashboardFrame((Admin) user).setVisible(true);
                     }
                 }
             }

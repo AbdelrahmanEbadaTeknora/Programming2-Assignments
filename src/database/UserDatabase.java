@@ -119,6 +119,33 @@ public class UserDatabase {
         return null;
     }
 
+    // NEW: Get all users
+    public List<User> getAllUsers() {
+        List<User> allUsers = new ArrayList<>();
+
+        try {
+            JSONObject root = read();
+
+            JSONArray students = root.getJSONArray("students");
+            for (int i = 0; i < students.length(); i++) {
+                allUsers.add(jsonToStudent(students.getJSONObject(i)));
+            }
+
+            JSONArray instructors = root.getJSONArray("instructors");
+            for (int i = 0; i < instructors.length(); i++) {
+                allUsers.add(jsonToInstructor(instructors.getJSONObject(i)));
+            }
+
+            JSONArray admins = root.getJSONArray("admins");
+            for (int i = 0; i < admins.length(); i++) {
+                allUsers.add(jsonToAdmin(admins.getJSONObject(i)));
+            }
+
+        } catch (Exception ignored) {}
+
+        return allUsers;
+    }
+
     // ====================================
     // ENROLLMENT
     // ====================================
@@ -152,6 +179,16 @@ public class UserDatabase {
             return updateUser(s);
         }
         return true;
+    }
+
+    public List<String> getCompletedLessons(String studentId, String courseId) {
+        User u = getUserById(studentId);
+        if (!(u instanceof Student)) return new ArrayList<>();
+
+        Student s = (Student) u;
+        Map<String,List<String>> progress = s.getProgress();
+
+        return progress.getOrDefault(courseId, new ArrayList<>());
     }
 
     // ====================================
