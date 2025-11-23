@@ -221,7 +221,7 @@ public class AdminDashboardFrame extends JFrame {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBackground(SECONDARY_COLOR);
 
-        List<User> allUsers = dbManager.users().getAllUsers();
+        List<User> allUsers = dbManager.getAllUsers();
 
         JLabel title = new JLabel("All Users (" + allUsers.size() + ")");
         title.setFont(new Font("Arial", Font.BOLD, 18));
@@ -444,7 +444,7 @@ public class AdminDashboardFrame extends JFrame {
 
     // Get instructor name from ID
     private String getInstructorName(String instructorId) {
-        User user = dbManager.users().getUserById(instructorId);
+        User user = dbManager.getUserById(instructorId);
         if (user != null) {
             return user.getUsername();
         }
