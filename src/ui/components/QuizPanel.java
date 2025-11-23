@@ -46,12 +46,12 @@ public class QuizPanel extends JPanel {
 
             editButton = new JButton("Edit Quiz");
             editButton.setBackground(new Color(33, 150, 243));
-            editButton.setForeground(Color.WHITE);
+            editButton.setForeground(Color.BLACK);
             editButton.setFocusPainted(false);
 
             deleteButton = new JButton("Delete Quiz");
             deleteButton.setBackground(new Color(244, 67, 54));
-            deleteButton.setForeground(Color.WHITE);
+            deleteButton.setForeground(Color.BLACK);
             deleteButton.setFocusPainted(false);
 
             buttonsPanel.add(editButton);

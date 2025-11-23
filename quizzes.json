@@ -1,0 +1,106 @@
+{
+    "quizzes": [
+        {
+            "timeLimit": 29,
+            "maxAttempts": 3,
+            "quizId": "QZ-8F484163",
+            "questions": [
+                {
+                    "questionId": "QN-35563694",
+                    "options": [
+                        "ff",
+                        "gg",
+                        "hh",
+                        "jj"
+                    ],
+                    "correctOptionIndex": 1,
+                    "questionText": "what is integration",
+                    "points": 10
+                },
+                {
+                    "questionId": "QN-970C0070",
+                    "options": [
+                        "ww",
+                        "ee",
+                        "rr",
+                        "tt"
+                    ],
+                    "correctOptionIndex": 3,
+                    "questionText": "how to make it",
+                    "points": 10
+                }
+            ],
+            "lessonId": "L328b89e8",
+            "passingScore": 70,
+            "title": "integration quiz"
+        },
+        {
+            "timeLimit": -1,
+            "maxAttempts": 2,
+            "quizId": "QZ-80954429",
+            "questions": [
+                {
+                    "questionId": "QN-83B6BEEE",
+                    "options": [
+                        "cc",
+                        "vv",
+                        "bb",
+                        "nn"
+                    ],
+                    "correctOptionIndex": 2,
+                    "questionText": "what is diff?",
+                    "points": 10
+                },
+                {
+                    "questionId": "QN-8E3A2AB8",
+                    "options": [
+                        "hh",
+                        "jj",
+                        "kk",
+                        "ll"
+                    ],
+                    "correctOptionIndex": 1,
+                    "questionText": "how to diff?",
+                    "points": 20
+                }
+            ],
+            "lessonId": "L737ea597",
+            "passingScore": 70,
+            "title": "diff quiz"
+        }
+    ],
+    "attempts": [
+        {
+            "studentId": "SFFB9B4A2",
+            "score": 20,
+            "quizId": "QZ-8F484163",
+            "percentage": 100,
+            "answers": {
+                "QN-970C0070": 3,
+                "QN-35563694": 1
+            },
+            "lessonId": "L328b89e8",
+            "attemptDate": "2025-11-24 01:23:10",
+            "passed": true,
+            "maxScore": 20,
+            "courseId": "mpu-12",
+            "attemptId": "ATT-C9109832"
+        },
+        {
+            "studentId": "SFFB9B4A2",
+            "score": 0,
+            "quizId": "QZ-80954429",
+            "percentage": 0,
+            "answers": {
+                "QN-8E3A2AB8": 2,
+                "QN-83B6BEEE": 0
+            },
+            "lessonId": "L737ea597",
+            "attemptDate": "2025-11-24 01:27:47",
+            "passed": false,
+            "maxScore": 30,
+            "courseId": "mpu-12",
+            "attemptId": "ATT-0C97B83F"
+        }
+    ]
+}

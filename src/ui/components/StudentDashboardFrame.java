@@ -325,7 +325,7 @@ public class StudentDashboardFrame extends JFrame {
     }
 
     private List<Course> getAvailableCourses() {
-        List<Course> allCourses = new ArrayList<>(); // dbManager.getAllCourses();
+        List<Course> allCourses = dbManager.getApprovedCourses();
         List<String> enrolledCourseIds = currentStudent.getEnrolledCourses();
 
         if (enrolledCourseIds == null || enrolledCourseIds.isEmpty()) {
@@ -347,31 +347,33 @@ public class StudentDashboardFrame extends JFrame {
 
         List<Course> enrolledCourses = new ArrayList<>();
         for (String courseId : enrolledCourseIds) {
-            Course course = null; // dbManager.getCourseById(courseId);
+            Course course = dbManager.getCourseById(courseId);
             if (course != null) {
                 enrolledCourses.add(course);
             }
         }
+
         return enrolledCourses;
     }
+
     private double getCourseProgress(String courseId) {
-        List<Lesson> lessons = new ArrayList<>(); // dbManager.getLessonsByCourse(courseId);
+        List<Lesson> lessons = dbManager.getLessonsByCourse(courseId);
         if (lessons.isEmpty()) {
             return 0.0;
         }
-        List<String> completedLessonIds = new ArrayList<>(); // dbManager.getCompletedLessons(currentStudent.getUserId(), courseId);
+        List<String> completedLessonIds = dbManager.getCompletedLessons(currentStudent.getUserId(), courseId);
         int totalLessons = lessons.size();
         int completedLessons = completedLessonIds.size();
         return (completedLessons * 100.0) / totalLessons;
     }
 
     private int getCompletedLessonCount(String courseId) {
-        List<String> completedLessons = new ArrayList<>(); // dbManager.getCompletedLessons(currentStudent.getUserId(), courseId);
+        List<String> completedLessons = dbManager.getCompletedLessons(currentStudent.getUserId(), courseId);
         return completedLessons.size();
     }
 
     private String getInstructorName(String instructorId) {
-        User user = null; // dbManager.getUserById(instructorId);
+        User user = dbManager.getUserById(instructorId);
         if (user != null) {
             return user.getUsername();
         }
@@ -391,11 +393,11 @@ public class StudentDashboardFrame extends JFrame {
         );
 
         if (confirm == JOptionPane.YES_OPTION) {
-            boolean success = false; // dbManager.enrollStudent(currentStudent.getUserId(), course.getCourseId());
+            boolean success = dbManager.enrollStudent(currentStudent.getUserId(), course.getCourseId());
 
             if (success) {
                 // Reload student data to get updated enrolled courses
-                User updatedUser = null; // dbManager.getUserById(currentStudent.getUserId());
+                User updatedUser = dbManager.getUserById(currentStudent.getUserId());
                 if (updatedUser instanceof Student) {
                     currentStudent = (Student) updatedUser;
                 }
@@ -434,7 +436,7 @@ public class StudentDashboardFrame extends JFrame {
         );
         dialog.setVisible(true);
 
-        User updatedUser = null; // dbManager.getUserById(currentStudent.getUserId());
+        User updatedUser = dbManager.getUserById(currentStudent.getUserId());
         if (updatedUser instanceof Student) {
             currentStudent = (Student) updatedUser;
         }

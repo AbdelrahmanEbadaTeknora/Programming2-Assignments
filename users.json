@@ -1,19 +1,34 @@
 {
     "students": [{
         "role": "student",
-        "enrolledCourses": ["mpu-x1z"],
-        "progress": {"mpu-x1z": ["L663c26e2"]},
-        "userId": "1763358126326",
-        "email": "teknora@blabla.com",
-        "passwordHash": "0c67b2c1fcfba9fb71ff6feae41abd61d591df8ecabebefdba51db4d3cf9f1cf",
-        "username": "nabil"
+        "certificateIds": [],
+        "enrolledCourses": [
+            "mpu-12"
+        ],
+        "progress": {
+            "mpu-12": [
+                "L328b89e8",
+                "L737ea597"
+            ]
+        },
+        "userId": "SFFB9B4A2",
+        "email": "mm@gmail.com",
+        "passwordHash": "8fa1dddd53606ceb933c5c6a12e714ed41e11d37a2b7bc48e91d15b54171d033",
+        "username": "mm"
+    }],
+    "admins": [{
+        "role": "admin",
+        "userId": "A8CD84E95",
+        "email": "aa@gmail.com",
+        "passwordHash": "961b6dd3ede3cb8ecbaacbd68de040cd78eb2ed5889130cceb4c49268ea4d506",
+        "username": "aa"
     }],
     "instructors": [{
         "role": "instructor",
         "createdCourses": [],
-        "userId": "1763357938827",
-        "email": "marwaneltete12@gmail.com",
-        "passwordHash": "07123e1f482356c415f684407a3b8723e10b2cbbc0b8fcd6282c49d37c9c1abc",
-        "username": "maroo"
+        "userId": "IB5EE1E0A",
+        "email": "ii@gmail.com",
+        "passwordHash": "5d7f49449ab22deac22d767b89549c554134c8e47de4d38e748049875c83503b",
+        "username": "ii"
     }]
 }

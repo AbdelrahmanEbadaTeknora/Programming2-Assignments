@@ -49,12 +49,12 @@ public class LoginFrame extends JFrame {
 
         JButton loginButton = new JButton("Login");
         loginButton.setBackground(new Color(59, 89, 182));
-        loginButton.setForeground(Color.WHITE);
+        loginButton.setForeground(Color.BLACK);
         loginButton.setFocusPainted(false);
 
         JButton signupButton = new JButton("Go to Signup");
         signupButton.setBackground(new Color(76, 175, 80));
-        signupButton.setForeground(Color.WHITE);
+        signupButton.setForeground(Color.BLACK);
         signupButton.setFocusPainted(false);
 
         buttonPanel.add(loginButton);

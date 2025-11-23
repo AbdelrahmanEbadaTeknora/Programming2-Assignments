@@ -1,8 +1,53 @@
-{"courses": [{
-    "description": "طريقة عمل المكرونه بالبشاميل",
-    "students": ["1763358126326"],
-    "title": "math-1",
-    "courseId": "mpu-x1z",
-    "instructorId": "1763357938827",
-    "lessons": []
-}]}
+{"courses": [
+    {
+        "approvalStatus": "APPROVED",
+        "description": "matrix",
+        "students": ["SFFB9B4A2"],
+        "title": "math-1",
+        "courseId": "mpu-12",
+        "instructorId": "IB5EE1E0A",
+        "lessons": [
+            {
+                "quizId": "QZ-8F484163",
+                "lessonId": "L328b89e8",
+                "resources": ["youtube"],
+                "title": "integration",
+                "content": "partial",
+                "requiresQuizPass": false
+            },
+            {
+                "quizId": "QZ-80954429",
+                "lessonId": "L737ea597",
+                "resources": ["youtube"],
+                "title": "diff",
+                "content": "partial",
+                "requiresQuizPass": false
+            }
+        ]
+    },
+    {
+        "approvalStatus": "REJECTED",
+        "description": "oop",
+        "students": ["SFFB9B4A2"],
+        "title": "prog",
+        "courseId": "cce-1",
+        "instructorId": "IB5EE1E0A",
+        "lessons": [{
+            "quizId": "",
+            "lessonId": "L5e078dcb",
+            "resources": ["gg"],
+            "title": "onno",
+            "content": "wethgeth",
+            "requiresQuizPass": false
+        }]
+    },
+    {
+        "approvalStatus": "PENDING",
+        "description": "signals",
+        "students": [],
+        "title": "communication",
+        "courseId": "ece-1",
+        "instructorId": "IB5EE1E0A",
+        "lessons": []
+    }
+]}
