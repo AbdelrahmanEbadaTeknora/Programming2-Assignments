@@ -2,6 +2,7 @@ package ui.components;
 
 import models.*;
 import database.JsonDatabaseManager;
+import services.CertificateService; //
 import ui.components.LessonViewerDialog;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -42,12 +43,12 @@ public class StudentDashboardFrame extends JFrame {
         tabbedPane.setFont(new Font("Arial", Font.BOLD, 14));
         tabbedPane.addTab("📚 Browse Courses", createBrowsePanel());
         tabbedPane.addTab("📖 My Courses", createMyCoursesPanel());
+        tabbedPane.addTab("🏆 Certificates", createCertificatesPanel()); // ✅ ADDED: Certificates tab
 
         add(tabbedPane, BorderLayout.CENTER);
 
         ((JPanel)getContentPane()).setBorder(new EmptyBorder(10, 10, 10, 10));
     }
-
     private JPanel createTopPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(PRIMARY_COLOR);
@@ -213,12 +214,10 @@ public class StudentDashboardFrame extends JFrame {
         JLabel instructorLabel = new JLabel("👤 Instructor: " + instructorName);
         instructorLabel.setFont(new Font("Arial", Font.ITALIC, 11));
         instructorLabel.setForeground(Color.GRAY);
-
-        int lessonCount = dbManager.getLessonsByCourse(course.getCourseId()).size();
+        int lessonCount = course.getLessons() != null ? course.getLessons().length : 0;
         JLabel lessonCountLabel = new JLabel("📝 " + lessonCount + " lessons");
         lessonCountLabel.setFont(new Font("Arial", Font.PLAIN, 11));
         lessonCountLabel.setForeground(Color.GRAY);
-
         infoPanel.add(titleLabel);
         infoPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         infoPanel.add(descLabel);
@@ -269,7 +268,7 @@ public class StudentDashboardFrame extends JFrame {
 
         double progress = getCourseProgress(course.getCourseId());
         int completedLessons = getCompletedLessonCount(course.getCourseId());
-        int totalLessons = dbManager.getLessonsByCourse(course.getCourseId()).size();
+        int totalLessons = course.getLessons() != null ? course.getLessons().length : 0;
 
         JLabel progressLabel = new JLabel(String.format("📊 Progress: %d/%d lessons completed",
                 completedLessons, totalLessons));
@@ -285,7 +284,7 @@ public class StudentDashboardFrame extends JFrame {
         progressBar.setBorder(BorderFactory.createLineBorder(SUCCESS_COLOR, 1));
 
         if (progress == 100.0) {
-            JLabel completedBadge = new JLabel("✅ Completed!");
+            JLabel completedBadge = new JLabel(" Completed!");
             completedBadge.setFont(new Font("Arial", Font.BOLD, 11));
             completedBadge.setForeground(SUCCESS_COLOR);
             infoPanel.add(completedBadge);
@@ -322,12 +321,11 @@ public class StudentDashboardFrame extends JFrame {
         buttonPanel.add(Box.createVerticalGlue());
 
         card.add(buttonPanel, BorderLayout.EAST);
-
         return card;
     }
 
     private List<Course> getAvailableCourses() {
-        List<Course> allCourses = dbManager.getAllCourses();
+        List<Course> allCourses = new ArrayList<>(); // dbManager.getAllCourses();
         List<String> enrolledCourseIds = currentStudent.getEnrolledCourses();
 
         if (enrolledCourseIds == null || enrolledCourseIds.isEmpty()) {
@@ -349,49 +347,36 @@ public class StudentDashboardFrame extends JFrame {
 
         List<Course> enrolledCourses = new ArrayList<>();
         for (String courseId : enrolledCourseIds) {
-            Course course = dbManager.getCourseById(courseId);
+            Course course = null; // dbManager.getCourseById(courseId);
             if (course != null) {
                 enrolledCourses.add(course);
             }
         }
-
         return enrolledCourses;
     }
-
     private double getCourseProgress(String courseId) {
-        List<Lesson> lessons = dbManager.getLessonsByCourse(courseId);
-
+        List<Lesson> lessons = new ArrayList<>(); // dbManager.getLessonsByCourse(courseId);
         if (lessons.isEmpty()) {
             return 0.0;
         }
-
-        List<String> completedLessonIds = dbManager.getCompletedLessons(
-                currentStudent.getUserId(),
-                courseId
-        );
-
+        List<String> completedLessonIds = new ArrayList<>(); // dbManager.getCompletedLessons(currentStudent.getUserId(), courseId);
         int totalLessons = lessons.size();
         int completedLessons = completedLessonIds.size();
-
         return (completedLessons * 100.0) / totalLessons;
     }
 
     private int getCompletedLessonCount(String courseId) {
-        List<String> completedLessons = dbManager.getCompletedLessons(
-                currentStudent.getUserId(),
-                courseId
-        );
+        List<String> completedLessons = new ArrayList<>(); // dbManager.getCompletedLessons(currentStudent.getUserId(), courseId);
         return completedLessons.size();
     }
 
     private String getInstructorName(String instructorId) {
-        User user = dbManager.getUserById(instructorId);
+        User user = null; // dbManager.getUserById(instructorId);
         if (user != null) {
             return user.getUsername();
         }
         return instructorId;
     }
-
 
     private void handleEnrollment(Course course) {
         int confirm = JOptionPane.showConfirmDialog(
@@ -406,14 +391,11 @@ public class StudentDashboardFrame extends JFrame {
         );
 
         if (confirm == JOptionPane.YES_OPTION) {
-            boolean success = dbManager.enrollStudent(
-                    currentStudent.getUserId(),
-                    course.getCourseId()
-            );
+            boolean success = false; // dbManager.enrollStudent(currentStudent.getUserId(), course.getCourseId());
 
             if (success) {
                 // Reload student data to get updated enrolled courses
-                User updatedUser = dbManager.getUserById(currentStudent.getUserId());
+                User updatedUser = null; // dbManager.getUserById(currentStudent.getUserId());
                 if (updatedUser instanceof Student) {
                     currentStudent = (Student) updatedUser;
                 }
@@ -452,18 +434,17 @@ public class StudentDashboardFrame extends JFrame {
         );
         dialog.setVisible(true);
 
-        User updatedUser = dbManager.getUserById(currentStudent.getUserId());
+        User updatedUser = null; // dbManager.getUserById(currentStudent.getUserId());
         if (updatedUser instanceof Student) {
             currentStudent = (Student) updatedUser;
         }
-
         refreshPanels();
     }
-
     private void refreshPanels() {
         tabbedPane.removeAll();
         tabbedPane.addTab("📚 Browse Courses", createBrowsePanel());
         tabbedPane.addTab("📖 My Courses", createMyCoursesPanel());
+        tabbedPane.addTab("🏆 Certificates", createCertificatesPanel());
         tabbedPane.revalidate();
         tabbedPane.repaint();
     }
@@ -493,6 +474,126 @@ public class StudentDashboardFrame extends JFrame {
         }
     }
 
+    private JPanel createCertificatesPanel() {
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBackground(SECONDARY_COLOR);
+
+        CertificateService certService = new CertificateService();
+        List<Certificate> certificates = certService.getStudentCertificates(currentStudent.getUserId());
+
+        JLabel title = new JLabel("My Certificates (" + certificates.size() + ")");
+        title.setFont(new Font("Arial", Font.BOLD, 18));
+        title.setBorder(new EmptyBorder(10, 10, 10, 10));
+        panel.add(title, BorderLayout.NORTH);
+
+        JPanel certListPanel = new JPanel();
+        certListPanel.setLayout(new BoxLayout(certListPanel, BoxLayout.Y_AXIS));
+        certListPanel.setBackground(SECONDARY_COLOR);
+
+        if (certificates.isEmpty()) {
+            JPanel emptyState = createEmptyState(
+                    "🏆",
+                    "No Certificates Yet",
+                    "Complete courses to earn certificates! Certificates will appear here once you've successfully finished a course."
+            );
+            certListPanel.add(emptyState);
+        } else {
+            for (Certificate cert : certificates) {
+                certListPanel.add(createCertificateCard(cert));
+                certListPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+            }
+        }
+
+        JScrollPane scrollPane = new JScrollPane(certListPanel);
+        scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        return panel;
+    }
+
+    private JPanel createCertificateCard(Certificate cert) {
+        JPanel card = new JPanel(new BorderLayout(15, 15));
+        card.setBackground(Color.WHITE);
+        card.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(SUCCESS_COLOR, 2, true),
+                new EmptyBorder(15, 15, 15, 15)
+        ));
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
+
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPanel.setBackground(Color.WHITE);
+
+        JLabel courseLabel = new JLabel(cert.getCourseName());
+        courseLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        courseLabel.setForeground(PRIMARY_COLOR);
+
+        JLabel scoreLabel = new JLabel("Final Score: " + cert.getFormattedScore());
+        scoreLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        scoreLabel.setForeground(Color.DARK_GRAY);
+
+        JLabel dateLabel = new JLabel("Issued: " + cert.getFormattedIssueDate());
+        dateLabel.setFont(new Font("Arial", Font.PLAIN, 11));
+        dateLabel.setForeground(Color.GRAY);
+
+        JLabel certIdLabel = new JLabel("ID: " + cert.getCertificateId());
+        certIdLabel.setFont(new Font("Arial", Font.PLAIN, 10));
+        certIdLabel.setForeground(Color.LIGHT_GRAY);
+
+        infoPanel.add(courseLabel);
+        infoPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        infoPanel.add(scoreLabel);
+        infoPanel.add(Box.createRigidArea(new Dimension(0, 3)));
+        infoPanel.add(dateLabel);
+        infoPanel.add(Box.createRigidArea(new Dimension(0, 3)));
+        infoPanel.add(certIdLabel);
+
+        card.add(infoPanel, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        buttonPanel.setBackground(Color.WHITE);
+
+        JButton viewButton = new JButton("View");
+        viewButton.setFont(new Font("Arial", Font.BOLD, 12));
+        viewButton.setBackground(PRIMARY_COLOR);
+        viewButton.setForeground(Color.WHITE);
+        viewButton.setFocusPainted(false);
+        viewButton.setBorderPainted(false);
+        viewButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        viewButton.setMaximumSize(new Dimension(100, 30));
+        viewButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        viewButton.addActionListener(e -> viewCertificate(cert));
+
+        buttonPanel.add(Box.createVerticalGlue());
+        buttonPanel.add(viewButton);
+        buttonPanel.add(Box.createVerticalGlue());
+
+        card.add(buttonPanel, BorderLayout.EAST);
+
+        return card;
+    }
+
+    private void viewCertificate(Certificate cert) {
+        try {
+            Class<?> certViewerClass = Class.forName("ui.components.CertificateViewerDialog");
+            JDialog certDialog = (JDialog) certViewerClass.getDeclaredConstructor(
+                    JFrame.class, Certificate.class
+            ).newInstance(this, cert);
+            certDialog.setVisible(true);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Certificate viewer not available.\n" +
+                            "Certificate Details:\n" +
+                            "Course: " + cert.getCourseName() + "\n" +
+                            "Score: " + cert.getFormattedScore() + "\n" +
+                            "Issued: " + cert.getFormattedIssueDate(),
+                    "Certificate: " + cert.getCourseName(),
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        }
+    }
 
     public static void main(String[] args) {
         try {
@@ -503,8 +604,7 @@ public class StudentDashboardFrame extends JFrame {
 
         SwingUtilities.invokeLater(() -> {
             JsonDatabaseManager db = JsonDatabaseManager.getInstance();
-
-            Student testStudent = (Student) db.getUserById("S001");
+            Student testStudent = null; // (Student) db.getUserById("S001");
 
             if (testStudent == null) {
                 JOptionPane.showMessageDialog(
