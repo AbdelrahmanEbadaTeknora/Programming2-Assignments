@@ -115,7 +115,7 @@ public class CourseApprovalPanel extends JPanel {
 
     // Get instructor name from ID
     private String getInstructorName(String instructorId) {
-        User user = dbManager.users().getUserById(instructorId);
+        User user = dbManager.getUserById(instructorId);
         if (user != null) {
             return user.getUsername();
         }

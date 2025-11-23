@@ -34,7 +34,7 @@ public class AuthManager {
             return null;
         }
 
-        User user = dbManager.users().getUserByEmail(email);
+        User user = dbManager.getUserByEmail(email);
 
         if (user == null) {
             return null;
@@ -59,7 +59,7 @@ public class AuthManager {
         }
 
         // Check if email already exists
-        if (dbManager.users().emailExists(email)) {
+        if (dbManager.emailExists(email)) {
             return false;
         }
 
@@ -86,7 +86,7 @@ public class AuthManager {
         }
 
         // Save user to database
-        return dbManager.users().saveUser(newUser);
+        return dbManager.saveUser(newUser);
     }
 
     // Generate unique user ID based on role

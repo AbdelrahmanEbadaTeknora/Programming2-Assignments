@@ -18,13 +18,13 @@ public class CourseApprovalService {
             return false;
         }
 
-        Course course = dbManager.courses().getCourseById(courseId);
+        Course course = dbManager.getCourseById(courseId);
         if (course == null) {
             return false;
         }
 
         // Update the course status to APPROVED
-        return dbManager.courses().updateCourseStatus(courseId, Course.STATUS_APPROVED);
+        return dbManager.updateCourseStatus(courseId, Course.STATUS_APPROVED);
     }
 
     // Reject a course by setting its status to REJECTED
@@ -33,28 +33,28 @@ public class CourseApprovalService {
             return false;
         }
 
-        Course course = dbManager.courses().getCourseById(courseId);
+        Course course = dbManager.getCourseById(courseId);
         if (course == null) {
             return false;
         }
 
         // Update the course status to REJECTED
-        return dbManager.courses().updateCourseStatus(courseId, Course.STATUS_REJECTED);
+        return dbManager.updateCourseStatus(courseId, Course.STATUS_REJECTED);
     }
 
     // Get all pending courses
     public List<Course> getPendingCourses() {
-        return dbManager.courses().getPendingCourses();
+        return dbManager.getPendingCourses();
     }
 
     // Get all approved courses
     public List<Course> getApprovedCourses() {
-        return dbManager.courses().getApprovedCourses();
+        return dbManager.getApprovedCourses();
     }
 
     // Get all rejected courses
     public List<Course> getRejectedCourses() {
-        return dbManager.courses().getRejectedCourses();
+        return dbManager.getRejectedCourses();
     }
 
     // Get courses by a specific status
@@ -63,6 +63,6 @@ public class CourseApprovalService {
             return getPendingCourses(); // Default to pending
         }
 
-        return dbManager.courses().getCoursesByStatus(status);
+        return dbManager.getCoursesByStatus(status);
     }
 }
