@@ -1,16 +1,12 @@
 {
     "students": [{
         "role": "student",
-        "certificateIds": [],
-        "enrolledCourses": [
-            "mpu-12"
-        ],
-        "progress": {
-            "mpu-12": [
-                "L328b89e8",
-                "L737ea597"
-            ]
-        },
+        "certificateIds": ["CERT-2025-661C67"],
+        "enrolledCourses": ["mpu-12"],
+        "progress": {"mpu-12": [
+            "L328b89e8",
+            "L737ea597"
+        ]},
         "userId": "SFFB9B4A2",
         "email": "mm@gmail.com",
         "passwordHash": "8fa1dddd53606ceb933c5c6a12e714ed41e11d37a2b7bc48e91d15b54171d033",

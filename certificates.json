@@ -1,1 +1,12 @@
-{"certificates": []}
+{"certificates": [{
+    "studentId": "SFFB9B4A2",
+    "courseName": "math-1",
+    "instructorName": "ii",
+    "finalScore": 50,
+    "completedLessons": 2,
+    "certificateId": "CERT-2025-661C67",
+    "studentName": "mm",
+    "issueDate": "2025-11-24",
+    "courseId": "mpu-12",
+    "totalLessons": 2
+}]}

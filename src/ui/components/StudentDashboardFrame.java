@@ -428,20 +428,56 @@ public class StudentDashboardFrame extends JFrame {
     }
 
     private void viewCourseLessons(Course course) {
-        LessonViewerDialog dialog = new LessonViewerDialog(
-                this,
-                course.getCourseId(),
-                course.getTitle(),
-                currentStudent.getUserId()
-        );
-        dialog.setVisible(true);
+    LessonViewerDialog dialog = new LessonViewerDialog(
+            this,
+            course.getCourseId(),
+            course.getTitle(),
+            currentStudent.getUserId()
+    );
+    dialog.setVisible(true);
 
-        User updatedUser = dbManager.getUserById(currentStudent.getUserId());
-        if (updatedUser instanceof Student) {
-            currentStudent = (Student) updatedUser;
-        }
-        refreshPanels();
+    // Reload student data
+    User updatedUser = dbManager.getUserById(currentStudent.getUserId());
+    if (updatedUser instanceof Student) {
+        currentStudent = (Student) updatedUser;
     }
+    
+    // ✅ ADD: Auto-check for certificate after completing lessons
+    CertificateService certService = new CertificateService();
+    if (certService.isEligibleForCertificate(currentStudent.getUserId(), course.getCourseId())) {
+        int generate = JOptionPane.showConfirmDialog(this,
+            "<html><body style='width: 300px'>" +
+            "🎉 <b>Congratulations!</b><br><br>" +
+            "You've completed all requirements for <b>" + course.getTitle() + "</b>!<br><br>" +
+            "Would you like to generate your certificate now?" +
+            "</body></html>",
+            "Certificate Available!",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
+        
+        if (generate == JOptionPane.YES_OPTION) {
+            Certificate cert = certService.generateCertificate(
+                currentStudent.getUserId(), 
+                course.getCourseId()
+            );
+            
+            if (cert != null) {
+                JOptionPane.showMessageDialog(this,
+                    "<html><body style='width: 300px'>" +
+                    "✅ <b>Certificate Generated!</b><br><br>" +
+                    "Your certificate for <b>" + course.getTitle() + "</b> is ready!<br><br>" +
+                    "Final Score: <b>" + cert.getFormattedScore() + "</b><br><br>" +
+                    "Check the Certificates tab to view it." +
+                    "</body></html>",
+                    "Success!",
+                    JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+    }
+    
+    refreshPanels();
+}
+
     private void refreshPanels() {
         tabbedPane.removeAll();
         tabbedPane.addTab("📚 Browse Courses", createBrowsePanel());
