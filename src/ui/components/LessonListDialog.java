@@ -1,6 +1,8 @@
 package ui.components;
 
 import models.Lesson;
+import models.Quiz;
+import services.QuizService;
 import database.JsonDatabaseManager;
 import javax.swing.*;
 import java.awt.*;
@@ -11,14 +13,16 @@ public class LessonListDialog extends JDialog {
     private DefaultListModel<String> lessonListModel;
     private JList<String> lessonList;
     private JsonDatabaseManager dbManager;
+    private QuizService quizService;
 
     public LessonListDialog(JFrame parent, String courseId, String courseTitle) {
         super(parent, "Manage Lessons: " + courseTitle, true);
         this.courseId = courseId;
         this.dbManager = JsonDatabaseManager.getInstance();
+        this.quizService = new QuizService();
 
         setLayout(new BorderLayout(10, 10));
-        setSize(600, 400);
+        setSize(700, 500);
         setLocationRelativeTo(parent);
 
         // Lesson list
@@ -36,16 +40,19 @@ public class LessonListDialog extends JDialog {
         JButton addButton = new JButton("Add Lesson");
         JButton editButton = new JButton("Edit Lesson");
         JButton deleteButton = new JButton("Delete Lesson");
+        JButton manageQuizButton = new JButton("Manage Quiz");
         JButton closeButton = new JButton("Close");
 
         addButton.addActionListener(e -> addLesson());
         editButton.addActionListener(e -> editLesson());
         deleteButton.addActionListener(e -> deleteLesson());
+        manageQuizButton.addActionListener(e -> manageQuiz());
         closeButton.addActionListener(e -> dispose());
 
         buttonsPanel.add(addButton);
         buttonsPanel.add(editButton);
         buttonsPanel.add(deleteButton);
+        buttonsPanel.add(manageQuizButton);
         buttonsPanel.add(closeButton);
 
         add(buttonsPanel, BorderLayout.SOUTH);
@@ -55,7 +62,14 @@ public class LessonListDialog extends JDialog {
         lessonListModel.clear();
         List<Lesson> lessons = dbManager.getLessonsByCourse(courseId);
         for (Lesson lesson : lessons) {
-            lessonListModel.addElement(lesson.getLessonId() + " - " + lesson.getTitle());
+            String quizInfo = "";
+            if (lesson.getQuizId() != null && !lesson.getQuizId().isEmpty()) {
+                Quiz quiz = quizService.getQuizById(lesson.getQuizId());
+                if (quiz != null) {
+                    quizInfo = " [Quiz: " + quiz.getTitle() + "]";
+                }
+            }
+            lessonListModel.addElement(lesson.getLessonId() + " - " + lesson.getTitle() + quizInfo);
         }
     }
 
@@ -113,5 +127,30 @@ public class LessonListDialog extends JDialog {
                 JOptionPane.showMessageDialog(this, "Failed to delete lesson.");
             }
         }
+    }
+
+    private void manageQuiz() {
+        int selectedIndex = lessonList.getSelectedIndex();
+        if (selectedIndex == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a lesson to manage its quiz.");
+            return;
+        }
+
+        List<Lesson> lessons = dbManager.getLessonsByCourse(courseId);
+        Lesson selectedLesson = lessons.get(selectedIndex);
+
+        // Check if lesson already has a quiz
+        Quiz existingQuiz = null;
+        if (selectedLesson.getQuizId() != null && !selectedLesson.getQuizId().isEmpty()) {
+            existingQuiz = quizService.getQuizById(selectedLesson.getQuizId());
+        }
+
+        QuizEditorDialog dialog = new QuizEditorDialog(
+                (JFrame) getOwner(),
+                selectedLesson.getLessonId(),
+                existingQuiz
+        );
+        dialog.setVisible(true);
+        loadLessons();
     }
 }

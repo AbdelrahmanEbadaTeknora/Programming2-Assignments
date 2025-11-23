@@ -5,6 +5,8 @@ import database.JsonDatabaseManager;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import models.Quiz;
+import services.QuizService;
 
 public class LessonViewerDialog extends JDialog {
     private String courseId;
@@ -96,8 +98,8 @@ public class LessonViewerDialog extends JDialog {
         // Clear previous display
         lessonDisplayPanel.removeAll();
 
-        // Create lesson panel
-        LessonPanel panel = new LessonPanel(lesson, true);
+        // Create lesson panel WITH studentId and courseId
+        LessonPanel panel = new LessonPanel(lesson, true, studentId, courseId);
 
         // Configure complete button
         JButton completeButton = panel.getCompleteButton();
@@ -109,6 +111,12 @@ public class LessonViewerDialog extends JDialog {
             } else {
                 completeButton.addActionListener(e -> markLessonCompleted(lesson.getLessonId()));
             }
+        }
+
+        // Configure quiz button if it exists
+        JButton takeQuizButton = panel.getTakeQuizButton();
+        if (takeQuizButton != null) {
+            takeQuizButton.addActionListener(e -> takeLessonQuiz(lesson));
         }
 
         lessonDisplayPanel.add(panel, BorderLayout.CENTER);
@@ -134,5 +142,40 @@ public class LessonViewerDialog extends JDialog {
                     JOptionPane.ERROR_MESSAGE
             );
         }
+    }
+
+    private void takeLessonQuiz(Lesson lesson) {
+        if (lesson.getQuizId() == null || lesson.getQuizId().isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "This lesson doesn't have a quiz yet.",
+                    "No Quiz",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            return;
+        }
+
+        QuizService quizService = new QuizService();
+        Quiz quiz = quizService.getQuizById(lesson.getQuizId());
+
+        if (quiz == null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Quiz not found.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
+        QuizTakingDialog quizDialog = new QuizTakingDialog(
+                (JFrame) getOwner(),
+                quiz,
+                studentId,
+                courseId,
+                lesson.getLessonId()
+        );
+        quizDialog.setVisible(true);
+        displaySelectedLesson();
     }
 }
