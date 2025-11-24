@@ -1,4 +1,4 @@
-﻿package ui.components;
+package ui.components;
 
 import models.*;
 import services.QuizService;

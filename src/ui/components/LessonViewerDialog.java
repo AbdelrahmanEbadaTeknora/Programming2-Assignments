@@ -125,6 +125,33 @@ public class LessonViewerDialog extends JDialog {
     }
 
     private void markLessonCompleted(String lessonId) {
+        // Find the lesson
+        Lesson lesson = null;
+        for (Lesson l : lessons) {
+            if (l.getLessonId().equals(lessonId)) {
+                lesson = l;
+                break;
+            }
+        }
+
+        // Check if this lesson has a quiz that must be passed first
+        if (lesson != null && lesson.hasQuiz()) {
+            QuizService quizService = new QuizService();
+            if (!quizService.hasPassedQuizForLesson(studentId, lessonId)) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "<html><body style='width: 250px'>" +
+                                "<b>Quiz Required!</b><br><br>" +
+                                "You must pass the quiz before completing this lesson." +
+                                "</body></html>",
+                        "Cannot Complete Lesson",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+        }
+
+        // Proceed with marking lesson as completed
         if (dbManager.markLessonCompleted(studentId, courseId, lessonId)) {
             JOptionPane.showMessageDialog(
                     this,
@@ -132,8 +159,8 @@ public class LessonViewerDialog extends JDialog {
                     "Success",
                     JOptionPane.INFORMATION_MESSAGE
             );
-            loadLessons(); // Refresh list to show checkmark
-            displaySelectedLesson(); // Refresh display to disable button
+            loadLessons();
+            displaySelectedLesson();
         } else {
             JOptionPane.showMessageDialog(
                     this,

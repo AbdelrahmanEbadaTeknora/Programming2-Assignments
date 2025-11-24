@@ -45,5 +45,39 @@
         "courseId": "rrr",
         "instructorId": "IB5EE1E0A",
         "lessons": []
+    },
+    {
+        "approvalStatus": "APPROVED",
+        "description": "thermodynamics",
+        "students": ["S806AB4DE"],
+        "title": "thermo",
+        "courseId": "ther",
+        "instructorId": "IB5EE1E0A",
+        "lessons": [
+            {
+                "quizId": "",
+                "lessonId": "L2af6ec9b",
+                "resources": [],
+                "title": "L1",
+                "content": "HELLO THERE",
+                "requiresQuizPass": false
+            },
+            {
+                "quizId": "QZ-371002D6",
+                "lessonId": "L70b05755",
+                "resources": [],
+                "title": "L2",
+                "content": "test",
+                "requiresQuizPass": false
+            },
+            {
+                "quizId": "",
+                "lessonId": "L7d576950",
+                "resources": [],
+                "title": "L3",
+                "content": "bye there",
+                "requiresQuizPass": false
+            }
+        ]
     }
 ]}

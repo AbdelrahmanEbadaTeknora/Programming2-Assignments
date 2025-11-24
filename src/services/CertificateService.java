@@ -84,7 +84,8 @@ public class CertificateService {
         }
 
         for (Lesson lesson : lessons) {
-            if (lesson.hasQuiz() && lesson.isRequiresQuizPass()) {
+            // Check ALL lessons that have quizzes (not just requiresQuizPass)
+            if (lesson.hasQuiz()) {
                 if (!quizService.hasPassedQuizForLesson(studentId, lesson.getLessonId())) {
                     return false;
                 }
