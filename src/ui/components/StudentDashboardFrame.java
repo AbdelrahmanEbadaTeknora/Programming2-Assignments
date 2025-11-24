@@ -1,17 +1,16 @@
 package ui.components;
 
-import models.*;
 import database.JsonDatabaseManager;
-import services.CertificateService; //
-import ui.components.LessonViewerDialog;
-import javax.swing.*;
-import javax.swing.border.*;
 import java.awt.*;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.ArrayList; //
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.swing.*;
+import javax.swing.border.*;
+import models.*;
+import services.CertificateService;
 
 public class StudentDashboardFrame extends JFrame {
     private Student currentStudent;
@@ -60,7 +59,7 @@ public class StudentDashboardFrame extends JFrame {
 
         JLabel welcome = new JLabel("Welcome, " + currentStudent.getUsername() + "! 👋");
         welcome.setFont(new Font("Arial", Font.BOLD, 20));
-        welcome.setForeground(Color.WHITE);
+        welcome.setForeground(Color.BLACK);
 
         int enrolledCount = currentStudent.getEnrolledCourses() != null ?
                 currentStudent.getEnrolledCourses().size() : 0;
@@ -76,7 +75,7 @@ public class StudentDashboardFrame extends JFrame {
         logoutButton.setFont(new Font("Arial", Font.BOLD, 12));
         logoutButton.setFocusPainted(false);
         logoutButton.setBackground(ACCENT_COLOR);
-        logoutButton.setForeground(Color.WHITE);
+        logoutButton.setForeground(Color.BLACK);
         logoutButton.setBorderPainted(false);
         logoutButton.addActionListener(e -> logout());
 
@@ -231,7 +230,7 @@ public class StudentDashboardFrame extends JFrame {
             JButton enrollButton = new JButton("Enroll Now");
             enrollButton.setFont(new Font("Arial", Font.BOLD, 12));
             enrollButton.setBackground(SUCCESS_COLOR);
-            enrollButton.setForeground(Color.WHITE);
+            enrollButton.setForeground(Color.BLACK);
             enrollButton.setFocusPainted(false);
             enrollButton.setBorderPainted(false);
             enrollButton.setPreferredSize(new Dimension(120, 35));
@@ -308,7 +307,7 @@ public class StudentDashboardFrame extends JFrame {
         JButton viewButton = new JButton("View Lessons");
         viewButton.setFont(new Font("Arial", Font.BOLD, 12));
         viewButton.setBackground(PRIMARY_COLOR);
-        viewButton.setForeground(Color.WHITE);
+        viewButton.setForeground(Color.BLACK);
         viewButton.setFocusPainted(false);
         viewButton.setBorderPainted(false);
         viewButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -596,7 +595,7 @@ public class StudentDashboardFrame extends JFrame {
         JButton viewButton = new JButton("View");
         viewButton.setFont(new Font("Arial", Font.BOLD, 12));
         viewButton.setBackground(PRIMARY_COLOR);
-        viewButton.setForeground(Color.WHITE);
+        viewButton.setForeground(Color.BLACK);
         viewButton.setFocusPainted(false);
         viewButton.setBorderPainted(false);
         viewButton.setAlignmentX(Component.CENTER_ALIGNMENT);

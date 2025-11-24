@@ -1,9 +1,8 @@
 package ui;
 
-import utils.AuthManager;
-
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
+import utils.AuthManager;
 
 public class SignupFrame extends JFrame {
 

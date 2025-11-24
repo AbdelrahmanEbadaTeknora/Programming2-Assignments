@@ -1,12 +1,8 @@
 package services;
 
 import database.JsonDatabaseManager;
-import models.Course;
-import models.Lesson;
-import models.Student;
-import models.User;
-
 import java.util.*;
+import models.*;
 
 public class AnalyticsService {
     private JsonDatabaseManager dbManager;
@@ -47,8 +43,11 @@ public class AnalyticsService {
         }
 
         for (Lesson lesson : course.getLessons()) {
-            double avgScore = getQuizAverageByLesson(lesson.getLessonId());
-            quizAverages.put(lesson.getTitle(), avgScore);
+            // Only include lessons that have quizzes
+            if (lesson.hasQuiz()) {
+                double avgScore = getQuizAverageByLesson(lesson.getLessonId());
+                quizAverages.put(lesson.getTitle(), avgScore);
+            }
         }
 
         return quizAverages;
@@ -58,13 +57,31 @@ public class AnalyticsService {
      * Get average quiz score by lesson ID
      */
     public double getQuizAverageByLesson(String lessonId) {
-        // Simulated value - in real implementation, would fetch from QuizAttempt data
-        Random rand = new Random(lessonId.hashCode());
-        return 60 + rand.nextDouble() * 40; // Random between 60-100
+        // Get the quiz for this lesson
+        Quiz quiz = dbManager.getQuizByLessonId(lessonId);
+        if (quiz == null) {
+            return 0.0; // No quiz for this lesson
+        }
+
+        // Get all attempts for this quiz
+        List<QuizAttempt> allAttempts = dbManager.getAllAttemptsForQuiz(quiz.getQuizId());
+
+        if (allAttempts == null || allAttempts.isEmpty()) {
+            return 0.0; // No attempts yet
+        }
+
+        // Calculate average of all attempts
+        double totalPercentage = 0.0;
+        for (QuizAttempt attempt : allAttempts) {
+            totalPercentage += attempt.getPercentage();
+        }
+
+        return totalPercentage / allAttempts.size();
     }
 
     /**
-     * Get lesson completion rates for a course (lesson title -> completion percentage)
+     * Get lesson completion rates for a course (lesson title -> completion
+     * percentage)
      */
     public Map<String, Double> getLessonCompletionRates(String courseId) {
         Map<String, Double> completionRates = new LinkedHashMap<>();
@@ -162,6 +179,24 @@ public class AnalyticsService {
     /**
      * Get average quiz score across all quizzes in a course
      */
+    // public double getAverageQuizScore(String courseId) {
+    //     Map<String, Double> quizAverages = getQuizAverages(courseId);
+
+    //     if (quizAverages.isEmpty()) {
+    //         return 0.0;
+    //     }
+
+    //     double total = 0;
+    //     for (double avg : quizAverages.values()) {
+    //         total += avg;
+    //     }
+
+    //     return total / quizAverages.size();
+    // }
+
+    /**
+     * Get average quiz score across all quizzes in a course
+     */
     public double getAverageQuizScore(String courseId) {
         Map<String, Double> quizAverages = getQuizAverages(courseId);
 
@@ -170,11 +205,106 @@ public class AnalyticsService {
         }
 
         double total = 0;
+        int count = 0;
+
         for (double avg : quizAverages.values()) {
-            total += avg;
+            if (avg > 0) { // Only count quizzes that have been attempted
+                total += avg;
+                count++;
+            }
         }
 
-        return total / quizAverages.size();
+        return count > 0 ? total / count : 0.0;
+    }
+
+    /**
+     * Get detailed quiz statistics for a course
+     */
+    public Map<String, Object> getQuizStatistics(String courseId) {
+        Map<String, Object> stats = new LinkedHashMap<>();
+        Course course = dbManager.getCourseById(courseId);
+
+        if (course == null || course.getLessons() == null) {
+            return stats;
+        }
+
+        int totalQuizzes = 0;
+        int quizzesAttempted = 0;
+        int totalAttempts = 0;
+        double totalScore = 0.0;
+        int passedCount = 0;
+
+        for (Lesson lesson : course.getLessons()) {
+            if (lesson.hasQuiz()) {
+                totalQuizzes++;
+
+                Quiz quiz = dbManager.getQuizByLessonId(lesson.getLessonId());
+                if (quiz != null) {
+                    List<QuizAttempt> attempts = dbManager.getAllAttemptsForQuiz(quiz.getQuizId());
+
+                    if (!attempts.isEmpty()) {
+                        quizzesAttempted++;
+                        totalAttempts += attempts.size();
+
+                        for (QuizAttempt attempt : attempts) {
+                            totalScore += attempt.getPercentage();
+                            if (attempt.isPassed()) {
+                                passedCount++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stats.put("totalQuizzes", totalQuizzes);
+        stats.put("quizzesAttempted", quizzesAttempted);
+        stats.put("totalAttempts", totalAttempts);
+        stats.put("averageScore", totalAttempts > 0 ? totalScore / totalAttempts : 0.0);
+        stats.put("passRate", totalAttempts > 0 ? (passedCount * 100.0) / totalAttempts : 0.0);
+
+        return stats;
+    }
+
+    /**
+     * Get quiz performance for all students in a course
+     */
+    public Map<String, Double> getStudentQuizPerformance(String courseId) {
+        Map<String, Double> performance = new LinkedHashMap<>();
+        Course course = dbManager.getCourseById(courseId);
+
+        if (course == null || course.getStudents() == null || course.getLessons() == null) {
+            return performance;
+        }
+
+        for (String studentId : course.getStudents()) {
+            User user = dbManager.getUserById(studentId);
+            if (!(user instanceof Student))
+                continue;
+
+            String studentName = user.getUsername();
+            double totalScore = 0.0;
+            int quizCount = 0;
+
+            // Get best score for each quiz
+            for (Lesson lesson : course.getLessons()) {
+                if (lesson.hasQuiz()) {
+                    Quiz quiz = dbManager.getQuizByLessonId(lesson.getLessonId());
+                    if (quiz != null) {
+                        QuizAttempt bestAttempt = dbManager.getBestAttempt(studentId, quiz.getQuizId());
+                        if (bestAttempt != null) {
+                            totalScore += bestAttempt.getPercentage();
+                            quizCount++;
+                        }
+                    }
+                }
+            }
+
+            double avgScore = quizCount > 0 ? totalScore / quizCount : 0.0;
+            performance.put(studentName, avgScore);
+        }
+
+        return performance;
     }
 
     /**
@@ -190,7 +320,8 @@ public class AnalyticsService {
         int count = 0;
 
         for (Map.Entry<String, Double> entry : sortedEntries) {
-            if (count >= limit) break;
+            if (count >= limit)
+                break;
 
             User user = dbManager.getUserById(entry.getKey());
             if (user instanceof Student) {

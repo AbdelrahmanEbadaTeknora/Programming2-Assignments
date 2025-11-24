@@ -1,16 +1,15 @@
 package ui.components;
 
-import models.Quiz;
-import models.Question;
-import services.QuizService;
 import database.JsonDatabaseManager;
-import models.Course;
-import models.Lesson;
-
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.*;
+import models.Course;
+import models.Lesson;
+import models.Question;
+import models.Quiz;
+import services.QuizService;
 
 public class QuizEditorDialog extends JDialog {
     private String lessonId;
@@ -151,7 +150,7 @@ public class QuizEditorDialog extends JDialog {
 
         JButton addButton = new JButton("Add Question");
         addButton.setBackground(new Color(76, 175, 80));
-        addButton.setForeground(Color.WHITE);
+        addButton.setForeground(Color.BLACK);
         addButton.setFocusPainted(false);
         addButton.addActionListener(e -> addQuestion());
 
@@ -160,7 +159,7 @@ public class QuizEditorDialog extends JDialog {
 
         JButton deleteButton = new JButton("Delete");
         deleteButton.setBackground(new Color(244, 67, 54));
-        deleteButton.setForeground(Color.WHITE);
+        deleteButton.setForeground(Color.BLACK);
         deleteButton.setFocusPainted(false);
         deleteButton.addActionListener(e -> deleteQuestion());
 
@@ -210,7 +209,7 @@ public class QuizEditorDialog extends JDialog {
 
         JButton saveButton = new JButton("Save Quiz");
         saveButton.setBackground(new Color(33, 150, 243));
-        saveButton.setForeground(Color.WHITE);
+        saveButton.setForeground(Color.BLACK);
         saveButton.setFocusPainted(false);
         saveButton.setPreferredSize(new Dimension(120, 35));
         saveButton.addActionListener(e -> saveQuiz());

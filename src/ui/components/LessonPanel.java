@@ -1,12 +1,11 @@
 package ui.components;
 
+import database.JsonDatabaseManager;
+import java.awt.*;
+import javax.swing.*;
 import models.Lesson;
 import models.Quiz;
 import services.QuizService;
-import database.JsonDatabaseManager;
-
-import javax.swing.*;
-import java.awt.*;
 
 public class LessonPanel extends JPanel {
     private Lesson lesson;
@@ -67,7 +66,7 @@ public class LessonPanel extends JPanel {
             // Complete button
             completeButton = new JButton("Mark as Completed");
             completeButton.setBackground(new Color(76, 175, 80));
-            completeButton.setForeground(Color.WHITE);
+            completeButton.setForeground(Color.BLACK);
             completeButton.setFocusPainted(false);
             actionPanel.add(completeButton);
 
@@ -77,7 +76,7 @@ public class LessonPanel extends JPanel {
                 if (quiz != null) {
                     takeQuizButton = new JButton("Take Quiz");
                     takeQuizButton.setBackground(new Color(33, 150, 243));
-                    takeQuizButton.setForeground(Color.WHITE);
+                    takeQuizButton.setForeground(Color.BLACK);
                     takeQuizButton.setFocusPainted(false);
 
                     // Check if student has already passed this quiz

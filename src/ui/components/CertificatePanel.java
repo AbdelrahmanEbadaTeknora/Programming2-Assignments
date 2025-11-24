@@ -1,9 +1,8 @@
 package ui.components;
 
-import models.Certificate;
-
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
+import models.Certificate;
 
 public class CertificatePanel extends JPanel {
     private Certificate certificate;
@@ -107,12 +106,12 @@ public class CertificatePanel extends JPanel {
 
         viewButton = new JButton("View Full Certificate");
         viewButton.setBackground(new Color(33, 150, 243));
-        viewButton.setForeground(Color.WHITE);
+        viewButton.setForeground(Color.BLACK);
         viewButton.setFocusPainted(false);
 
         downloadButton = new JButton("Download");
         downloadButton.setBackground(new Color(76, 175, 80));
-        downloadButton.setForeground(Color.WHITE);
+        downloadButton.setForeground(Color.BLACK);
         downloadButton.setFocusPainted(false);
 
         buttonsPanel.add(viewButton);

@@ -1,12 +1,26 @@
-{"certificates": [{
-    "studentId": "SFFB9B4A2",
-    "courseName": "math-1",
-    "instructorName": "ii",
-    "finalScore": 50,
-    "completedLessons": 2,
-    "certificateId": "CERT-2025-661C67",
-    "studentName": "mm",
-    "issueDate": "2025-11-24",
-    "courseId": "mpu-12",
-    "totalLessons": 2
-}]}
+{"certificates": [
+    {
+        "studentId": "S806AB4DE",
+        "courseName": "math",
+        "instructorName": "ii",
+        "finalScore": 85,
+        "completedLessons": 2,
+        "certificateId": "CERT-2025-CF805F",
+        "studentName": "ww",
+        "issueDate": "2025-11-24",
+        "courseId": "efe",
+        "totalLessons": 2
+    },
+    {
+        "studentId": "SFFB9B4A2",
+        "courseName": "math",
+        "instructorName": "ii",
+        "finalScore": 40,
+        "completedLessons": 2,
+        "certificateId": "CERT-2025-12EBD6",
+        "studentName": "mm",
+        "issueDate": "2025-11-24",
+        "courseId": "efe",
+        "totalLessons": 2
+    }
+]}

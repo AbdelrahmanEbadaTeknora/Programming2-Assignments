@@ -85,7 +85,7 @@ public class QuizTakingDialog extends JDialog {
 
         JLabel titleLabel = new JLabel(quiz.getTitle());
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setForeground(Color.BLACK);
 
         int remainingAttempts = quizService.getRemainingAttempts(studentId, quiz.getQuizId());
         String attemptsText = remainingAttempts == -1 ? "Unlimited" : String.valueOf(remainingAttempts);

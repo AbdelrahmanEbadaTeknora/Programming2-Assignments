@@ -1,13 +1,12 @@
 package ui.components;
 
-import models.Course;
-import models.User;
 import database.JsonDatabaseManager;
-
-import javax.swing.*;
-import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import javax.swing.*;
+import javax.swing.border.*;
+import models.Course;
+import models.User;
 
 public class CourseApprovalPanel extends JPanel {
     private Course course;
@@ -39,7 +38,7 @@ public class CourseApprovalPanel extends JPanel {
         approveButton = new JButton("✓ Approve");
         approveButton.setFont(new Font("Arial", Font.BOLD, 12));
         approveButton.setBackground(new Color(67, 160, 71));
-        approveButton.setForeground(Color.WHITE);
+        approveButton.setForeground(Color.BLACK);
         approveButton.setFocusPainted(false);
         approveButton.setBorderPainted(false);
         approveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -50,7 +49,7 @@ public class CourseApprovalPanel extends JPanel {
         rejectButton = new JButton("✗ Reject");
         rejectButton.setFont(new Font("Arial", Font.BOLD, 12));
         rejectButton.setBackground(new Color(244, 67, 54));
-        rejectButton.setForeground(Color.WHITE);
+        rejectButton.setForeground(Color.BLACK);
         rejectButton.setFocusPainted(false);
         rejectButton.setBorderPainted(false);
         rejectButton.setAlignmentX(Component.CENTER_ALIGNMENT);

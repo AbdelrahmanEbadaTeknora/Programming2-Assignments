@@ -1,12 +1,12 @@
 package ui.components;
 
-import models.*;
-import services.QuizService;
-import services.CertificateService;
-import javax.swing.*;
-import javax.swing.border.*;
 import java.awt.*;
 import java.util.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import models.*;
+import services.CertificateService;
+import services.QuizService;
 // Remove duplicate import: import javax.swing.*;
 
 public class QuizResultPanel extends JPanel {
@@ -54,12 +54,12 @@ public class QuizResultPanel extends JPanel {
 
         JLabel statusLabel = new JLabel(attempt.isPassed() ? "✅ PASSED!" : "❌ FAILED");
         statusLabel.setFont(new Font("Arial", Font.BOLD, 32));
-        statusLabel.setForeground(Color.WHITE);
+        statusLabel.setForeground(Color.BLACK);
         statusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel scoreLabel = new JLabel(String.format("%d / %d", attempt.getScore(), attempt.getMaxScore()));
         scoreLabel.setFont(new Font("Arial", Font.BOLD, 48));
-        scoreLabel.setForeground(Color.WHITE);
+        scoreLabel.setForeground(Color.BLACK);
         scoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel percentageLabel = new JLabel(attempt.getFormattedPercentage());
@@ -290,7 +290,7 @@ public class QuizResultPanel extends JPanel {
             JButton retryButton = new JButton("Retry Quiz");
             retryButton.setFont(new Font("Arial", Font.BOLD, 12));
             retryButton.setBackground(new Color(255, 152, 0));
-            retryButton.setForeground(Color.WHITE);
+            retryButton.setForeground(Color.BLACK);
             retryButton.setFocusPainted(false);
             retryButton.setBorderPainted(false);
             retryButton.setPreferredSize(new Dimension(120, 35));

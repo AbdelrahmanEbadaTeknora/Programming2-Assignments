@@ -1,9 +1,8 @@
 package ui.components;
 
-import models.Question;
-
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
+import models.Question;
 
 public class QuestionEditorDialog extends JDialog {
     private Question question;
@@ -123,7 +122,7 @@ public class QuestionEditorDialog extends JDialog {
 
         JButton saveButton = new JButton("Save");
         saveButton.setBackground(new Color(76, 175, 80));
-        saveButton.setForeground(Color.WHITE);
+        saveButton.setForeground(Color.BLACK);
         saveButton.setFocusPainted(false);
         saveButton.addActionListener(e -> saveQuestion());
 

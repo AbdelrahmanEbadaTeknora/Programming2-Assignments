@@ -1,52 +1,48 @@
 {"courses": [
     {
         "approvalStatus": "APPROVED",
-        "description": "matrix",
-        "students": ["SFFB9B4A2"],
-        "title": "math-1",
-        "courseId": "mpu-12",
+        "description": "cd",
+        "students": [
+            "S806AB4DE",
+            "SFFB9B4A2"
+        ],
+        "title": "math",
+        "courseId": "efe",
         "instructorId": "IB5EE1E0A",
         "lessons": [
             {
-                "quizId": "QZ-8F484163",
-                "lessonId": "L328b89e8",
-                "resources": ["youtube"],
+                "quizId": "QZ-8266B552",
+                "lessonId": "L08435bc9",
+                "resources": ["ff"],
                 "title": "integration",
-                "content": "partial",
+                "content": "dd",
                 "requiresQuizPass": false
             },
             {
-                "quizId": "QZ-80954429",
-                "lessonId": "L737ea597",
-                "resources": ["youtube"],
+                "quizId": "QZ-67011DBC",
+                "lessonId": "L1c164262",
+                "resources": ["eee"],
                 "title": "diff",
-                "content": "partial",
+                "content": "dde",
                 "requiresQuizPass": false
             }
         ]
     },
     {
         "approvalStatus": "REJECTED",
-        "description": "oop",
-        "students": ["SFFB9B4A2"],
+        "description": "fefe",
+        "students": [],
         "title": "prog",
-        "courseId": "cce-1",
+        "courseId": "grg",
         "instructorId": "IB5EE1E0A",
-        "lessons": [{
-            "quizId": "",
-            "lessonId": "L5e078dcb",
-            "resources": ["gg"],
-            "title": "onno",
-            "content": "wethgeth",
-            "requiresQuizPass": false
-        }]
+        "lessons": []
     },
     {
         "approvalStatus": "PENDING",
-        "description": "signals",
+        "description": "gr",
         "students": [],
-        "title": "communication",
-        "courseId": "ece-1",
+        "title": "mecha",
+        "courseId": "rrr",
         "instructorId": "IB5EE1E0A",
         "lessons": []
     }

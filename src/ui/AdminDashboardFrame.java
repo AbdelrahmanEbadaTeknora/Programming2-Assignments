@@ -1,16 +1,15 @@
 package ui;
 
+import database.JsonDatabaseManager;
+import java.awt.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.border.*;
 import models.Admin;
 import models.Course;
 import models.User;
-import database.JsonDatabaseManager;
 import services.CourseApprovalService;
 import ui.components.CourseApprovalPanel;
-
-import javax.swing.*;
-import javax.swing.border.*;
-import java.awt.*;
-import java.util.List;
 
 public class AdminDashboardFrame extends JFrame {
     private Admin currentAdmin;
@@ -67,7 +66,7 @@ public class AdminDashboardFrame extends JFrame {
 
         JLabel welcome = new JLabel("Admin Dashboard 👨‍💼");
         welcome.setFont(new Font("Arial", Font.BOLD, 20));
-        welcome.setForeground(Color.WHITE);
+        welcome.setForeground(Color.BLACK);
 
         JLabel adminName = new JLabel("Welcome, " + currentAdmin.getUsername() + "!");
         adminName.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -81,7 +80,7 @@ public class AdminDashboardFrame extends JFrame {
         logoutButton.setFont(new Font("Arial", Font.BOLD, 12));
         logoutButton.setFocusPainted(false);
         logoutButton.setBackground(DANGER_COLOR);
-        logoutButton.setForeground(Color.WHITE);
+        logoutButton.setForeground(Color.BLACK);
         logoutButton.setBorderPainted(false);
         logoutButton.addActionListener(e -> logout());
 

@@ -1,17 +1,17 @@
 package ui;
 
+import database.JsonDatabaseManager;
+import java.awt.*;
+import java.util.List;
+import java.util.Map;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import models.Course;
 import models.Instructor;
 import models.Lesson;
-import database.JsonDatabaseManager;
 import services.AnalyticsService;
-import ui.components.LessonListDialog;
 import ui.components.InsightsPanel;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.util.List;
+import ui.components.LessonListDialog;
 
 public class InstructorDashboardFrame extends JFrame {
     private final Instructor instructor;
@@ -169,50 +169,79 @@ public class InstructorDashboardFrame extends JFrame {
     }
 
     private void displayCourseDetails() {
-        int selectedRow = coursesTable.getSelectedRow();
-        if (selectedRow == -1) {
-            courseDetailsArea.setText("");
-            return;
-        }
-
-        String courseId = (String) coursesTableModel.getValueAt(selectedRow, 0);
-        Course course = dbManager.getCourseById(courseId);
-
-        if (course != null) {
-            StringBuilder details = new StringBuilder();
-            details.append("Course ID: ").append(course.getCourseId()).append("\n");
-            details.append("Title: ").append(course.getTitle()).append("\n");
-            details.append("Description: ").append(course.getDescription()).append("\n");
-            details.append("Status: ").append(course.getApprovalStatus()).append("\n\n"); // NEW
-
-            int studentCount = course.getStudents() != null ? course.getStudents().size() : 0;
-            int lessonCount = course.getLessons() != null ? course.getLessons().length : 0;
-
-            details.append("Enrolled Students: ").append(studentCount).append("\n");
-            details.append("Total Lessons: ").append(lessonCount).append("\n\n");
-
-            // NEW: Add Analytics Summary
-            details.append("=== ANALYTICS ===\n");
-            double completionRate = analyticsService.getCourseCompletionRate(courseId);
-            double avgQuizScore = analyticsService.getAverageQuizScore(courseId);
-            int strugglingCount = analyticsService.getStrugglingStudents(courseId, 50.0).size();
-
-            details.append("Completion Rate: ").append(String.format("%.1f%%", completionRate)).append("\n");
-            details.append("Avg Quiz Score: ").append(String.format("%.1f%%", avgQuizScore)).append("\n");
-            details.append("Struggling Students: ").append(strugglingCount).append("\n\n");
-
-            if (course.getLessons() != null && course.getLessons().length > 0) {
-                details.append("Lessons:\n");
-                for (int i = 0; i < course.getLessons().length; i++) {
-                    Lesson lesson = course.getLessons()[i];
-                    details.append((i + 1)).append(". ").append(lesson.getTitle()).append("\n");
-                }
-            }
-
-            courseDetailsArea.setText(details.toString());
-        }
+    int selectedRow = coursesTable.getSelectedRow();
+    if (selectedRow == -1) {
+        courseDetailsArea.setText("");
+        return;
     }
 
+    String courseId = (String) coursesTableModel.getValueAt(selectedRow, 0);
+    Course course = dbManager.getCourseById(courseId);
+
+    if (course != null) {
+        StringBuilder details = new StringBuilder();
+        details.append("Course ID: ").append(course.getCourseId()).append("\n");
+        details.append("Title: ").append(course.getTitle()).append("\n");
+        details.append("Description: ").append(course.getDescription()).append("\n");
+        details.append("Status: ").append(course.getApprovalStatus()).append("\n\n");
+
+        int studentCount = course.getStudents() != null ? course.getStudents().size() : 0;
+        int lessonCount = course.getLessons() != null ? course.getLessons().length : 0;
+
+        details.append("Enrolled Students: ").append(studentCount).append("\n");
+        details.append("Total Lessons: ").append(lessonCount).append("\n\n");
+
+        // IMPROVED: Better Analytics Summary
+        details.append("=== ANALYTICS ===\n");
+        
+        if (studentCount > 0) {
+            double completionRate = analyticsService.getCourseCompletionRate(courseId);
+            details.append("Completion Rate: ").append(String.format("%.1f%%", completionRate)).append("\n");
+            
+            // Get quiz statistics
+            Map<String, Object> quizStats = analyticsService.getQuizStatistics(courseId);
+            int totalQuizzes = (int) quizStats.getOrDefault("totalQuizzes", 0);
+            int totalAttempts = (int) quizStats.getOrDefault("totalAttempts", 0);
+            // double avgScore = (double) quizStats.getOrDefault("averageScore", 0.0);
+            double passRate = (double) quizStats.getOrDefault("passRate", 0.0);
+            
+            details.append("Total Quizzes: ").append(totalQuizzes).append("\n");
+            
+            if (totalAttempts > 0) {
+                // details.append("Quiz Attempts: ").append(totalAttempts).append("\n");
+                // details.append("Avg Quiz Score: ").append(String.format("%.1f%%", avgScore)).append("\n");
+                details.append("Pass Rate: ").append(String.format("%.1f%%", passRate)).append("\n");
+            } else {
+                details.append("No quiz attempts yet\n");
+            }
+            
+            // int strugglingCount = analyticsService.getStrugglingStudents(courseId, 50.0).size();
+            // details.append("Struggling Students: ").append(strugglingCount).append("\n\n");
+        } else {
+            details.append("No students enrolled yet.\n\n");
+        }
+
+        if (course.getLessons() != null && course.getLessons().length > 0) {
+            details.append("=== LESSONS ===\n");
+            for (int i = 0; i < course.getLessons().length; i++) {
+                Lesson lesson = course.getLessons()[i];
+                details.append((i + 1)).append(". ").append(lesson.getTitle());
+                
+                if (lesson.hasQuiz()) {
+                    details.append(" [Has Quiz]");
+                    double lessonQuizAvg = analyticsService.getQuizAverageByLesson(lesson.getLessonId());
+                    if (lessonQuizAvg > 0) {
+                        details.append(" - Avg: ").append(String.format("%.1f%%", lessonQuizAvg));
+                    }
+                }
+                
+                details.append("\n");
+            }
+        }
+
+        courseDetailsArea.setText(details.toString());
+    }
+}
     // NEW: View Analytics method
     private void viewAnalytics() {
         int selectedRow = coursesTable.getSelectedRow();

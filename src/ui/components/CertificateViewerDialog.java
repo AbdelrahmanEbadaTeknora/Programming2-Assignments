@@ -1,12 +1,11 @@
 package ui.components;
 
-import models.Certificate;
-import services.CertificateService;
-
-import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
+import javax.swing.*;
+import models.Certificate;
+import services.CertificateService;
 
 public class CertificateViewerDialog extends JDialog {
     private Certificate certificate;
@@ -159,7 +158,7 @@ public class CertificateViewerDialog extends JDialog {
 
         JButton downloadButton = new JButton("Download as JSON");
         downloadButton.setBackground(new Color(76, 175, 80));
-        downloadButton.setForeground(Color.WHITE);
+        downloadButton.setForeground(Color.BLACK);
         downloadButton.setFocusPainted(false);
         downloadButton.addActionListener(e -> downloadCertificate());
 
