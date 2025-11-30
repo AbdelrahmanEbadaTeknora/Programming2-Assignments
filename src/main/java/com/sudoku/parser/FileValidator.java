@@ -1,3 +1,5 @@
+package com.sudoku.parser;
+
 import com.sudoku.util.Constants;
 
 import java.io.File;

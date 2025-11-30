@@ -85,7 +85,7 @@ public class SudokuBoard {
      * Get value at specific cell
      * @param row Row index (0-8)
      * @param col Column index (0-8)
-     * @return Cell value
+     * @return com.sudoku.model.Cell value
      */
     public int getCell(int row, int col) {
         if (row < 0 || row >= Constants.BOARD_SIZE ||
