@@ -1,5 +1,3 @@
-package com.sudoku.model;
-
 import com.sudoku.util.Constants;
 
 import java.util.*;

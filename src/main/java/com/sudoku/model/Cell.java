@@ -11,10 +11,10 @@ public class Cell {
     private final int value;
 
     /**
-     * Constructor for Cell
+     * Constructor for com.sudoku.model.Cell
      * @param row Row index (0-8)
      * @param col Column index (0-8)
-     * @param value Cell value (1-9)
+     * @param value com.sudoku.model.Cell value (1-9)
      */
     public Cell(int row, int col, int value) {
         this.row = row;
@@ -40,7 +40,7 @@ public class Cell {
 
     /**
      * Get the cell value
-     * @return Cell value
+     * @return com.sudoku.model.Cell value
      */
     public int getValue() {
         return value;
@@ -64,7 +64,7 @@ public class Cell {
 
     @Override
     public String toString() {
-        return String.format("Cell[row=%d, col=%d, value=%d]",
+        return String.format("com.sudoku.model.Cell[row=%d, col=%d, value=%d]",
                 getRowNumber(), getColNumber(), value);
     }
 

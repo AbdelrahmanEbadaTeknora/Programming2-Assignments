@@ -1,5 +1,3 @@
-package com.sudoku.parser;
-
 import com.sudoku.model.SudokuBoard;
 import com.sudoku.util.Constants;
 
@@ -15,9 +13,9 @@ import java.util.List;
 public class CSVParser {
 
     /**
-     * Parse a CSV file and return a SudokuBoard object
+     * Parse a CSV file and return a com.sudoku.model.SudokuBoard object
      * @param filepath Path to the CSV file
-     * @return SudokuBoard object
+     * @return com.sudoku.model.SudokuBoard object
      * @throws IOException If file cannot be read
      * @throws IllegalArgumentException If file format is invalid
      */
@@ -135,7 +133,7 @@ public class CSVParser {
     /**
      * Parse CSV content from a string (useful for testing)
      * @param csvContent CSV content as string
-     * @return SudokuBoard object
+     * @return com.sudoku.model.SudokuBoard object
      * @throws IOException If parsing fails
      */
     public SudokuBoard parseString(String csvContent) throws IOException {

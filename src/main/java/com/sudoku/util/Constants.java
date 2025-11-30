@@ -1,7 +1,7 @@
 package com.sudoku.util;
 
 /**
- * Constants used throughout the Sudoku Verifier application
+ * com.sudoku.util.Constants used throughout the Sudoku Verifier application
  */
 public class Constants {
     // Board dimensions
@@ -30,6 +30,6 @@ public class Constants {
 
     // Private constructor to prevent instantiation
     private Constants() {
-        throw new UnsupportedOperationException("Constants class cannot be instantiated");
+        throw new UnsupportedOperationException("com.sudoku.util.Constants class cannot be instantiated");
     }
 }
