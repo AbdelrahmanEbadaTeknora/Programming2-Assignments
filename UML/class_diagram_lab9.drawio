@@ -1,0 +1,205 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" version="29.2.1">
+  <diagram name="Page-1" id="xTTOH2mS-ikL7CZZTMlj">
+    <mxGraphModel dx="3333" dy="1324" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="&lt;b&gt;Main&lt;/b&gt;&lt;br&gt;&lt;hr&gt;- main(String[] args)" vertex="1">
+          <mxGeometry height="60" width="120" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-2" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;b&gt;model&lt;/b&gt;" vertex="1">
+          <mxGeometry height="400" width="600" x="200" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-3" parent="_JTzVPyTOPXvRLhaJMW1-2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;SudokuBoard&lt;/b&gt;&lt;br&gt;&lt;hr&gt;- cells: Cell[][]&lt;br&gt;+ getCell(row, col): Cell&lt;br&gt;+ setCell(row, col, value)&lt;br&gt;+ getSize(): int&lt;br&gt;+ toString(): String" vertex="1">
+          <mxGeometry height="120" width="200" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-4" parent="_JTzVPyTOPXvRLhaJMW1-2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;Cell&lt;/b&gt;&lt;br&gt;&lt;hr&gt;- value: int&lt;br&gt;- row: int&lt;br&gt;- col: int&lt;br&gt;+ getValue(): int&lt;br&gt;+ setValue(value)&lt;br&gt;+ getRow(): int&lt;br&gt;+ getCol(): int" vertex="1">
+          <mxGeometry height="120" width="180" x="40" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-5" parent="_JTzVPyTOPXvRLhaJMW1-2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;ValidationResult&lt;/b&gt;&lt;br&gt;&lt;hr&gt;- isValid: boolean&lt;br&gt;- errors: List&amp;lt;String&amp;gt;&lt;br&gt;+ isValid(): boolean&lt;br&gt;+ addError(error)&lt;br&gt;+ getErrors(): List&amp;lt;String&amp;gt;&lt;br&gt;+ merge(other)" vertex="1">
+          <mxGeometry height="120" width="200" x="300" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-6" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="&lt;b&gt;parser&lt;/b&gt;" vertex="1">
+          <mxGeometry height="180" width="280" x="60" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-7" parent="_JTzVPyTOPXvRLhaJMW1-6" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;b&gt;CSVParser&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ parse(filename): SudokuBoard&lt;br&gt;+ validateFormat(lines): boolean" vertex="1">
+          <mxGeometry height="80" width="160" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-8" parent="_JTzVPyTOPXvRLhaJMW1-6" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;b&gt;FileValidator&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ validateFile(filename): boolean&lt;br&gt;+ checkFileExists(filename): boolean" vertex="1">
+          <mxGeometry height="80" width="160" x="40" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-15" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;b&gt;threading&lt;/b&gt;" vertex="1">
+          <mxGeometry height="500" width="900" x="100" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-16" parent="_JTzVPyTOPXvRLhaJMW1-15" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;ThreeThreadValidator&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ validate(board): ValidationResult&lt;br&gt;- rowsWorker: RowsWorker&lt;br&gt;- columnsWorker: ColumnsWorker&lt;br&gt;- boxesWorker: BoxesWorker" vertex="1">
+          <mxGeometry height="100" width="180" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-17" parent="_JTzVPyTOPXvRLhaJMW1-15" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;RowsWorker&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ run()&lt;br&gt;- rowValidator: RowValidator&lt;br&gt;- result: ValidationResult" vertex="1">
+          <mxGeometry height="80" width="160" x="40" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-18" parent="_JTzVPyTOPXvRLhaJMW1-15" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;ColumnsWorker&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ run()&lt;br&gt;- columnValidator: ColumnValidator&lt;br&gt;- result: ValidationResult" vertex="1">
+          <mxGeometry height="80" width="160" x="40" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-19" parent="_JTzVPyTOPXvRLhaJMW1-15" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;BoxesWorker&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ run()&lt;br&gt;- boxValidator: BoxValidator&lt;br&gt;- result: ValidationResult" vertex="1">
+          <mxGeometry height="80" width="160" x="40" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-20" parent="_JTzVPyTOPXvRLhaJMW1-15" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;TwentySevenThreadValidator&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ validate(board): ValidationResult&lt;br&gt;- workers: List&amp;lt;Worker&amp;gt;&lt;br&gt;- executor: ExecutorService" vertex="1">
+          <mxGeometry height="100" width="200" x="640" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-21" parent="_JTzVPyTOPXvRLhaJMW1-15" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;SingleRowWorker&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ run()&lt;br&gt;- rowIndex: int&lt;br&gt;- result: ValidationResult" vertex="1">
+          <mxGeometry height="80" width="160" x="420" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-22" parent="_JTzVPyTOPXvRLhaJMW1-15" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;SingleColumnWorker&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ run()&lt;br&gt;- colIndex: int&lt;br&gt;- result: ValidationResult" vertex="1">
+          <mxGeometry height="80" width="160" x="240" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-23" parent="_JTzVPyTOPXvRLhaJMW1-15" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;SingleBoxWorker&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ run()&lt;br&gt;- boxIndex: int&lt;br&gt;- result: ValidationResult" vertex="1">
+          <mxGeometry height="80" width="160" x="240" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-24" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="&lt;b&gt;factory&lt;/b&gt;" vertex="1">
+          <mxGeometry height="120" width="200" x="1160" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-25" parent="_JTzVPyTOPXvRLhaJMW1-24" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;b&gt;ValidatorFactory&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ createValidator(mode): Validator&lt;br&gt;- MODE_SEQUENTIAL: int&lt;br&gt;- MODE_THREE_THREAD: int&lt;br&gt;- MODE_TWENTY_SEVEN: int" vertex="1">
+          <mxGeometry height="100" width="160" x="20" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-26" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;b&gt;output&lt;/b&gt;" vertex="1">
+          <mxGeometry height="120" width="280" x="1290" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-27" parent="_JTzVPyTOPXvRLhaJMW1-26" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;OutputFormatter&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ format(result): String&lt;br&gt;- formatValid(): String&lt;br&gt;- formatInvalid(errors): String" vertex="1">
+          <mxGeometry height="80" width="160" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-28" parent="_JTzVPyTOPXvRLhaJMW1-26" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;ResultPrinter&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ print(result)&lt;br&gt;+ printFormatted(output)" vertex="1">
+          <mxGeometry height="80" width="160" x="40" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-29" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="&lt;b&gt;util&lt;/b&gt;" vertex="1">
+          <mxGeometry height="120" width="280" x="1100" y="940" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-30" parent="_JTzVPyTOPXvRLhaJMW1-29" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;b&gt;BoxIndexCalculator&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ calculateBoxIndex(row, col): int&lt;br&gt;+ getBoxStartRow(boxIndex): int&lt;br&gt;+ getBoxStartCol(boxIndex): int" vertex="1">
+          <mxGeometry height="80" width="160" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-31" parent="_JTzVPyTOPXvRLhaJMW1-29" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;b&gt;Constants&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ BOARD_SIZE: int = 9&lt;br&gt;+ BOX_SIZE: int = 3&lt;br&gt;+ EMPTY_CELL: int = 0" vertex="1">
+          <mxGeometry height="80" width="160" x="40" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-32" edge="1" parent="1" source="_JTzVPyTOPXvRLhaJMW1-1" style="endArrow=open;html=1;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="_JTzVPyTOPXvRLhaJMW1-7" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="200" y="70" as="sourcePoint" />
+            <mxPoint x="250" y="20" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-33" edge="1" parent="1" source="_JTzVPyTOPXvRLhaJMW1-1" style="endArrow=open;html=1;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="_JTzVPyTOPXvRLhaJMW1-25" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="160" y="70" as="sourcePoint" />
+            <mxPoint x="1120" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-34" edge="1" parent="1" source="_JTzVPyTOPXvRLhaJMW1-3" style="endArrow=open;html=1;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="_JTzVPyTOPXvRLhaJMW1-4" value="1     *">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="300" y="160" as="sourcePoint" />
+            <mxPoint x="350" y="110" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-35" edge="1" parent="1" source="_JTzVPyTOPXvRLhaJMW1-11" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" target="_JTzVPyTOPXvRLhaJMW1-10" value="«implements»">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="120" y="200" as="sourcePoint" />
+            <mxPoint x="170" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-36" edge="1" parent="1" source="_JTzVPyTOPXvRLhaJMW1-12" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" target="_JTzVPyTOPXvRLhaJMW1-10" value="«implements»">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="120" y="300" as="sourcePoint" />
+            <mxPoint x="170" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-37" edge="1" parent="1" source="_JTzVPyTOPXvRLhaJMW1-13" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" target="_JTzVPyTOPXvRLhaJMW1-10" value="«implements»">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="120" y="400" as="sourcePoint" />
+            <mxPoint x="170" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-38" edge="1" parent="1" source="_JTzVPyTOPXvRLhaJMW1-14" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" target="_JTzVPyTOPXvRLhaJMW1-10" value="«implements»">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="330" y="140" as="sourcePoint" />
+            <mxPoint x="380" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-39" edge="1" parent="1" source="_JTzVPyTOPXvRLhaJMW1-16" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" target="_JTzVPyTOPXvRLhaJMW1-10" value="«implements»">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="130" y="140" as="sourcePoint" />
+            <mxPoint x="180" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-40" edge="1" parent="1" source="_JTzVPyTOPXvRLhaJMW1-20" style="endArrow=block;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" target="_JTzVPyTOPXvRLhaJMW1-10" value="«implements»">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="340" y="140" as="sourcePoint" />
+            <mxPoint x="390" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-41" edge="1" parent="1" source="_JTzVPyTOPXvRLhaJMW1-25" style="endArrow=open;html=1;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="_JTzVPyTOPXvRLhaJMW1-14" value="«creates»">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="1280" y="500" as="sourcePoint" />
+            <mxPoint x="500" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-42" edge="1" parent="1" source="_JTzVPyTOPXvRLhaJMW1-25" style="endArrow=open;html=1;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="_JTzVPyTOPXvRLhaJMW1-16" value="«creates»">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="1280" y="500" as="sourcePoint" />
+            <mxPoint x="200" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-43" edge="1" parent="1" source="_JTzVPyTOPXvRLhaJMW1-25" style="endArrow=open;html=1;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="_JTzVPyTOPXvRLhaJMW1-20" value="«creates»">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="1280" y="500" as="sourcePoint" />
+            <mxPoint x="400" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-44" edge="1" parent="1" source="_JTzVPyTOPXvRLhaJMW1-11" style="endArrow=open;html=1;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="_JTzVPyTOPXvRLhaJMW1-5" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="200" y="160" as="sourcePoint" />
+            <mxPoint x="300" y="100" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-45" edge="1" parent="1" source="_JTzVPyTOPXvRLhaJMW1-17" style="endArrow=open;html=1;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="_JTzVPyTOPXvRLhaJMW1-11" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="200" y="200" as="sourcePoint" />
+            <mxPoint x="500" y="160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-46" edge="1" parent="1" source="_JTzVPyTOPXvRLhaJMW1-27" style="endArrow=open;html=1;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="_JTzVPyTOPXvRLhaJMW1-28" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="200" y="80" as="sourcePoint" />
+            <mxPoint x="240" y="30" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-47" edge="1" parent="1" source="_JTzVPyTOPXvRLhaJMW1-9" style="endArrow=open;html=1;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="_JTzVPyTOPXvRLhaJMW1-28" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="160" y="70" as="sourcePoint" />
+            <mxPoint x="1120" y="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-48" edge="1" parent="1" source="_JTzVPyTOPXvRLhaJMW1-1" style="endArrow=open;html=1;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="_JTzVPyTOPXvRLhaJMW1-9" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="160" y="70" as="sourcePoint" />
+            <mxPoint x="1160" y="780" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-9" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="&lt;b&gt;validator&lt;/b&gt;" vertex="1">
+          <mxGeometry height="400" width="600" x="370" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-10" parent="_JTzVPyTOPXvRLhaJMW1-9" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="&lt;b&gt;&lt;i&gt;Validator&lt;/i&gt;&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ validate(board): ValidationResult" vertex="1">
+          <mxGeometry height="60" width="160" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-11" parent="_JTzVPyTOPXvRLhaJMW1-9" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="&lt;b&gt;RowValidator&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ validate(board): ValidationResult&lt;br&gt;- validateRow(row): boolean" vertex="1">
+          <mxGeometry height="80" width="160" x="40" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-12" parent="_JTzVPyTOPXvRLhaJMW1-9" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="&lt;b&gt;ColumnValidator&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ validate(board): ValidationResult&lt;br&gt;- validateColumn(col): boolean" vertex="1">
+          <mxGeometry height="80" width="160" x="40" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-13" parent="_JTzVPyTOPXvRLhaJMW1-9" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="&lt;b&gt;BoxValidator&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ validate(board): ValidationResult&lt;br&gt;- validateBox(boxIndex): boolean" vertex="1">
+          <mxGeometry height="80" width="160" x="40" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="_JTzVPyTOPXvRLhaJMW1-14" parent="_JTzVPyTOPXvRLhaJMW1-9" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="&lt;b&gt;SequentialValidator&lt;/b&gt;&lt;br&gt;&lt;hr&gt;+ validate(board): ValidationResult&lt;br&gt;- rowValidator: RowValidator&lt;br&gt;- colValidator: ColumnValidator&lt;br&gt;- boxValidator: BoxValidator" vertex="1">
+          <mxGeometry height="100" width="180" x="240" y="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
