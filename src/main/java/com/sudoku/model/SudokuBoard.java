@@ -68,24 +68,26 @@ public class SudokuBoard {
 
     /**
      * Get a specific 3x3 box from the board
-     * @param boxIndex Box index (1-9)
+     * IMPORTANT: This method now accepts 0-based index (0-8) for consistency
+     * @param boxIndex Box index (0-8)
      * @return Array of 9 values representing the box
      */
     public int[] getBox(int boxIndex) {
-        if (boxIndex < 1 || boxIndex > Constants.NUM_BOXES) {
+        if (boxIndex < 0 || boxIndex >= Constants.NUM_BOXES) {
             throw new IllegalArgumentException(
-                    String.format("Invalid box index: %d. Must be between 1 and 9", boxIndex)
+                    String.format("Invalid box index: %d. Must be between 0 and 8", boxIndex)
             );
         }
 
-        return BoxIndexCalculator.extractBoxValues(board, boxIndex);
+        // Convert to 1-based for BoxIndexCalculator if it expects 1-based
+        return BoxIndexCalculator.extractBoxValues(board, boxIndex + 1);
     }
 
     /**
      * Get value at specific cell
      * @param row Row index (0-8)
      * @param col Column index (0-8)
-     * @return com.sudoku.model.Cell value
+     * @return Cell value
      */
     public int getCell(int row, int col) {
         if (row < 0 || row >= Constants.BOARD_SIZE ||
