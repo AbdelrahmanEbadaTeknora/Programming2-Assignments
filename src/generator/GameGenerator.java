@@ -5,27 +5,21 @@ import Models.Board;
 import Models.enums.DifficultyLevel;
 import exceptions.SolutionInvalidException;
 import verification.SudokuVerifier;
-import verification.VerificationResult;
-import Models.enums.GameState;
 
-import java.util.ArrayList;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 /**
  * Generates Sudoku games from a solved board
  * Creates playable puzzles by removing cells based on difficulty level
+ * Also handles saving generated games to disk
  */
 public class GameGenerator {
     private SudokuVerifier verifier;
     private RandomPairs randomPairs;
-
-    /**
-     * Constructor
-     */
-    public GameGenerator() {
-        this.verifier = new SudokuVerifier();
-        this.randomPairs = new RandomPairs();
-    }
 
     /**
      * Constructor with custom verifier
@@ -45,15 +39,22 @@ public class GameGenerator {
         validateSourceBoard(solvedBoard);
 
         Game[] games = new Game[3];
-        games[0] = generateGame(solvedBoard, DifficultyLevel.EASY);
-        games[1] = generateGame(solvedBoard, DifficultyLevel.MEDIUM);
-        games[2] = generateGame(solvedBoard, DifficultyLevel.HARD);
+
+        // Create new RandomPairs for each difficulty to ensure different random sequences
+        RandomPairs randomPairsEasy = new RandomPairs();
+        RandomPairs randomPairsMedium = new RandomPairs();
+        RandomPairs randomPairsHard = new RandomPairs();
+
+        games[0] = generateGameWithRandomPairs(solvedBoard, DifficultyLevel.EASY, randomPairsEasy);
+        games[1] = generateGameWithRandomPairs(solvedBoard, DifficultyLevel.MEDIUM, randomPairsMedium);
+        games[2] = generateGameWithRandomPairs(solvedBoard, DifficultyLevel.HARD, randomPairsHard);
 
         return games;
     }
 
     /**
      * Generates a game for a specific difficulty
+     * Creates a NEW RandomPairs instance for each call to ensure different results
      * @param solvedBoard Solved board
      * @param difficulty Target difficulty level
      * @return Generated game with cells removed
@@ -63,80 +64,95 @@ public class GameGenerator {
             throws SolutionInvalidException {
         validateSourceBoard(solvedBoard);
 
+        // Create NEW RandomPairs instance - CRITICAL for different random sequences
+        RandomPairs randomPairs = new RandomPairs();
+
+        return generateGameWithRandomPairs(solvedBoard, difficulty, randomPairs);
+    }
+
+    /**
+     * Internal method that generates game with specific RandomPairs instance
+     */
+    private Game generateGameWithRandomPairs(Board solvedBoard, DifficultyLevel difficulty,
+                                             RandomPairs randomPairs) throws SolutionInvalidException {
         // Create a copy of the solved board
         Board gameBoard = solvedBoard.copy();
 
-        // Get number of cells to remove
+        // Get number of cells to remove for this difficulty
         int cellsToRemove = difficulty.getCellsToRemove();
+
+        System.out.println("Generating " + difficulty + " - removing " + cellsToRemove + " cells");
 
         // Generate random positions to remove
         List<int[]> positionsToRemove = randomPairs.generateDistinctPairs(cellsToRemove);
+
+        System.out.println("Generated " + positionsToRemove.size() + " random positions");
 
         // Remove cells from the board
         for (int[] pos : positionsToRemove) {
             int row = pos[0];
             int col = pos[1];
+            int oldValue = gameBoard.getValue(row, col);
             gameBoard.setValue(row, col, 0);
+            System.out.println("  Removed cell (" + row + "," + col + ") was: " + oldValue);
         }
+
+        // Verify cells were actually removed
+        int emptyCells = countEmptyCells(gameBoard);
+        System.out.println("Final empty cells: " + emptyCells);
 
         // Create and return game
-        return new Game(gameBoard, difficulty);
+        Game game = new Game(gameBoard, difficulty);
+        return game;
     }
 
     /**
-     * Generates multiple games of same difficulty
-     * @param solvedBoard Solved board
-     * @param difficulty Difficulty level
-     * @param count Number of games to generate
-     * @return List of generated games
-     * @throws SolutionInvalidException if board is invalid
+     * Counts empty cells in a board
      */
-    public List<Game> generateMultipleGames(Board solvedBoard, DifficultyLevel difficulty,
-                                            int count) throws SolutionInvalidException {
-        validateSourceBoard(solvedBoard);
-
-        List<Game> games = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            games.add(generateGame(solvedBoard, difficulty));
+    private int countEmptyCells(Board board) {
+        int count = 0;
+        int[][] grid = board.getGrid();
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (grid[i][j] == 0) {
+                    count++;
+                }
+            }
         }
-        return games;
+        return count;
     }
 
     /**
-     * Generates custom difficulty game with specific cell count
-     * @param solvedBoard Solved board
-     * @param cellsToRemove Number of cells to remove
-     * @return Generated game
-     * @throws SolutionInvalidException if board is invalid
-     * @throws IllegalArgumentException if cellsToRemove is invalid
+     * Saves generated game to file
      */
-    public Game generateCustomDifficulty(Board solvedBoard, int cellsToRemove)
-            throws SolutionInvalidException {
-        validateSourceBoard(solvedBoard);
-
-        if (cellsToRemove < 0 || cellsToRemove > 81) {
-            throw new IllegalArgumentException(
-                    "Number of cells to remove must be between 0 and 81");
+    public void saveGameToFile(Game game, String folderPath) throws IOException {
+        // Create folder if it doesn't exist
+        File folder = new File(folderPath);
+        if (!folder.exists()) {
+            boolean created = folder.mkdirs();
+            if (!created) {
+                throw new IOException("Failed to create folder: " + folderPath);
+            }
         }
 
-        Board gameBoard = solvedBoard.copy();
-        List<int[]> positionsToRemove = randomPairs.generateDistinctPairs(cellsToRemove);
+        // Create filename with timestamp
+        String filename = "game_" + System.currentTimeMillis() + ".txt";
+        String filePath = folderPath + File.separator + filename;
 
-        for (int[] pos : positionsToRemove) {
-            gameBoard.setValue(pos[0], pos[1], 0);
+        // Write board to file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            int[][] grid = game.getBoard().getGrid();
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 9; j++) {
+                    writer.write(String.valueOf(grid[i][j]));
+                    if (j < 8) {
+                        writer.write(" ");
+                    }
+                }
+                writer.newLine();
+            }
+            System.out.println("Saved " + game.getDifficulty() + " game to: " + filePath);
         }
-
-        // Determine difficulty level based on cell count
-        DifficultyLevel difficulty;
-        if (cellsToRemove <= 10) {
-            difficulty = DifficultyLevel.EASY;
-        } else if (cellsToRemove <= 20) {
-            difficulty = DifficultyLevel.MEDIUM;
-        } else {
-            difficulty = DifficultyLevel.HARD;
-        }
-
-        return new Game(gameBoard, difficulty);
     }
 
     /**
@@ -148,10 +164,10 @@ public class GameGenerator {
             throw new SolutionInvalidException("Source board cannot be null");
         }
 
-        VerificationResult result = verifier.verify(board);
+        verification.VerificationResult result = verifier.verify(board);
 
         if (!result.isValid()) {
-            if (result.getState() == GameState.INCOMPLETE) {
+            if (result.getState() == Models.enums.GameState.INCOMPLETE) {
                 throw new SolutionInvalidException(
                         "Source board is incomplete - contains empty cells (0s)");
             } else {
@@ -183,82 +199,5 @@ public class GameGenerator {
      */
     public static int getCellCountForDifficulty(DifficultyLevel difficulty) {
         return difficulty.getCellsToRemove();
-    }
-
-    /**
-     * Creates a game with all cells shown (complete solution)
-     * @param solvedBoard Solved board
-     * @param difficulty Difficulty level
-     * @return Game with no cells removed
-     */
-    public Game generateCompleteSolution(Board solvedBoard, DifficultyLevel difficulty) {
-        return new Game(solvedBoard.copy(), difficulty);
-    }
-
-    /**
-     * Gets information about generation
-     * @return String with generation info
-     */
-    public String getGeneratorInfo() {
-        return "GameGenerator - Sudoku Puzzle Generator\n" +
-                "Difficulties:\n" +
-                "  Easy: " + DifficultyLevel.EASY.getCellsToRemove() + " cells removed\n" +
-                "  Medium: " + DifficultyLevel.MEDIUM.getCellsToRemove() + " cells removed\n" +
-                "  Hard: " + DifficultyLevel.HARD.getCellsToRemove() + " cells removed\n" +
-                "Max difficulty (custom): 81 cells removed\n" +
-                "Uses RandomPairs for unique cell selection";
-    }
-
-    /**
-     * Inner class for generation statistics
-     */
-    public static class GenerationStats {
-        public int originalCells;
-        public int filledCells;
-        public int emptyCells;
-        public DifficultyLevel difficulty;
-        public long generationTimeMs;
-
-        public GenerationStats(int filled, int empty, DifficultyLevel diff, long time) {
-            this.originalCells = 81;
-            this.filledCells = filled;
-            this.emptyCells = empty;
-            this.difficulty = diff;
-            this.generationTimeMs = time;
-        }
-
-        @Override
-        public String toString() {
-            return "GenerationStats{" +
-                    "difficulty=" + difficulty +
-                    ", filled=" + filledCells +
-                    ", empty=" + emptyCells +
-                    ", time=" + generationTimeMs + "ms" +
-                    '}';
-        }
-    }
-
-    /**
-     * Generates game with statistics tracking
-     * @param solvedBoard Solved board
-     * @param difficulty Target difficulty
-     * @return Array containing [Game, GenerationStats]
-     * @throws SolutionInvalidException if board is invalid
-     */
-    public Object[] generateGameWithStats(Board solvedBoard, DifficultyLevel difficulty)
-            throws SolutionInvalidException {
-        long startTime = System.currentTimeMillis();
-
-        Game game = generateGame(solvedBoard, difficulty);
-
-        long endTime = System.currentTimeMillis();
-        long timeMs = endTime - startTime;
-
-        int emptyCells = game.getEmptyCellCount();
-        int filledCells = 81 - emptyCells;
-
-        GenerationStats stats = new GenerationStats(filledCells, emptyCells, difficulty, timeMs);
-
-        return new Object[]{game, stats};
     }
 }

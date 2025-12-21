@@ -15,7 +15,7 @@ public class CellPanel extends JPanel {
     private JTextField textField;
     private int row;
     private int col;
-    private boolean isInitial;
+    private boolean isInitial;      // True if part of original puzzle
     private boolean isInvalid;
     private static final int CELL_SIZE = 60;
     private static final int FONT_SIZE = 20;
@@ -44,11 +44,13 @@ public class CellPanel extends JPanel {
         // Configure based on whether it's initial value
         if (isInitial) {
             textField.setEditable(false);
-            textField.setBackground(new Color(200, 200, 200));
+            textField.setBackground(new Color(200, 200, 200));  // Gray for initial cells
+            textField.setForeground(Color.BLACK);
             textField.setFont(new Font("Arial", Font.BOLD, FONT_SIZE));
         } else {
             textField.setEditable(true);
             textField.setBackground(Color.WHITE);
+            textField.setForeground(Color.BLACK);
             setupInputValidation();
         }
 
@@ -87,13 +89,13 @@ public class CellPanel extends JPanel {
         textField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                textField.setBackground(new Color(255, 255, 200)); // Light yellow
+                textField.setBackground(new Color(255, 255, 200)); // Light yellow when focused
             }
 
             @Override
             public void focusLost(FocusEvent e) {
                 if (isInvalid) {
-                    textField.setBackground(new Color(255, 200, 200)); // Light red
+                    textField.setBackground(new Color(255, 200, 200)); // Light red if invalid
                 } else {
                     textField.setBackground(Color.WHITE);
                 }
@@ -142,10 +144,17 @@ public class CellPanel extends JPanel {
     }
 
     /**
-     * Checks if cell is editable
+     * Checks if cell is editable (not part of initial puzzle)
      */
     public boolean isEditable() {
         return !isInitial;
+    }
+
+    /**
+     * Checks if cell is part of initial puzzle
+     */
+    public boolean isInitialCell() {
+        return isInitial;
     }
 
     /**
@@ -161,10 +170,10 @@ public class CellPanel extends JPanel {
      */
     private void updateAppearance() {
         if (isInitial) {
-            textField.setBackground(new Color(200, 200, 200));
+            textField.setBackground(new Color(200, 200, 200));  // Gray for initial
             textField.setForeground(Color.BLACK);
         } else if (isInvalid) {
-            textField.setBackground(new Color(255, 200, 200)); // Light red
+            textField.setBackground(new Color(255, 200, 200)); // Light red for invalid
             textField.setForeground(Color.RED);
         } else {
             textField.setBackground(Color.WHITE);
@@ -173,10 +182,11 @@ public class CellPanel extends JPanel {
     }
 
     /**
-     * Clears the cell
+     * Clears the cell (sets to empty)
+     * Only works if cell is editable
      */
     public void clear() {
-        if (!isInitial) {
+        if (isEditable()) {
             textField.setText("");
             isInvalid = false;
             updateAppearance();
@@ -207,5 +217,28 @@ public class CellPanel extends JPanel {
      */
     public JTextField getTextField() {
         return textField;
+    }
+
+    /**
+     * Checks if cell is empty
+     */
+    public boolean isEmpty() {
+        return getValue() == 0;
+    }
+
+    /**
+     * Checks if cell has a value
+     */
+    public boolean isFilled() {
+        return getValue() != 0;
+    }
+
+    /**
+     * Gets string representation
+     */
+    @Override
+    public String toString() {
+        return "Cell(" + row + "," + col + ")=" + getValue() +
+                (isInitial ? "[INITIAL]" : "[EDITABLE]");
     }
 }

@@ -9,6 +9,7 @@ import java.util.Set;
 /**
  * Generates distinct random pairs (x, y) for cell removal in Sudoku
  * Range: 0..8 for both x and y coordinates
+ * Each instance uses a new seed based on current time
  */
 public class RandomPairs {
     private static final int MAX_COORD = 8;
@@ -18,9 +19,19 @@ public class RandomPairs {
 
     /**
      * Constructor initializes Random with current system time as seed
+     * This ensures different random sequences for each new instance
      */
     public RandomPairs() {
-        this.random = new Random(System.currentTimeMillis());
+        // Add a small delay to ensure unique seeds for rapid consecutive calls
+        long seed = System.nanoTime();
+        this.random = new Random(seed);
+    }
+
+    /**
+     * Constructor with custom seed (for testing)
+     */
+    public RandomPairs(long seed) {
+        this.random = new Random(seed);
     }
 
     /**
@@ -60,5 +71,19 @@ public class RandomPairs {
      */
     public static int getMaxUniquePairs() {
         return MAX_UNIQUE_PAIRS;
+    }
+
+    /**
+     * Generates multiple sets of distinct pairs
+     * Useful for generating different difficulty levels
+     */
+    public List<List<int[]>> generateMultipleSets(int... pairCounts) {
+        List<List<int[]>> allSets = new ArrayList<>();
+
+        for (int count : pairCounts) {
+            allSets.add(generateDistinctPairs(count));
+        }
+
+        return allSets;
     }
 }

@@ -53,7 +53,7 @@ public class GameBoardPanel extends JPanel {
                 int col = startCol + j;
                 int value = boardGrid[row][col];
 
-                // Cell is initial if it wasn't 0 in original board
+                // Cell is initial if it has a non-zero value in the original board
                 boolean isInitial = originalBoard[row][col] != 0;
 
                 CellPanel cell = new CellPanel(row, col, value, isInitial);
@@ -125,11 +125,13 @@ public class GameBoardPanel extends JPanel {
 
     /**
      * Clears all user-entered values (keeps initial values)
+     * Only clears cells that are editable (not part of original puzzle)
      */
     public void clearUserEntries() {
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
-                if (!cells[i][j].isEditable()) {
+                // Only clear if cell is editable (not initial)
+                if (cells[i][j].isEditable()) {
                     cells[i][j].clear();
                 }
             }
@@ -225,8 +227,39 @@ public class GameBoardPanel extends JPanel {
     public void resetToOriginal() {
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
+                // Reset to original value and mark as initial
                 cells[i][j].setValue(originalBoard[i][j]);
             }
         }
+    }
+
+    /**
+     * Gets count of initial (non-editable) cells
+     */
+    public int getInitialCellCount() {
+        int count = 0;
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (!cells[i][j].isEditable()) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Gets count of user-filled cells
+     */
+    public int getUserFilledCellCount() {
+        int count = 0;
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (cells[i][j].isEditable() && cells[i][j].getValue() != 0) {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 }

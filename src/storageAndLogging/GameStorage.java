@@ -299,4 +299,36 @@ public class GameStorage {
                     '}';
         }
     }
+    // Add these helper methods to GameStorage.java class
+
+    /**
+     * Saves a game to the appropriate difficulty folder
+     */
+    public static void saveGamesByDifficulty(Models.Game game, Models.enums.DifficultyLevel difficulty)
+            throws java.io.IOException {
+        String folderPath = getDifficultyFolderPath(difficulty);
+        String filename = generateGameFilename();
+        String filePath = folderPath + java.io.File.separator + filename;
+
+        java.io.File file = new java.io.File(filePath);
+        java.io.File parentDir = file.getParentFile();
+        if (parentDir != null && !parentDir.exists()) {
+            parentDir.mkdirs();
+        }
+
+        // Save the game board to file
+        try (java.io.BufferedWriter writer = new java.io.BufferedWriter(
+                new java.io.FileWriter(file))) {
+            int[][] grid = game.getBoard().getGrid();
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 9; j++) {
+                    writer.write(String.valueOf(grid[i][j]));
+                    if (j < 8) {
+                        writer.write(" ");
+                    }
+                }
+                writer.newLine();
+            }
+        }
+    }
 }
