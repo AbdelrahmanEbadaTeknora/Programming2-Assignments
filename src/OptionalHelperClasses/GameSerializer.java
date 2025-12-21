@@ -1,4 +1,4 @@
-package main.java.storage;
+package OptionalHelperClasses;
 
 public class GameSerializer{
 

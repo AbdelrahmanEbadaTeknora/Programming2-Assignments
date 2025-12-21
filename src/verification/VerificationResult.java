@@ -1,4 +1,4 @@
-package main.java.Models;
+package verification;
 import main.java.Models.enums.GameState;
 import java.util.ArrayList;
 import java.util.List;

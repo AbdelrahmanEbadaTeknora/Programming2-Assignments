@@ -1,4 +1,4 @@
-package main.java.logging;
+package storageAndLogging;
 
 import java.io.IOException;
 

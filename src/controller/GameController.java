@@ -4,12 +4,12 @@ import main.java.Models.*;
 import main.java.Models.enums.DifficultyLevel;
 import main.java.exceptions.*;
 import main.java.generator.GameDriver;
-import main.java.logging.GameLogger;
-import main.java.logging.UndoManager;
+import storageAndLogging.GameLogger;
+import storageAndLogging.UndoManager;
 import main.java.solver.SudokuSolver;
 import main.java.storage.GameCatalogService;
 import main.java.storage.GameLoader;
-import main.java.utils.UserAction;
+import OptionalHelperClasses.UserAction;
 import main.java.verification.SudokuVerifier;
 
 import java.io.IOException;

@@ -1,8 +1,8 @@
 package main.java.verification;
 
 import main.java.Models.Board;
-import main.java.Models.Position;
-import main.java.Models.VerificationResult;
+import OptionalHelperClasses.Position;
+import verification.VerificationResult;
 import main.java.Models.enums.GameState;
 
 import java.util.ArrayList;

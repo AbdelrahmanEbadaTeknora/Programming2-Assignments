@@ -1,4 +1,4 @@
-package main.java.Models;
+package storageAndLogging;
 
 public class LogEntry{
 

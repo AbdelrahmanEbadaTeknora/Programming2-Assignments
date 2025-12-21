@@ -1,7 +1,7 @@
 package main.java.solver;
 
 import main.java.Models.Board;
-import main.java.Models.SolutionResult;
+import solver.SolutionResult;
 import main.java.verification.SudokuVerifier;
 
 /**

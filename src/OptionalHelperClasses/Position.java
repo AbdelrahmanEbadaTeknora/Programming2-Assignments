@@ -1,4 +1,4 @@
-package main.java.Models;
+package OptionalHelperClasses;
 
 import java.util.Objects;
 

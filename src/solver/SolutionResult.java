@@ -1,4 +1,4 @@
-package main.java.Models;
+package solver;
 
 import java.util.List;
 

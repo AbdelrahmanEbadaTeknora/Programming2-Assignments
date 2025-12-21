@@ -1,4 +1,4 @@
-package main.java.utils;
+package OptionalHelperClasses;
 
 /**
  * Encapsulates a user action for main.javaa.logging

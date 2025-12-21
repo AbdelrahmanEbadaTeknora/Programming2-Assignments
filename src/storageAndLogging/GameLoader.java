@@ -1,4 +1,4 @@
-package main.java.storage;
+package storageAndLogging;
 
 import main.java.Models.Game;
 import main.java.Models.Board;

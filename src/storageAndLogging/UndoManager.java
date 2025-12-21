@@ -1,4 +1,4 @@
-package main.java.logging;
+package storageAndLogging;
 
 import main.java.Models.Game;
 import java.io.IOException;

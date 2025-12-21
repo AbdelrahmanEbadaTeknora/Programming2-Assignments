@@ -4,7 +4,7 @@ import main.java.Models.Catalog;
 import main.java.exceptions.InvalidGameException;
 import main.java.exceptions.NotFoundException;
 import main.java.exceptions.SolutionInvalidException;
-import main.java.utils.UserAction;
+import OptionalHelperClasses.UserAction;
 
 import java.io.IOException;
 
