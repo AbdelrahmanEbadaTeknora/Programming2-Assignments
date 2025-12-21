@@ -1,7 +1,14 @@
-package exceptions;
+package main.java.exceptions;
 
-public class StorageException extends RuntimeException {
+/**
+ * Thrown when file I/O operations fail
+ */
+public class StorageException extends Exception {
     public StorageException(String message) {
         super(message);
+    }
+
+    public StorageException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

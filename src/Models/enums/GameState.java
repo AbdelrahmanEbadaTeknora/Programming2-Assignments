@@ -1,5 +1,10 @@
-package Models.enums;
+package main.java.Models.enums;
 
-public enum GameState{
-
+/**
+ * Represents the state of a Sudoku game after main.javaa.verification
+ */
+public enum GameState {
+    VALID,
+    INVALID,
+    INCOMPLETE
 }

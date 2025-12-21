@@ -1,7 +1,14 @@
-package exceptions;
+package main.java.exceptions;
 
-public class NotFoundException extends RuntimeException {
+/**
+ * Thrown when a requested game is not found
+ */
+public class NotFoundException extends Exception {
     public NotFoundException(String message) {
         super(message);
+    }
+
+    public NotFoundException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
