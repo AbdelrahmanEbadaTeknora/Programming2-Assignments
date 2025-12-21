@@ -2,7 +2,6 @@ package verification;
 
 import Models.Board;
 import OptionalHelperClasses.Position;
-import verification.VerificationResult;
 import Models.enums.GameState;
 
 import java.util.ArrayList;
@@ -15,6 +14,12 @@ public class SudokuVerifier {
     private static final int BOARD_SIZE = 9;
     private static final int BOX_SIZE = 3;
 
+    /**
+     * Verifies the board state
+     * Returns VALID only if board is completely filled with no duplicates
+     * Returns INVALID if there are duplicates in filled cells (even if incomplete)
+     * Returns INCOMPLETE if board has empty cells and no duplicates
+     */
     public VerificationResult verify(Board board) {
         if (board == null) {
             return new VerificationResult(GameState.INVALID,
@@ -23,20 +28,23 @@ public class SudokuVerifier {
 
         int[][] grid = board.getGrid();
 
-        // Check for incomplete cells (zeros)
-        if (hasEmptyCells(grid)) {
-            return new VerificationResult(GameState.INCOMPLETE,
-                    new ArrayList<>(), "Board has empty cells");
-        }
-
-        // Check for invalid duplicates
+        // Always check for invalid duplicates first, regardless of completion
         List<Position> invalidPositions = findInvalidPositions(grid);
 
         if (!invalidPositions.isEmpty()) {
+            // Board has duplicates - it's INVALID
             return new VerificationResult(GameState.INVALID,
                     invalidPositions, "Board has duplicate numbers");
         }
 
+        // No duplicates found, now check if board is complete
+        if (hasEmptyCells(grid)) {
+            // No duplicates but has empty cells - it's INCOMPLETE
+            return new VerificationResult(GameState.INCOMPLETE,
+                    new ArrayList<>(), "Board has empty cells");
+        }
+
+        // No duplicates and no empty cells - it's VALID
         return new VerificationResult(GameState.VALID,
                 new ArrayList<>(), "Board is valid");
     }
@@ -52,37 +60,66 @@ public class SudokuVerifier {
         return false;
     }
 
+    /**
+     * Finds all invalid positions in the grid
+     * A position is invalid if:
+     * 1. Its value appears more than once in its row
+     * 2. Its value appears more than once in its column
+     * 3. Its value appears more than once in its 3x3 box
+     *
+     * Only checks FILLED cells (non-zero values)
+     */
     private List<Position> findInvalidPositions(int[][] grid) {
         List<Position> invalidPositions = new ArrayList<>();
+        Set<Position> invalidSet = new HashSet<>();
 
-        // Check all rows
+        // Check rows
         for (int row = 0; row < BOARD_SIZE; row++) {
-            invalidPositions.addAll(checkRow(grid, row));
+            List<Position> rowInvalids = checkRow(grid, row);
+            invalidSet.addAll(rowInvalids);
         }
 
-        // Check all columns
+        // Check columns
         for (int col = 0; col < BOARD_SIZE; col++) {
-            invalidPositions.addAll(checkColumn(grid, col));
+            List<Position> colInvalids = checkColumn(grid, col);
+            invalidSet.addAll(colInvalids);
         }
 
-        // Check all 3x3 boxes
+        // Check 3x3 boxes
         for (int boxRow = 0; boxRow < BOARD_SIZE; boxRow += BOX_SIZE) {
             for (int boxCol = 0; boxCol < BOARD_SIZE; boxCol += BOX_SIZE) {
-                invalidPositions.addAll(checkBox(grid, boxRow, boxCol));
+                List<Position> boxInvalids = checkBox(grid, boxRow, boxCol);
+                invalidSet.addAll(boxInvalids);
+            }
+        }
+
+        // Convert set to list
+        invalidPositions.addAll(invalidSet);
+
+        // Debug output
+        if (!invalidPositions.isEmpty()) {
+            System.out.println("Found " + invalidPositions.size() + " invalid positions:");
+            for (Position p : invalidPositions) {
+                System.out.println("  Position (" + p.getRow() + "," + p.getCol() + ") = " + grid[p.getRow()][p.getCol()]);
             }
         }
 
         return invalidPositions;
     }
 
+    /**
+     * Checks a row for duplicate values among filled cells
+     * Returns all positions that have duplicate values in the row
+     */
     private List<Position> checkRow(int[][] grid, int row) {
         List<Position> duplicates = new ArrayList<>();
         Set<Integer> seen = new HashSet<>();
         Set<Integer> duplicateValues = new HashSet<>();
 
+        // First pass: find which values are duplicated (only check filled cells)
         for (int col = 0; col < BOARD_SIZE; col++) {
             int value = grid[row][col];
-            if (value != 0) {
+            if (value != 0) {  // Only check filled cells
                 if (seen.contains(value)) {
                     duplicateValues.add(value);
                 }
@@ -90,6 +127,7 @@ public class SudokuVerifier {
             }
         }
 
+        // Second pass: mark all positions with duplicate values
         for (int col = 0; col < BOARD_SIZE; col++) {
             int value = grid[row][col];
             if (duplicateValues.contains(value)) {
@@ -100,14 +138,19 @@ public class SudokuVerifier {
         return duplicates;
     }
 
+    /**
+     * Checks a column for duplicate values among filled cells
+     * Returns all positions that have duplicate values in the column
+     */
     private List<Position> checkColumn(int[][] grid, int col) {
         List<Position> duplicates = new ArrayList<>();
         Set<Integer> seen = new HashSet<>();
         Set<Integer> duplicateValues = new HashSet<>();
 
+        // First pass: find which values are duplicated (only check filled cells)
         for (int row = 0; row < BOARD_SIZE; row++) {
             int value = grid[row][col];
-            if (value != 0) {
+            if (value != 0) {  // Only check filled cells
                 if (seen.contains(value)) {
                     duplicateValues.add(value);
                 }
@@ -115,6 +158,7 @@ public class SudokuVerifier {
             }
         }
 
+        // Second pass: mark all positions with duplicate values
         for (int row = 0; row < BOARD_SIZE; row++) {
             int value = grid[row][col];
             if (duplicateValues.contains(value)) {
@@ -125,17 +169,22 @@ public class SudokuVerifier {
         return duplicates;
     }
 
+    /**
+     * Checks a 3x3 box for duplicate values among filled cells
+     * Returns all positions that have duplicate values in the box
+     */
     private List<Position> checkBox(int[][] grid, int startRow, int startCol) {
         List<Position> duplicates = new ArrayList<>();
         Set<Integer> seen = new HashSet<>();
         Set<Integer> duplicateValues = new HashSet<>();
 
+        // First pass: find which values are duplicated (only check filled cells)
         for (int i = 0; i < BOX_SIZE; i++) {
             for (int j = 0; j < BOX_SIZE; j++) {
                 int row = startRow + i;
                 int col = startCol + j;
                 int value = grid[row][col];
-                if (value != 0) {
+                if (value != 0) {  // Only check filled cells
                     if (seen.contains(value)) {
                         duplicateValues.add(value);
                     }
@@ -144,6 +193,7 @@ public class SudokuVerifier {
             }
         }
 
+        // Second pass: mark all positions with duplicate values
         for (int i = 0; i < BOX_SIZE; i++) {
             for (int j = 0; j < BOX_SIZE; j++) {
                 int row = startRow + i;
