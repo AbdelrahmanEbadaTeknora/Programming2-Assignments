@@ -1,68 +1,83 @@
-package main.java.controller;
+package controller;
 
-import main.java.Models.*;
-import main.java.Models.enums.DifficultyLevel;
-import main.java.exceptions.*;
-import main.java.generator.GameDriver;
-import storageAndLogging.GameLogger;
-import storageAndLogging.UndoManager;
-import main.java.solver.SudokuSolver;
-import main.java.storage.GameCatalogService;
-import main.java.storage.GameLoader;
+// Model imports
+import Models.*;
+import Models.enums.*;
+
+// Exception imports
+import exceptions.*;
+
+// Generator imports
+import generator.*;
+
+// Storage and Logging imports
+import storageAndLogging.*;
+
+// Solver imports
+import solver.*;
+
+// Helper imports
 import OptionalHelperClasses.UserAction;
-import main.java.verification.SudokuVerifier;
+import OptionalHelperClasses.Position;
+
+// Verification imports
+import verification.*;
 
 import java.io.IOException;
 import java.util.List;
 
 /**
- * Main main.javaa.controller implementing both Viewable and Controllable interfaces
- * Coordinates between Model and View layers
+ * Main controller implementing both Viewable and Controllable interfaces
+ * Coordinates between View and Model/Business Logic layers
  */
 public class GameController implements Viewable, Controllable {
 
-    private final SudokuVerifier verifier;
-    private final GameDriver gameDriver;
+    private final verification.SudokuVerifier verifier;
+    private final generator.GameDriver gameDriver;
     private final GameLoader gameLoader;
     private final GameCatalogService catalogService;
     private final GameLogger gameLogger;
     private final UndoManager undoManager;
-    private final SudokuSolver solver;
+    private final solver.SudokuSolver solver;
 
-    private Game currentGame;
+    private Models.Game currentGame;
 
     public GameController() {
-        this.verifier = new SudokuVerifier();
-        this.gameDriver = new GameDriver(verifier);
+        this.verifier = new verification.SudokuVerifier();
+        this.gameDriver = new generator.GameDriver(verifier);
         this.gameLoader = new GameLoader();
         this.catalogService = new GameCatalogService();
         this.gameLogger = new GameLogger();
         this.undoManager = new UndoManager(gameLogger);
-        this.solver = new SudokuSolver(verifier);
-    }@Override
+        this.solver = new solver.SudokuSolver(verifier);
+    }
+
+    // ==================== Viewable Interface Implementation ====================
+
+    @Override
     public Catalog getCatalog() {
         return catalogService.checkGames();
     }
 
     @Override
-    public Game getGame(DifficultyLevel level) throws NotFoundException {
+    public Models.Game getGame(Models.enums.DifficultyLevel level) throws exceptions.NotFoundException {
         currentGame = gameLoader.loadGame(level);
         return currentGame;
     }
 
     @Override
-    public void driveGames(Game source) throws SolutionInvalidException {
+    public void driveGames(Models.Game source) throws exceptions.SolutionInvalidException {
         gameDriver.generateGames(source);
     }
 
     @Override
-    public String verifyGame(Game game) {
+    public String verifyGame(Models.Game game) {
         if (game == null) {
             return "INVALID: Game is null";
         }
 
-        Board board = game.getBoard();
-        VerificationResult result = verifier.verify(board);
+        Models.Board board = game.getBoard();
+        verification.VerificationResult result = verifier.verify(board);
 
         switch (result.getState()) {
             case VALID:
@@ -73,11 +88,11 @@ public class GameController implements Viewable, Controllable {
 
             case INVALID:
                 StringBuilder sb = new StringBuilder("INVALID");
-                List<Position> invalidPositions = result.getInvalidPositions();
+                List<OptionalHelperClasses.Position> invalidPositions = result.getInvalidPositions();
                 if (!invalidPositions.isEmpty()) {
                     sb.append(": ");
                     for (int i = 0; i < invalidPositions.size(); i++) {
-                        Position pos = invalidPositions.get(i);
+                        OptionalHelperClasses.Position pos = invalidPositions.get(i);
                         sb.append("(").append(pos.getRow()).append(",")
                                 .append(pos.getCol()).append(")");
                         if (i < invalidPositions.size() - 1) {
@@ -93,16 +108,16 @@ public class GameController implements Viewable, Controllable {
     }
 
     @Override
-    public int[] solveGame(Game game) throws InvalidGameException {
+    public int[] solveGame(Models.Game game) throws exceptions.InvalidGameException {
         if (game == null) {
-            throw new InvalidGameException("Game is null");
+            throw new exceptions.InvalidGameException("Game is null");
         }
 
-        Board board = game.getBoard();
-        SolutionResult result = solver.solve(board);
+        Models.Board board = game.getBoard();
+        solver.SolutionResult result = solver.solve(board);
 
         if (result == null || result.getSolution() == null) {
-            throw new InvalidGameException("No solution found");
+            throw new exceptions.InvalidGameException("No solution found");
         }
 
         return result.getSolution();
@@ -113,45 +128,65 @@ public class GameController implements Viewable, Controllable {
         gameLogger.log(userAction);
     }
 
-
+    // ==================== Controllable Interface Implementation ====================
 
     @Override
-    public int[][] getGame(char level) throws NotFoundException {
-        DifficultyLevel difficulty;
+    public int[][] getGame(char level) throws exceptions.NotFoundException {
+        Models.enums.DifficultyLevel difficulty;
         switch (Character.toLowerCase(level)) {
             case 'e':
-                difficulty = DifficultyLevel.EASY;
+                difficulty = Models.enums.DifficultyLevel.EASY;
                 break;
             case 'm':
-                difficulty = DifficultyLevel.MEDIUM;
+                difficulty = Models.enums.DifficultyLevel.MEDIUM;
                 break;
             case 'h':
-                difficulty = DifficultyLevel.HARD;
+                difficulty = Models.enums.DifficultyLevel.HARD;
                 break;
             default:
-                throw new NotFoundException("Invalid difficulty level: " + level);
+                throw new exceptions.NotFoundException("Invalid difficulty level: " + level);
         }
 
-        Game game = gameLoader.loadGame(difficulty);
+        Models.Game game = gameLoader.loadGame(difficulty);
         currentGame = game;
         return game.getBoard().getGrid();
     }
 
     @Override
     public void driveGames(int[][] source) throws SolutionInvalidException {
-        Board board = new Board(source);
-        Game sourceGame = new Game(board, DifficultyLevel.EASY); // Temporary difficulty
-        gameDriver.generateGames(sourceGame);
-    }
+        System.out.println("DEBUG [GameController.driveGames]: Called");
+        System.out.println("DEBUG: Source array dimensions: " +
+                (source != null ? source.length + "x" + (source.length > 0 ? source[0].length : 0) : "null"));
 
+        if (source == null) {
+            System.out.println("DEBUG: Source is null!");
+            throw new IllegalArgumentException("Source cannot be null");
+        }
+
+        Models.Board board = new Models.Board(source);
+        System.out.println("DEBUG: Board created successfully");
+
+        Models.Game sourceGame = new Models.Game(board, Models.enums.DifficultyLevel.EASY);
+        System.out.println("DEBUG: Source game created");
+
+        System.out.println("DEBUG: Calling gameDriver.generateGames()...");
+        try {
+            gameDriver.generateGames(sourceGame);
+            System.out.println("DEBUG: gameDriver.generateGames() completed successfully");
+        } catch (Exception e) {
+            System.err.println("DEBUG: Exception in gameDriver.generateGames(): " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
+    }
     @Override
     public boolean[][] verifyGame(int[][] grid) {
-        Board board = new Board(grid);
-        VerificationResult result = verifier.verify(board);
+        Models.Board board = new Models.Board(grid);
+        verification.VerificationResult result = verifier.verify(board);
 
         boolean[][] invalidCells = new boolean[9][9];
 
-        // Initialize all to false
+        // Initialize all to false (all valid by default)
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 invalidCells[i][j] = false;
@@ -160,7 +195,7 @@ public class GameController implements Viewable, Controllable {
 
         // Mark invalid positions as true
         if (result.isInvalid()) {
-            for (Position pos : result.getInvalidPositions()) {
+            for (OptionalHelperClasses.Position pos : result.getInvalidPositions()) {
                 invalidCells[pos.getRow()][pos.getCol()] = true;
             }
         }
@@ -169,19 +204,20 @@ public class GameController implements Viewable, Controllable {
     }
 
     @Override
-    public int[][] solveGame(int[][] grid) throws InvalidGameException {
-        Board board = new Board(grid);
-        SolutionResult result = solver.solve(board);
+    public int[][] solveGame(int[][] grid) throws exceptions.InvalidGameException {
+        Models.Board board = new Models.Board(grid);
+        solver.SolutionResult result = solver.solve(board);
 
         if (result == null) {
-            throw new InvalidGameException("No solution found");
+            throw new exceptions.InvalidGameException("No solution found");
         }
 
         // Convert solution array to 2D grid format
         int[] solution = result.getSolution();
-        List<Position> emptyPositions = result.getEmptyPositions();
+        List<OptionalHelperClasses.Position> emptyPositions = result.getEmptyPositions();
 
         int[][] solvedGrid = new int[9][9];
+
         // Copy original grid
         for (int i = 0; i < 9; i++) {
             System.arraycopy(grid[i], 0, solvedGrid[i], 0, 9);
@@ -189,7 +225,7 @@ public class GameController implements Viewable, Controllable {
 
         // Fill in solutions
         for (int i = 0; i < emptyPositions.size(); i++) {
-            Position pos = emptyPositions.get(i);
+            OptionalHelperClasses.Position pos = emptyPositions.get(i);
             solvedGrid[pos.getRow()][pos.getCol()] = solution[i];
         }
 
@@ -197,7 +233,7 @@ public class GameController implements Viewable, Controllable {
     }
 
     @Override
-    public void logUserAction(UserAction userAction) throws IOException {
+    public void logUserAction(OptionalHelperClasses.UserAction userAction) throws IOException {
         String logEntry = String.format("(%d,%d,%d,%d)",
                 userAction.getRow(),
                 userAction.getCol(),
@@ -209,18 +245,20 @@ public class GameController implements Viewable, Controllable {
     // ==================== Additional Helper Methods ====================
 
     /**
-     * Performs undo operation
+     * Performs undo operation on current game
+     * @return true if undo successful, false otherwise
      */
     public boolean undo() {
         try {
             return undoManager.undo(currentGame);
         } catch (IOException e) {
+            System.err.println("Undo failed: " + e.getMessage());
             return false;
         }
     }
 
     /**
-     * Saves the current game state
+     * Saves the current game state to incomplete folder
      */
     public void saveCurrentGame() throws IOException {
         if (currentGame != null) {
@@ -229,23 +267,23 @@ public class GameController implements Viewable, Controllable {
     }
 
     /**
-     * Deletes completed game
+     * Deletes completed game from difficulty folder
      */
-    public void deleteCompletedGame(DifficultyLevel level) throws IOException {
+    public void deleteCompletedGame(Models.enums.DifficultyLevel level) throws IOException {
         gameLoader.deleteGame(level);
     }
 
     /**
-     * Gets the current game
+     * Gets the current game instance
      */
-    public Game getCurrentGame() {
+    public Models.Game getCurrentGame() {
         return currentGame;
     }
 
     /**
-     * Sets the current game
+     * Sets the current game instance
      */
-    public void setCurrentGame(Game game) {
+    public void setCurrentGame(Models.Game game) {
         this.currentGame = game;
     }
 
@@ -255,7 +293,7 @@ public class GameController implements Viewable, Controllable {
     public boolean isGameCompleteAndValid() {
         if (currentGame == null) return false;
 
-        VerificationResult result = verifier.verify(currentGame.getBoard());
+        verification.VerificationResult result = verifier.verify(currentGame.getBoard());
         return result.isValid();
     }
 
@@ -273,5 +311,29 @@ public class GameController implements Viewable, Controllable {
             }
         }
         return count;
+    }
+
+    /**
+     * Checks if solve button should be enabled (exactly 5 empty cells)
+     */
+    public boolean canSolve() {
+        return getEmptyCellCount() == 5;
+    }
+
+    /**
+     * Gets current board state
+     */
+    public int[][] getCurrentBoardState() {
+        if (currentGame == null) return null;
+        return currentGame.getBoard().getGrid();
+    }
+
+    /**
+     * Updates current game board with new state
+     */
+    public void updateCurrentGameBoard(int[][] newBoard) {
+        if (currentGame != null) {
+            currentGame.setBoard(new Models.Board(newBoard));
+        }
     }
 }

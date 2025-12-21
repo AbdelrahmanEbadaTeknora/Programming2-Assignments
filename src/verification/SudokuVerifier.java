@@ -1,9 +1,9 @@
-package main.java.verification;
+package verification;
 
-import main.java.Models.Board;
+import Models.Board;
 import OptionalHelperClasses.Position;
 import verification.VerificationResult;
-import main.java.Models.enums.GameState;
+import Models.enums.GameState;
 
 import java.util.ArrayList;
 import java.util.HashSet;

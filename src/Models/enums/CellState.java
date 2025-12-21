@@ -1,4 +1,4 @@
-package main.java.Models.enums;
+package Models.enums;
 
 /**
  * Represents the state of a cell in the Sudoku board

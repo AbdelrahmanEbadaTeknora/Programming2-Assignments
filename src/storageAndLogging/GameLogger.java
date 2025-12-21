@@ -1,6 +1,6 @@
 package storageAndLogging;
 
-import main.java.utils.Constants;
+import utils.Constants;
 
 import java.io.File;
 import java.io.BufferedReader;
@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static utils.Constants.GAMES_FOLDER;
+
 /**
  * Logs user actions to file in format: (x, y, val, prev)
  * Each line represents one move: row, column, new value, previous value
@@ -18,7 +20,7 @@ public class GameLogger {
     private String logFilePath;
 
     public GameLogger() {
-        this.logFilePath = Constants.GAMES_FOLDER + File.separator +
+        this.logFilePath = GAMES_FOLDER + File.separator +
                 Constants.INCOMPLETE_FOLDER + File.separator +
                 Constants.LOG_FILE;
     }

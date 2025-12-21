@@ -1,8 +1,8 @@
-package main.java.storage;
+package storageAndLogging;
 
-import main.java.Models.Catalog;
-import main.java.Models.enums.DifficultyLevel;
-import main.java.utils.Constants;
+import Models.Catalog;
+import Models.enums.DifficultyLevel;
+import utils.Constants;
 
 import java.io.File;
 import java.nio.file.Files;

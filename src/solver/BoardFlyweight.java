@@ -1,6 +1,6 @@
-package main.java.solver;
+package solver;
 
-import main.java.Models.Board;
+import Models.Board;
 import OptionalHelperClasses.Position;
 import java.util.List;
 import java.util.HashSet;

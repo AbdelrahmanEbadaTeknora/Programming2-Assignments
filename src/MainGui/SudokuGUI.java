@@ -1,14 +1,16 @@
-package main.java.view;
+package MainGui;
 
-import main.java.controller.Controllable;
-import main.java.Models.Catalog;
-import main.java.Models.enums.DifficultyLevel;
-import main.java.exceptions.InvalidGameException;
-import main.java.exceptions.NotFoundException;
-import main.java.exceptions.SolutionInvalidException;
+import controller.Controllable;
+import controller.GameController;
+import Models.Catalog;
+import Models.enums.DifficultyLevel;
+import exceptions.InvalidGameException;
+import exceptions.NotFoundException;
+import exceptions.SolutionInvalidException;
 import OptionalHelperClasses.UserAction;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 
 /**
@@ -55,6 +57,54 @@ public class SudokuGUI extends JFrame {
 
         // Show main menu
         showMainMenu();
+    }
+
+    /**
+     * Initializes the game structure and creates sample games if needed
+     */
+    private void initializeGameStructure() {
+        try {
+            // Initialize folder structure
+            storageAndLogging.GameStorage.initializeFolderStructure();
+
+            // Check if we need to generate games
+            Models.Catalog catalog = controller.getCatalog();
+
+            if (!catalog.hasAllModes()) {
+                // Generate games from the default solved puzzle
+                generateDefaultGames();
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to initialize game structure: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Generates default games from a solved puzzle
+     */
+    private void generateDefaultGames() {
+        try {
+            // Create a solved Sudoku board (valid 9x9)
+            int[][] solvedBoard = {
+                    {1, 2, 3, 4, 5, 6, 7, 8, 9},
+                    {4, 5, 6, 7, 8, 9, 1, 2, 3},
+                    {7, 8, 9, 1, 2, 3, 4, 5, 6},
+                    {2, 3, 4, 5, 6, 7, 8, 9, 1},
+                    {5, 6, 7, 8, 9, 1, 2, 3, 4},
+                    {8, 9, 1, 2, 3, 4, 5, 6, 7},
+                    {3, 4, 5, 6, 7, 8, 9, 1, 2},
+                    {6, 7, 8, 9, 1, 2, 3, 4, 5},
+                    {9, 1, 2, 3, 4, 5, 6, 7, 8}
+            };
+
+            // Generate games from this solved board
+            controller.driveGames(solvedBoard);
+
+            System.out.println("Default games generated successfully!");
+        } catch (Exception e) {
+            System.err.println("Failed to generate default games: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -112,11 +162,28 @@ public class SudokuGUI extends JFrame {
      * Loads puzzle from file
      */
     private void loadFromFile() {
+        System.out.println("DEBUG: loadFromFile() called");
+
         String filePath = FileInputDialog.showDialog(this);
+        System.out.println("DEBUG: Selected file: " + filePath);
+
         if (filePath != null && !filePath.isEmpty()) {
             try {
                 // Read board from file
+                System.out.println("DEBUG: Reading board from file...");
                 int[][] board = readBoardFromFile(filePath);
+                System.out.println("DEBUG: Board read successfully");
+
+                // Print first few cells
+                System.out.println("DEBUG: Board sample (first 3x3):");
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        System.out.print(board[i][j] + " ");
+                    }
+                    System.out.println();
+                }
+
+                System.out.println("DEBUG: Calling controller.driveGames()...");
                 controller.driveGames(board);
 
                 JOptionPane.showMessageDialog(this,
@@ -126,16 +193,21 @@ public class SudokuGUI extends JFrame {
 
                 showMainMenu();
             } catch (SolutionInvalidException e) {
+                System.err.println("DEBUG: SolutionInvalidException: " + e.getMessage());
                 JOptionPane.showMessageDialog(this,
                         "Invalid puzzle: " + e.getMessage(),
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
+                System.err.println("DEBUG: General Exception: " + e.getMessage());
+                e.printStackTrace();
                 JOptionPane.showMessageDialog(this,
                         "Failed to load file: " + e.getMessage(),
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
             }
+        } else {
+            System.out.println("DEBUG: No file selected or dialog cancelled");
         }
     }
 
@@ -302,12 +374,28 @@ public class SudokuGUI extends JFrame {
     }
 
     /**
-     * Main entry point
+     * Main entry point - Creates and starts the Sudoku GUI
      */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            // Would be initialized with actual controller
-            System.out.println("Starting Sudoku GUI...");
+            try {
+                // Create the game controller
+                GameController controller = new GameController();
+
+                // Create and show the main GUI window
+                SudokuGUI gui = new SudokuGUI(controller);
+
+                System.out.println("Sudoku GUI started successfully!");
+            } catch (Exception e) {
+                System.err.println("Failed to start Sudoku GUI: " + e.getMessage());
+                e.printStackTrace();
+
+                // Show error dialog
+                JOptionPane.showMessageDialog(null,
+                        "Failed to start application: " + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         });
     }
 }

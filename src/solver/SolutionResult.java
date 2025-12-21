@@ -1,5 +1,7 @@
 package solver;
 
+import OptionalHelperClasses.Position;
+
 import java.util.List;
 
 /**

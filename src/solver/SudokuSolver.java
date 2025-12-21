@@ -1,8 +1,8 @@
-package main.java.solver;
+package solver;
 
-import main.java.Models.Board;
+import Models.Board;
 import solver.SolutionResult;
-import main.java.verification.SudokuVerifier;
+import verification.SudokuVerifier;
 import OptionalHelperClasses.Position;
 
 import java.util.ArrayList;

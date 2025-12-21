@@ -1,6 +1,6 @@
 package utils;
 
-import main.java.Models.Board;
+import Models.Board;
 
 public class BoardValidator {
 

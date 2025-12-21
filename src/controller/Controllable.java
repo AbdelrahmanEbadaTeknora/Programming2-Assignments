@@ -1,9 +1,9 @@
-package main.java.controller;
+package controller;
 
-import main.java.Models.Catalog;
-import main.java.exceptions.InvalidGameException;
-import main.java.exceptions.NotFoundException;
-import main.java.exceptions.SolutionInvalidException;
+import Models.Catalog;
+import exceptions.InvalidGameException;
+import exceptions.NotFoundException;
+import exceptions.SolutionInvalidException;
 import OptionalHelperClasses.UserAction;
 
 import java.io.IOException;

@@ -1,11 +1,11 @@
-package main.java.controller;
+package controller;
 
-import main.java.Models.Catalog;
-import main.java.Models.Game;
-import main.java.Models.enums.DifficultyLevel;
-import main.java.exceptions.InvalidGameException;
-import main.java.exceptions.NotFoundException;
-import main.java.exceptions.SolutionInvalidException;
+import Models.Catalog;
+import Models.Game;
+import Models.enums.DifficultyLevel;
+import exceptions.InvalidGameException;
+import exceptions.NotFoundException;
+import exceptions.SolutionInvalidException;
 
 import java.io.IOException;
 

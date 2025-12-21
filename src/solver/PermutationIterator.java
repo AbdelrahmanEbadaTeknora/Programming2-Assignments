@@ -1,4 +1,4 @@
-package main.java.solver;
+package solver;
 
 import java.util.List;
 import java.util.NoSuchElementException;

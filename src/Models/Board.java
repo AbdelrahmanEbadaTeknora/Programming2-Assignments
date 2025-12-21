@@ -1,4 +1,4 @@
-package main.java.Models;
+package Models;
 
 /**
  * Represents a Sudoku board (9x9 grid)

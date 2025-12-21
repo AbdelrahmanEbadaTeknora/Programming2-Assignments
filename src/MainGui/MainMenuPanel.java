@@ -1,6 +1,6 @@
-package main.java.view;
+package MainGui;
 
-import main.java.Models.enums.DifficultyLevel;
+import Models.enums.DifficultyLevel;
 
 import javax.swing.*;
 import java.awt.*;

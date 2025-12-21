@@ -1,4 +1,4 @@
-package main.java.Models;
+package Models;
 
 /**
  * Represents the catalog of available games

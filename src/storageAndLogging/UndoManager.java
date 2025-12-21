@@ -1,184 +1,178 @@
 package storageAndLogging;
 
-import main.java.utils.Constants;
+import Models.Game;
+import Models.Board;
 
-import java.io.File;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * Logs user actions to file in format: (x, y, val, prev)
- * Each line represents one move: row, column, new value, previous value
+ * Manages undo operations using log file
+ * Reverses last move by reading log file and applying inverse operation
  */
-public class GameLogger {
-    private String logFilePath;
+public class UndoManager {
+    private GameLogger logger;
+    private static final Pattern LOG_PATTERN = Pattern.compile("\\((\\d+),(\\d+),(\\d+),(\\d+)\\)");
 
-    public GameLogger() {
-        this.logFilePath = Constants.GAMES_FOLDER + File.separator +
-                Constants.INCOMPLETE_FOLDER + File.separator +
-                Constants.LOG_FILE;
+    /**
+     * No-argument constructor
+     */
+    public UndoManager() {
+        this.logger = null;
     }
 
     /**
-     * Logs an action to the log file
-     * Format: (x, y, val, prev)
-     * Example: (3,5,3,0) means at row 3, col 5, entered 3, was previously 0
+     * Constructor with GameLogger
+     */
+    public UndoManager(GameLogger logger) {
+        this.logger = logger;
+    }
+
+    /**
+     * Sets the GameLogger instance
+     */
+    public void setGameLogger(GameLogger logger) {
+        this.logger = logger;
+    }
+
+    /**
+     * Gets the GameLogger instance
+     */
+    public GameLogger getGameLogger() {
+        return logger;
+    }
+
+    /**
+     * Performs undo operation on the game
+     * Reads last log entry, removes it, and applies inverse change to board
      *
-     * @param action String representation of action
-     * @throws IOException if write fails
+     * @param game Game to undo move in
+     * @return true if undo successful, false if no moves to undo
+     * @throws IOException if file operations fail
      */
-    public void log(String action) throws IOException {
-        createLogFileIfNotExists();
-
-        try (FileWriter writer = new FileWriter(logFilePath, true)) {
-            writer.write(action);
-            writer.write("\n");
-            writer.flush();
+    public boolean undo(Game game) throws IOException {
+        if (game == null) {
+            return false;
         }
+
+        if (logger == null) {
+            System.err.println("GameLogger not set in UndoManager");
+            return false;
+        }
+
+        // Get the last log entry
+        String lastEntry = logger.getLastEntry();
+
+        if (lastEntry == null || lastEntry.isEmpty()) {
+            return false; // No moves to undo
+        }
+
+        // Parse the log entry
+        LogMove move = parseLogEntry(lastEntry);
+
+        if (move == null) {
+            return false;
+        }
+
+        // Apply inverse operation: set cell back to previous value
+        Board board = game.getBoard();
+        board.setValue(move.row, move.col, move.previousValue);
+
+        // Remove the entry from log file
+        logger.removeLastEntry();
+
+        return true;
     }
 
     /**
-     * Logs a move with explicit parameters
+     * Performs multiple undo operations
      */
-    public void logMove(int row, int col, int newValue, int previousValue)
-            throws IOException {
-        String action = String.format("(%d,%d,%d,%d)", row, col, newValue, previousValue);
-        log(action);
+    public boolean undoMultiple(Game game, int count) throws IOException {
+        if (logger == null) {
+            System.err.println("GameLogger not set in UndoManager");
+            return false;
+        }
+
+        for (int i = 0; i < count; i++) {
+            if (!undo(game)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
-     * Removes the last entry from the log file
-     * Used for undo operations
-     *
-     * @throws IOException if operation fails
+     * Parses a log entry in format (x,y,val,prev)
      */
-    public void removeLastEntry() throws IOException {
-        if (!logFileExists()) {
-            return;
-        }
+    private LogMove parseLogEntry(String entry) {
+        Matcher matcher = LOG_PATTERN.matcher(entry);
 
-        // Read all lines except the last
-        List<String> lines = readAllLines();
-
-        if (!lines.isEmpty()) {
-            lines.remove(lines.size() - 1);
-        }
-
-        // Rewrite the file
-        writeAllLines(lines);
-    }
-
-    /**
-     * Gets the last log entry
-     */
-    public String getLastEntry() throws IOException {
-        if (!logFileExists()) {
+        if (!matcher.find()) {
             return null;
         }
 
-        List<String> lines = readAllLines();
-        if (lines.isEmpty()) {
+        try {
+            int row = Integer.parseInt(matcher.group(1));
+            int col = Integer.parseInt(matcher.group(2));
+            int newValue = Integer.parseInt(matcher.group(3));
+            int previousValue = Integer.parseInt(matcher.group(4));
+
+            return new LogMove(row, col, newValue, previousValue);
+        } catch (NumberFormatException e) {
+            System.err.println("Failed to parse log entry: " + entry);
             return null;
         }
-
-        return lines.get(lines.size() - 1);
     }
 
     /**
-     * Clears all log entries
+     * Gets number of undoable moves
      */
-    public void clearLog() throws IOException {
-        createLogFileIfNotExists();
+    public int getUndoableMovesCount() throws IOException {
+        if (logger == null) {
+            return 0;
+        }
+        return logger.getAllEntries().size();
+    }
 
-        try (FileWriter writer = new FileWriter(logFilePath)) {
-            // Just open and close to clear file
+    /**
+     * Checks if undo is possible
+     */
+    public boolean canUndo() throws IOException {
+        if (logger == null) {
+            return false;
+        }
+        return logger.getLastEntry() != null;
+    }
+
+    /**
+     * Clears all undo history
+     */
+    public void clearHistory() throws IOException {
+        if (logger != null) {
+            logger.clearLog();
         }
     }
 
     /**
-     * Gets all log entries
+     * Inner class to represent a logged move
      */
-    public List<String> getAllEntries() throws IOException {
-        if (!logFileExists()) {
-            return new ArrayList<>();
-        }
-        return readAllLines();
-    }
+    private static class LogMove {
+        int row;
+        int col;
+        int newValue;
+        int previousValue;
 
-    /**
-     * Reads all lines from log file
-     */
-    private List<String> readAllLines() throws IOException {
-        List<String> lines = new ArrayList<>();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(logFilePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                lines.add(line);
-            }
+        LogMove(int row, int col, int newValue, int previousValue) {
+            this.row = row;
+            this.col = col;
+            this.newValue = newValue;
+            this.previousValue = previousValue;
         }
 
-        return lines;
-    }
-
-    /**
-     * Writes all lines to log file
-     */
-    private void writeAllLines(List<String> lines) throws IOException {
-        try (FileWriter writer = new FileWriter(logFilePath)) {
-            for (String line : lines) {
-                writer.write(line);
-                writer.write("\n");
-            }
-            writer.flush();
+        @Override
+        public String toString() {
+            return String.format("(%d,%d,%d,%d)", row, col, newValue, previousValue);
         }
-    }
-
-    /**
-     * Checks if log file exists
-     */
-    private boolean logFileExists() {
-        File file = new File(logFilePath);
-        return file.exists() && file.isFile();
-    }
-
-    /**
-     * Creates log file if it doesn't exist
-     */
-    private void createLogFileIfNotExists() throws IOException {
-        File file = new File(logFilePath);
-        File parentDir = file.getParentFile();
-
-        if (parentDir != null && !parentDir.exists()) {
-            boolean created = parentDir.mkdirs();
-            if (!created) {
-                System.err.println("Failed to create parent directories for log file");
-            }
-        }
-
-        if (!file.exists()) {
-            boolean created = file.createNewFile();
-            if (!created) {
-                System.err.println("Failed to create log file");
-            }
-        }
-    }
-
-    /**
-     * Sets custom log file path
-     */
-    public void setLogFilePath(String path) {
-        this.logFilePath = path;
-    }
-
-    /**
-     * Gets current log file path
-     */
-    public String getLogFilePath() {
-        return logFilePath;
     }
 }

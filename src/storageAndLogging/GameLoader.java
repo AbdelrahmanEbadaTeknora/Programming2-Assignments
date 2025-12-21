@@ -1,10 +1,10 @@
 package storageAndLogging;
 
-import main.java.Models.Game;
-import main.java.Models.Board;
-import main.java.Models.enums.DifficultyLevel;
-import main.java.exceptions.NotFoundException;
-import main.java.utils.Constants;
+import Models.Game;
+import Models.Board;
+import Models.enums.DifficultyLevel;
+import exceptions.NotFoundException;
+import utils.Constants;
 
 import java.io.File;
 import java.io.BufferedReader;
@@ -13,6 +13,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static utils.Constants.GAMES_FOLDER;
 
 /**
  * Loads and saves Sudoku games from/to storage
@@ -29,7 +31,7 @@ public class GameLoader {
      * @throws NotFoundException if no game found for difficulty
      */
     public Game loadGame(DifficultyLevel level) throws NotFoundException {
-        String folderPath = Constants.GAMES_FOLDER + File.separator;
+        String folderPath = GAMES_FOLDER + File.separator;
 
         if (level == null) {
             folderPath += Constants.INCOMPLETE_FOLDER;
@@ -74,7 +76,7 @@ public class GameLoader {
             throw new IllegalArgumentException("Game cannot be null");
         }
 
-        String folderPath = Constants.GAMES_FOLDER + File.separator +
+        String folderPath = GAMES_FOLDER + File.separator +
                 Constants.INCOMPLETE_FOLDER;
         createFolderIfNotExists(folderPath);
 
@@ -90,7 +92,7 @@ public class GameLoader {
             throw new IllegalArgumentException("Game cannot be null");
         }
 
-        String folderPath = Constants.GAMES_FOLDER + File.separator +
+        String folderPath = GAMES_FOLDER + File.separator +
                 difficulty.getFolderName();
         createFolderIfNotExists(folderPath);
 
@@ -109,7 +111,7 @@ public class GameLoader {
             throw new IllegalArgumentException("Difficulty cannot be null");
         }
 
-        String folderPath = Constants.GAMES_FOLDER + File.separator +
+        String folderPath = GAMES_FOLDER + File.separator +
                 difficulty.getFolderName();
         File folder = new File(folderPath);
 
@@ -129,7 +131,7 @@ public class GameLoader {
      * Deletes the current/incomplete game
      */
     public void deleteCurrentGame() throws IOException {
-        String folderPath = Constants.GAMES_FOLDER + File.separator +
+        String folderPath = GAMES_FOLDER + File.separator +
                 Constants.INCOMPLETE_FOLDER;
         File folder = new File(folderPath);
 
@@ -222,7 +224,7 @@ public class GameLoader {
      */
     public List<Game> getAllGames(DifficultyLevel difficulty) throws IOException {
         List<Game> games = new ArrayList<>();
-        String folderPath = Constants.GAMES_FOLDER + File.separator +
+        String folderPath = GAMES_FOLDER + File.separator +
                 difficulty.getFolderName();
         File folder = new File(folderPath);
 
