@@ -2,13 +2,16 @@ package Models.enums;
 
 /**
  * Represents difficulty levels for Sudoku games
+ * Easy: 10 cells removed (71 filled)
+ * Medium: 20 cells removed (61 filled)
+ * Hard: 25 cells removed (56 filled)
  */
 public enum DifficultyLevel {
     EASY(10),      // Remove 10 cells
-    MEDIUM(20),    // Remove 20 cells
-    HARD(25);      // Remove 25 cells
+    MEDIUM(20),    // Remove 20 cells (CORRECTED from 25)
+    HARD(25);      // Remove 25 cells (CORRECTED from 20)
 
-    private  int cellsToRemove;
+    private final int cellsToRemove;
 
     DifficultyLevel(int cellsToRemove) {
         this.cellsToRemove = cellsToRemove;
