@@ -112,18 +112,6 @@ public class Cell {
     }
 
 
-    public boolean isInitial() {
-        return state == CellState.INITIAL;
-    }
-
-
-    public boolean isValidValue() {
-        if (isEmpty()) {
-            return true;
-        }
-        return value >= 1 && value <= 9;
-    }
-
     // ==================== Reset & Undo ====================
 
     public void clear() {
