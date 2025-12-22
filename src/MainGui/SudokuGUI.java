@@ -12,6 +12,8 @@ import OptionalHelperClasses.UserAction;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.Stack;
+import javax.swing.Timer;
 
 /**
  * Main GUI window for Sudoku game
@@ -26,6 +28,9 @@ public class SudokuGUI extends JFrame {
     private ControlPanel controlPanel;
     private int[][] currentBoardGrid;
     private int[][] originalBoardGrid;
+
+    private Stack<int[][]> moveHistory;
+    private int[][] lastBoardState;
 
     public SudokuGUI(Controllable controller) {
         this.controller = controller;
@@ -277,6 +282,10 @@ public class SudokuGUI extends JFrame {
         currentBoardGrid = board;
         originalBoardGrid = copyBoard(board);
 
+        moveHistory = new Stack<>();
+        moveHistory.push(copyBoard(board)); // Save initial state
+        lastBoardState = copyBoard(board);
+
         // Remove previous game panel if exists
         java.awt.Component[] components = mainPanel.getComponents();
         for (java.awt.Component comp : components) {
@@ -292,6 +301,9 @@ public class SudokuGUI extends JFrame {
 
         // Board
         gameBoardPanel = new GameBoardPanel(currentBoardGrid, originalBoardGrid);
+
+        Timer changeTracker = new Timer(500, e -> trackBoardChanges());
+        changeTracker.start();
         gamePanel.add(gameBoardPanel, BorderLayout.CENTER);
 
         // Control panel
@@ -301,6 +313,44 @@ public class SudokuGUI extends JFrame {
 
         mainPanel.add(gamePanel, "GAME");
         cardLayout.show(mainPanel, "GAME");
+        updateSolveButtonState();
+    }
+
+    /**
+     * Tracks board changes for undo functionality
+     */
+    private void trackBoardChanges() {
+        if (gameBoardPanel != null) {
+            int[][] currentBoard = gameBoardPanel.getBoardState();
+
+            // Check if board has changed since last check
+            if (!boardsEqual(lastBoardState, currentBoard)) {
+                // Save the previous state to history
+                moveHistory.push(copyBoard(lastBoardState));
+                lastBoardState = copyBoard(currentBoard);
+
+                System.out.println("Move recorded at " + System.currentTimeMillis() +
+                        ". History size: " + moveHistory.size());
+
+                updateSolveButtonState();
+            }
+        }
+    }
+
+    /**
+     * Compares two boards for equality
+     */
+    private boolean boardsEqual(int[][] board1, int[][] board2) {
+        if (board1 == null || board2 == null) return false;
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (board1[i][j] != board2[i][j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -364,11 +414,71 @@ public class SudokuGUI extends JFrame {
     /**
      * Undoes last move
      */
+    /**
+     * Undoes last move
+     */
+    /**
+     * Undoes last move - WORKING VERSION
+     */
     private void undoMove() {
-        // This would require access to GameController's undo method
-        controlPanel.setStatus("Undo functionality to be implemented");
-    }
+        if (moveHistory == null || moveHistory.size() <= 1) {
+            controlPanel.setStatus("No moves to undo");
+            return;
+        }
 
+        System.out.println("DEBUG: Undo clicked. History size: " + moveHistory.size());
+
+        // Step 1: Get current board state
+        int[][] currentBoard = gameBoardPanel.getBoardState();
+
+        // Step 2: Find the most recent DIFFERENT state in history
+        // We'll search through history to find a state different from current
+        Stack<int[][]> tempStack = new Stack<>();
+        int[][] stateToRestore = null;
+
+        // Pop states until we find one different from current
+        while (!moveHistory.isEmpty()) {
+            int[][] candidate = moveHistory.pop();
+            tempStack.push(candidate); // Save for later
+
+            if (!boardsEqual(currentBoard, candidate)) {
+                // Found a different state! This is what we want to restore
+                stateToRestore = candidate;
+                break;
+            }
+        }
+
+        // Step 3: Put everything back into moveHistory
+        while (!tempStack.isEmpty()) {
+            moveHistory.push(tempStack.pop());
+        }
+
+        // Step 4: If we found a state to restore, apply it
+        if (stateToRestore != null) {
+            // Now we need to remove states from history up to the one we're restoring
+            while (!moveHistory.isEmpty()) {
+                int[][] topState = moveHistory.peek();
+                if (boardsEqual(topState, stateToRestore)) {
+                    // Found it! Stop here
+                    break;
+                }
+                moveHistory.pop(); // Remove states newer than what we want
+            }
+
+            // Apply the restore state
+            gameBoardPanel.fillSolution(stateToRestore);
+            lastBoardState = copyBoard(stateToRestore);
+            gameBoardPanel.clearInvalidMarkings();
+            controlPanel.setStatus("Undo successful");
+            updateSolveButtonState();
+
+            System.out.println("DEBUG: Undo applied. New history size: " + moveHistory.size());
+        } else {
+            // All states are the same as current - nothing to undo
+            controlPanel.setStatus("No moves to undo");
+        }
+        updateSolveButtonState();
+    }
     /**
      * Clears all user entries
      */
@@ -399,9 +509,14 @@ public class SudokuGUI extends JFrame {
     /**
      * Updates solve button based on empty cell count
      */
+    /**
+     * Updates solve button based on empty cell count
+     */
     public void updateSolveButtonState() {
-        if (controlPanel != null) {
+        if (controlPanel != null && gameBoardPanel != null) {
             int emptyCells = gameBoardPanel.countEmptyCells();
+            System.out.println("DEBUG: Empty cells = " + emptyCells +
+                    ", Solve button enabled = " + (emptyCells == 5));
             controlPanel.setSolveButtonEnabled(emptyCells == 5);
         }
     }
