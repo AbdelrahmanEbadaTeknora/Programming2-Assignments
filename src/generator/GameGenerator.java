@@ -29,37 +29,6 @@ public class GameGenerator {
         this.randomPairs = new RandomPairs();
     }
 
-    /**
-     * Generates all three difficulty levels from a solved board
-     * @param solvedBoard A completely solved and valid Sudoku board
-     * @return Array of 3 games [EASY, MEDIUM, HARD]
-     * @throws SolutionInvalidException if board is not valid/complete
-     */
-    public Game[] generateAllDifficulties(Board solvedBoard) throws SolutionInvalidException {
-        validateSourceBoard(solvedBoard);
-
-        Game[] games = new Game[3];
-
-        // Create new RandomPairs for each difficulty to ensure different random sequences
-        RandomPairs randomPairsEasy = new RandomPairs();
-        RandomPairs randomPairsMedium = new RandomPairs();
-        RandomPairs randomPairsHard = new RandomPairs();
-
-        games[0] = generateGameWithRandomPairs(solvedBoard, DifficultyLevel.EASY, randomPairsEasy);
-        games[1] = generateGameWithRandomPairs(solvedBoard, DifficultyLevel.MEDIUM, randomPairsMedium);
-        games[2] = generateGameWithRandomPairs(solvedBoard, DifficultyLevel.HARD, randomPairsHard);
-
-        return games;
-    }
-
-    /**
-     * Generates a game for a specific difficulty
-     * Creates a NEW RandomPairs instance for each call to ensure different results
-     * @param solvedBoard Solved board
-     * @param difficulty Target difficulty level
-     * @return Generated game with cells removed
-     * @throws SolutionInvalidException if board is invalid
-     */
     public Game generateGame(Board solvedBoard, DifficultyLevel difficulty)
             throws SolutionInvalidException {
         validateSourceBoard(solvedBoard);
@@ -177,27 +146,4 @@ public class GameGenerator {
         }
     }
 
-    /**
-     * Gets difficulty based on number of cells removed
-     * @param cellsRemoved Number of cells removed
-     * @return Corresponding DifficultyLevel
-     */
-    public static DifficultyLevel getDifficultyByRemovedCells(int cellsRemoved) {
-        if (cellsRemoved <= 10) {
-            return DifficultyLevel.EASY;
-        } else if (cellsRemoved <= 20) {
-            return DifficultyLevel.MEDIUM;
-        } else {
-            return DifficultyLevel.HARD;
-        }
-    }
-
-    /**
-     * Gets recommended cell count for difficulty
-     * @param difficulty Target difficulty
-     * @return Number of cells to remove
-     */
-    public static int getCellCountForDifficulty(DifficultyLevel difficulty) {
-        return difficulty.getCellsToRemove();
-    }
 }

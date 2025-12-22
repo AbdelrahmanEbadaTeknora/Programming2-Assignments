@@ -1,8 +1,6 @@
 package OptionalHelperClasses;
 
-/**
- * Encapsulates a user action for main.javaa.logging
- */
+
 public class UserAction {
     private int row;
     private int col;

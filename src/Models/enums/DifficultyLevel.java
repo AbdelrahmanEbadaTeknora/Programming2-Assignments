@@ -1,11 +1,6 @@
 package Models.enums;
 
-/**
- * Represents difficulty levels for Sudoku games
- * Easy: 10 cells removed (71 filled)
- * Medium: 20 cells removed (61 filled)
- * Hard: 25 cells removed (56 filled)
- */
+
 public enum DifficultyLevel {
     EASY(10),      // Remove 10 cells
     MEDIUM(20),    // Remove 20 cells (CORRECTED from 25)

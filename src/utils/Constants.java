@@ -11,7 +11,4 @@ public class Constants {
     public static final String INCOMPLETE_FOLDER = "incomplete";
     public static final String GAME_FILE = "game.txt";
     public static final String LOG_FILE = "log.txt";
-
-    private Constants() {
-        // Prevent instantiation
-    }}
+}

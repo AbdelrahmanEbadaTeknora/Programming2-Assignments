@@ -2,9 +2,7 @@ package OptionalHelperClasses;
 
 import java.util.Objects;
 
-/**
- * Represents a position (row, col) on the Sudoku board
- */
+
 public class Position {
     private final int row;
     private final int col;

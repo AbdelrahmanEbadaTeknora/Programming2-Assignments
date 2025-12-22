@@ -223,43 +223,7 @@ public class GameStorage {
         }
     }
 
-    /**
-     * Validates game storage integrity
-     */
-    public static boolean validateStorageIntegrity() {
-        DifficultyLevel[] difficulties = {
-                DifficultyLevel.EASY,
-                DifficultyLevel.MEDIUM,
-                DifficultyLevel.HARD
-        };
 
-        for (DifficultyLevel difficulty : difficulties) {
-            String folderPath = getDifficultyFolderPath(difficulty);
-            if (!FileManager.folderExists(folderPath)) {
-                return false;
-            }
-        }
-
-        String incompletePath = getIncompleteGamePath();
-        return FileManager.folderExists(incompletePath);
-    }
-
-    /**
-     * Attempts to repair storage structure
-     */
-    public static void repairStorageStructure() throws StorageException {
-        try {
-            initializeFolderStructure();
-            validateStorageIntegrity();
-        } catch (Exception e) {
-            throw new StorageException("Failed to repair storage structure: " +
-                    e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Inner class for storage statistics
-     */
     public static class StorageStats {
         public int easyGames;
         public int mediumGames;
@@ -267,23 +231,7 @@ public class GameStorage {
         public boolean hasIncompleteGame;
         public long totalSizeBytes;
 
-        /**
-         * Gets total number of games
-         */
-        public int getTotalGames() {
-            return easyGames + mediumGames + hardGames + (hasIncompleteGame ? 1 : 0);
-        }
 
-        /**
-         * Gets storage size in KB
-         */
-        public long getSizeInKB() {
-            return totalSizeBytes / 1024;
-        }
-
-        /**
-         * Gets storage size in MB
-         */
         public double getSizeInMB() {
             return totalSizeBytes / (1024.0 * 1024.0);
         }
@@ -299,36 +247,5 @@ public class GameStorage {
                     '}';
         }
     }
-    // Add these helper methods to GameStorage.java class
 
-    /**
-     * Saves a game to the appropriate difficulty folder
-     */
-    public static void saveGamesByDifficulty(Models.Game game, Models.enums.DifficultyLevel difficulty)
-            throws java.io.IOException {
-        String folderPath = getDifficultyFolderPath(difficulty);
-        String filename = generateGameFilename();
-        String filePath = folderPath + java.io.File.separator + filename;
-
-        java.io.File file = new java.io.File(filePath);
-        java.io.File parentDir = file.getParentFile();
-        if (parentDir != null && !parentDir.exists()) {
-            parentDir.mkdirs();
-        }
-
-        // Save the game board to file
-        try (java.io.BufferedWriter writer = new java.io.BufferedWriter(
-                new java.io.FileWriter(file))) {
-            int[][] grid = game.getBoard().getGrid();
-            for (int i = 0; i < 9; i++) {
-                for (int j = 0; j < 9; j++) {
-                    writer.write(String.valueOf(grid[i][j]));
-                    if (j < 8) {
-                        writer.write(" ");
-                    }
-                }
-                writer.newLine();
-            }
-        }
-    }
 }

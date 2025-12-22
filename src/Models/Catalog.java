@@ -1,8 +1,6 @@
 package Models;
 
-/**
- * Represents the catalog of available games
- */
+
 public class Catalog {
     private boolean current;        // True if there is an unfinished game
     private boolean allModesExist;  // True if at least one game per difficulty exists

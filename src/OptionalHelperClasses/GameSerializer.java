@@ -11,26 +11,13 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-/**
- * Serializes and deserializes Game objects to/from custom format
- * Used for saving game state with metadata
- */
+
 public class GameSerializer {
     private static final String DELIMITER = ",";
     private static final String BOARD_START = "BOARD_START";
     private static final String BOARD_END = "BOARD_END";
 
-    /**
-     * Serializes a game to a file in custom format
-     * Format:
-     * DIFFICULTY=EASY
-     * TIMESTAMP=1234567890
-     * ID=game_1234567890
-     * BOARD_START
-     * 1 2 3 ...
-     * ...
-     * BOARD_END
-     */
+
     public static void serializeGame(Game game, String filePath) throws IOException {
         if (game == null || filePath == null) {
             throw new IllegalArgumentException("Game and file path cannot be null");
@@ -71,12 +58,7 @@ public class GameSerializer {
         }
     }
 
-    /**
-     * Deserializes a game from a file
-     * @param filePath Path to game file
-     * @return Deserialized Game object
-     * @throws IOException if file operations fail
-     */
+
     public static Game deserializeGame(String filePath) throws IOException {
         if (filePath == null) {
             throw new IllegalArgumentException("File path cannot be null");
@@ -137,9 +119,7 @@ public class GameSerializer {
         }
     }
 
-    /**
-     * Serializes to JSON format (alternative)
-     */
+
     public static String toJsonString(Game game) {
         if (game == null) {
             return "{}";
@@ -173,9 +153,7 @@ public class GameSerializer {
         return json.toString();
     }
 
-    /**
-     * Deserializes from JSON string (basic implementation)
-     */
+
     public static Game fromJsonString(String json) throws IOException {
         if (json == null || json.isEmpty()) {
             throw new IllegalArgumentException("JSON string cannot be null or empty");
@@ -208,9 +186,7 @@ public class GameSerializer {
         }
     }
 
-    /**
-     * Helper method to extract JSON value
-     */
+
     private static String extractJsonValue(String json, String key) {
         String searchStr = "\"" + key + "\":\"";
         int startIndex = json.indexOf(searchStr);
@@ -232,9 +208,7 @@ public class GameSerializer {
         return json.substring(startIndex, endIndex);
     }
 
-    /**
-     * Creates a backup copy of a game file
-     */
+
     public static void backupGame(String originalPath, String backupPath)
             throws IOException {
         File original = new File(originalPath);
@@ -258,9 +232,7 @@ public class GameSerializer {
         }
     }
 
-    /**
-     * Compresses game data to string representation
-     */
+
     public static String compressGame(Game game) {
         if (game == null) {
             return "";
@@ -280,9 +252,7 @@ public class GameSerializer {
         return sb.toString();
     }
 
-    /**
-     * Gets file size in bytes
-     */
+
     public static long getFileSizeInBytes(String filePath) {
         File file = new File(filePath);
         if (file.exists() && file.isFile()) {
@@ -291,9 +261,7 @@ public class GameSerializer {
         return 0;
     }
 
-    /**
-     * Validates game file format
-     */
+
     public static boolean isValidGameFile(String filePath) {
         try {
             File file = new File(filePath);
@@ -320,9 +288,7 @@ public class GameSerializer {
         }
     }
 
-    /**
-     * Gets information about serializer
-     */
+
     public static String getSerializerInfo() {
         return "GameSerializer - Sudoku Game Serialization\n" +
                 "Formats Supported:\n" +

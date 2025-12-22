@@ -130,51 +130,8 @@ public class MainMenuPanel extends JPanel {
         return button;
     }
 
-    /**
-     * Gets continue button
-     */
-    public JButton getContinueButton() {
-        return continueButton;
-    }
 
-    /**
-     * Gets easy button
-     */
-    public JButton getEasyButton() {
-        return easyButton;
-    }
 
-    /**
-     * Gets medium button
-     */
-    public JButton getMediumButton() {
-        return mediumButton;
-    }
-
-    /**
-     * Gets hard button
-     */
-    public JButton getHardButton() {
-        return hardButton;
-    }
-
-    /**
-     * Gets load file button
-     */
-    public JButton getLoadFileButton() {
-        return loadFileButton;
-    }
-
-    /**
-     * Sets message label text
-     */
-    public void setMessage(String message) {
-        messageLabel.setText(message);
-    }
-
-    /**
-     * Enables/disables continue button
-     */
     public void setContinueButtonEnabled(boolean enabled) {
         continueButton.setEnabled(enabled);
     }

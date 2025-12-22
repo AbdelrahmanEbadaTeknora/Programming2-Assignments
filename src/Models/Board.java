@@ -1,8 +1,6 @@
 package Models;
 
-/**
- * Represents a Sudoku board (9x9 grid)
- */
+
 public class Board {
     private static final int SIZE = 9;
     private int[][] grid;
@@ -24,9 +22,7 @@ public class Board {
         }
     }
 
-    /**
-     * Returns a copy of the grid to prevent external modification
-     */
+
     public int[][] getGrid() {
         int[][] copy = new int[SIZE][SIZE];
         for (int i = 0; i < SIZE; i++) {
@@ -74,16 +70,12 @@ public class Board {
         return SIZE;
     }
 
-    /**
-     * Creates a deep copy of this board
-     */
+
     public Board copy() {
         return new Board(this.grid);
     }
 
-    /**
-     * Clears the entire board (sets all cells to 0)
-     */
+
     public void clear() {
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {

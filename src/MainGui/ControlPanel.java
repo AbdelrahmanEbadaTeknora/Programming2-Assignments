@@ -31,9 +31,6 @@ public class ControlPanel extends JPanel {
         add(statusLabel, BorderLayout.SOUTH);
     }
 
-    /**
-     * Creates the button panel with all control buttons
-     */
     private JPanel createButtonPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
@@ -88,140 +85,38 @@ public class ControlPanel extends JPanel {
         return panel;
     }
 
-    /**
-     * Gets Verify button
-     */
-    public JButton getVerifyButton() {
-        return verifyButton;
-    }
 
-    /**
-     * Gets Solve button
-     */
-    public JButton getSolveButton() {
-        return solveButton;
-    }
-
-    /**
-     * Gets Undo button
-     */
-    public JButton getUndoButton() {
-        return undoButton;
-    }
-
-    /**
-     * Gets Clear button
-     */
-    public JButton getClearButton() {
-        return clearButton;
-    }
-
-    /**
-     * Gets New Game button
-     */
-    public JButton getNewGameButton() {
-        return newGameButton;
-    }
-
-    /**
-     * Sets status message
-     */
     public void setStatus(String message) {
         statusLabel.setText(message);
     }
 
-    /**
-     * Gets status label
-     */
-    public JLabel getStatusLabel() {
-        return statusLabel;
-    }
-
-    /**
-     * Enables/disables Solve button
-     */
     public void setSolveButtonEnabled(boolean enabled) {
         solveButton.setEnabled(enabled);
     }
 
-    /**
-     * Enables/disables Undo button
-     */
-    public void setUndoButtonEnabled(boolean enabled) {
-        undoButton.setEnabled(enabled);
-    }
-
-    /**
-     * Adds action listener to Verify button
-     */
     public void addVerifyListener(ActionListener listener) {
         verifyButton.addActionListener(listener);
     }
 
-    /**
-     * Adds action listener to Solve button
-     */
+
     public void addSolveListener(ActionListener listener) {
         solveButton.addActionListener(listener);
     }
 
-    /**
-     * Adds action listener to Undo button
-     */
+
     public void addUndoListener(ActionListener listener) {
         undoButton.addActionListener(listener);
     }
 
-    /**
-     * Adds action listener to Clear button
-     */
+
     public void addClearListener(ActionListener listener) {
         clearButton.addActionListener(listener);
     }
 
-    /**
-     * Adds action listener to New Game button
-     */
+
     public void addNewGameListener(ActionListener listener) {
         newGameButton.addActionListener(listener);
     }
 
-    /**
-     * Disables all buttons
-     */
-    public void disableAllButtons() {
-        verifyButton.setEnabled(false);
-        solveButton.setEnabled(false);
-        undoButton.setEnabled(false);
-        clearButton.setEnabled(false);
-        newGameButton.setEnabled(false);
-    }
 
-    /**
-     * Enables all buttons
-     */
-    public void enableAllButtons() {
-        verifyButton.setEnabled(true);
-        clearButton.setEnabled(true);
-        newGameButton.setEnabled(true);
-    }
-
-    /**
-     * Resets button states to initial
-     */
-    public void resetButtonStates() {
-        verifyButton.setEnabled(true);
-        solveButton.setEnabled(false);
-        undoButton.setEnabled(false);
-        clearButton.setEnabled(true);
-        newGameButton.setEnabled(true);
-        statusLabel.setText("Ready");
-    }
-
-    /**
-     * Gets status message
-     */
-    public String getStatus() {
-        return statusLabel.getText();
-    }
 }

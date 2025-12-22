@@ -5,19 +5,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 
-/**
- * Dialog for selecting a Sudoku file to load
- * Provides file chooser for loading solved Sudoku puzzles
- */
+
 public class FileInputDialog extends JDialog {
     private String selectedFilePath;
     private boolean cancelled;
     private JFileChooser fileChooser;
 
-    /**
-     * Constructor
-     * @param parent Parent frame
-     */
     public FileInputDialog(JFrame parent) {
         super(parent, "Select Sudoku File", true);
         this.selectedFilePath = null;
@@ -29,9 +22,7 @@ public class FileInputDialog extends JDialog {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
 
-    /**
-     * Sets up the dialog UI
-     */
+
     private void setupUI() {
         setLayout(new BorderLayout(10, 10));
         ((JPanel) getContentPane()).setBorder(
@@ -84,9 +75,7 @@ public class FileInputDialog extends JDialog {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    /**
-     * Handles load file action
-     */
+
     private void loadFile() {
         File selectedFile = fileChooser.getSelectedFile();
 
@@ -119,37 +108,13 @@ public class FileInputDialog extends JDialog {
         dispose();
     }
 
-    /**
-     * Shows dialog and returns selected file path
-     * @param parent Parent frame
-     * @return File path or null if cancelled
-     */
+
     public static String showDialog(JFrame parent) {
         FileInputDialog dialog = new FileInputDialog(parent);
         dialog.setVisible(true);
         return dialog.selectedFilePath;
     }
 
-    /**
-     * Gets selected file path
-     * @return Absolute path to selected file or null
-     */
-    public String getSelectedFilePath() {
-        return selectedFilePath;
-    }
-
-    /**
-     * Checks if dialog was cancelled
-     * @return true if cancelled, false if file was selected
-     */
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    /**
-     * Sets initial directory for file chooser
-     * @param path Directory path
-     */
     public void setInitialDirectory(String path) {
         if (path == null || path.isEmpty()) {
             return;
@@ -173,28 +138,5 @@ public class FileInputDialog extends JDialog {
         fileChooser.setSelectedFile(new File(filename));
     }
 
-    /**
-     * Gets the file chooser component
-     * @return JFileChooser instance
-     */
-    public JFileChooser getFileChooser() {
-        return fileChooser;
-    }
 
-    /**
-     * Sets dialog size
-     * @param width Dialog width
-     * @param height Dialog height
-     */
-    public void setDialogSize(int width, int height) {
-        setSize(width, height);
-    }
-
-    /**
-     * Enables/disables file type filtering
-     * @param accept true to accept all file types
-     */
-    public void setAcceptAllFileFilter(boolean accept) {
-        fileChooser.setAcceptAllFileFilterUsed(accept);
-    }
 }

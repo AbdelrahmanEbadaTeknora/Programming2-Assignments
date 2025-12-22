@@ -152,12 +152,6 @@ public class CellPanel extends JPanel {
         }
     }
 
-    /**
-     * Sets the value in the cell
-     */
-    /**
-     * Sets the value in the cell
-     */
     public void setValue(int value) {
         // Only allow 0 (empty) or digits 1-9
         if (value == 0) {
@@ -168,45 +162,30 @@ public class CellPanel extends JPanel {
         // If value is not 0-9, ignore it (don't set anything)
     }
 
-    /**
-     * Gets the row position
-     */
     public int getRow() {
         return row;
     }
 
-    /**
-     * Gets the column position
-     */
     public int getCol() {
         return col;
     }
 
-    /**
-     * Checks if cell is editable (not part of initial puzzle)
-     */
     public boolean isEditable() {
         return !isInitial;
     }
 
-    /**
-     * Checks if cell is part of initial puzzle
-     */
+
     public boolean isInitialCell() {
         return isInitial;
     }
 
-    /**
-     * Marks cell as invalid
-     */
+
     public void setInvalid(boolean invalid) {
         this.isInvalid = invalid;
         updateAppearance();
     }
 
-    /**
-     * Updates cell appearance based on state
-     */
+
     private void updateAppearance() {
         if (isInitial) {
             textField.setBackground(new Color(200, 200, 200));  // Gray for initial
@@ -220,10 +199,7 @@ public class CellPanel extends JPanel {
         }
     }
 
-    /**
-     * Clears the cell (sets to empty)
-     * Only works if cell is editable
-     */
+
     public void clear() {
         if (isEditable()) {
             textField.setText("");
@@ -232,9 +208,7 @@ public class CellPanel extends JPanel {
         }
     }
 
-    /**
-     * Focuses the cell
-     */
+
     @Override
     public void requestFocus() {
         textField.requestFocus();
@@ -251,27 +225,9 @@ public class CellPanel extends JPanel {
         }
     }
 
-    /**
-     * Gets the text field for advanced operations
-     */
-    public JTextField getTextField() {
-        return textField;
-    }
-
-    /**
-     * Checks if cell is empty
-     */
     public boolean isEmpty() {
         return getValue() == 0;
     }
-
-    /**
-     * Checks if cell has a value
-     */
-    public boolean isFilled() {
-        return getValue() != 0;
-    }
-
     /**
      * Gets string representation
      */

@@ -29,10 +29,9 @@ public class GameDriver {
      * Validates source solution and generates three difficulty levels
      * Removes cells according to difficulty:
      * - Easy: 10 cells removed
-     * - Medium: 25 cells removed
-     * - Hard: 20 cells removed
+     * - Medium: 20 cells removed
+     * - Hard: 25 cells removed
      *
-     * @param source Source game with a valid, complete solution
      * @throws SolutionInvalidException if source is invalid or incomplete
      */
     public void generateGames(Game source) throws SolutionInvalidException {
@@ -59,7 +58,6 @@ public class GameDriver {
         System.out.println("Source solution verified - VALID");
 
         // Generate games for each difficulty level
-        // CRITICAL: Generate each difficulty separately with new RandomPairs
         try {
             System.out.println("\nGenerating EASY (10 cells to remove)...");
             Game easyGame = gameGenerator.generateGame(sourceBoard, DifficultyLevel.EASY);

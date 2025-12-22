@@ -78,28 +78,8 @@ public class GameBoardPanel extends JPanel {
         return board;
     }
 
-    /**
-     * Sets a cell value
-     */
-    public void setCellValue(int row, int col, int value) {
-        if (isValidPosition(row, col)) {
-            cells[row][col].setValue(value);
-        }
-    }
 
-    /**
-     * Gets a cell value
-     */
-    public int getCellValue(int row, int col) {
-        if (isValidPosition(row, col)) {
-            return cells[row][col].getValue();
-        }
-        return 0;
-    }
 
-    /**
-     * Marks invalid cells
-     */
     public void markInvalidCells(boolean[][] invalidCells) {
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
@@ -112,9 +92,7 @@ public class GameBoardPanel extends JPanel {
         }
     }
 
-    /**
-     * Clears all invalid markings
-     */
+
     public void clearInvalidMarkings() {
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
@@ -123,10 +101,7 @@ public class GameBoardPanel extends JPanel {
         }
     }
 
-    /**
-     * Clears all user-entered values (keeps initial values)
-     * Only clears cells that are editable (not part of original puzzle)
-     */
+
     public void clearUserEntries() {
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
@@ -138,9 +113,7 @@ public class GameBoardPanel extends JPanel {
         }
     }
 
-    /**
-     * Fills the board with solution
-     */
+
     public void fillSolution(int[][] solution) {
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
@@ -149,9 +122,7 @@ public class GameBoardPanel extends JPanel {
         }
     }
 
-    /**
-     * Enables/disables all cells
-     */
+
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
@@ -201,65 +172,4 @@ public class GameBoardPanel extends JPanel {
         return row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE;
     }
 
-    /**
-     * Focuses a specific cell
-     */
-    public void focusCell(int row, int col) {
-        if (isValidPosition(row, col)) {
-            cells[row][col].requestFocus();
-        }
-    }
-
-    /**
-     * Gets the original board
-     */
-    public int[][] getOriginalBoard() {
-        int[][] copy = new int[BOARD_SIZE][BOARD_SIZE];
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            System.arraycopy(originalBoard[i], 0, copy[i], 0, BOARD_SIZE);
-        }
-        return copy;
-    }
-
-    /**
-     * Resets board to original state
-     */
-    public void resetToOriginal() {
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                // Reset to original value and mark as initial
-                cells[i][j].setValue(originalBoard[i][j]);
-            }
-        }
-    }
-
-    /**
-     * Gets count of initial (non-editable) cells
-     */
-    public int getInitialCellCount() {
-        int count = 0;
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                if (!cells[i][j].isEditable()) {
-                    count++;
-                }
-            }
-        }
-        return count;
-    }
-
-    /**
-     * Gets count of user-filled cells
-     */
-    public int getUserFilledCellCount() {
-        int count = 0;
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                if (cells[i][j].isEditable() && cells[i][j].getValue() != 0) {
-                    count++;
-                }
-            }
-        }
-        return count;
-    }
 }

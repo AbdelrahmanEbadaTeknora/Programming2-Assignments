@@ -64,9 +64,6 @@ public class DifficultySelectionDialog extends JDialog {
         add(cancelPanel, BorderLayout.SOUTH);
     }
 
-    /**
-     * Creates a difficulty selection button
-     */
     private JButton createDifficultyButton(String text, DifficultyLevel difficulty) {
         JButton button = new JButton(text);
         button.setPreferredSize(new Dimension(150, 50));
@@ -96,26 +93,10 @@ public class DifficultySelectionDialog extends JDialog {
         return button;
     }
 
-    /**
-     * Shows dialog and returns selected difficulty
-     */
     public static DifficultyLevel showDialog(JFrame parent) {
         DifficultySelectionDialog dialog = new DifficultySelectionDialog(parent);
         dialog.setVisible(true);
         return dialog.selectedDifficulty;
     }
 
-    /**
-     * Gets selected difficulty
-     */
-    public DifficultyLevel getSelectedDifficulty() {
-        return selectedDifficulty;
-    }
-
-    /**
-     * Checks if dialog was cancelled
-     */
-    public boolean isCancelled() {
-        return cancelled;
-    }
 }

@@ -37,9 +37,7 @@ public class SudokuGUI extends JFrame {
         setupGUI();
     }
 
-    /**
-     * Sets up the main GUI
-     */
+
     private void setupGUI() {
         setTitle("Sudoku Game");
         setSize(900, 700);
@@ -84,9 +82,7 @@ public class SudokuGUI extends JFrame {
         }
     }
 
-    /**
-     * Generates default games from a solved puzzle
-     */
+
     private void generateDefaultGames() {
         try {
             // Create a solved Sudoku board (valid 9x9)
@@ -112,9 +108,7 @@ public class SudokuGUI extends JFrame {
         }
     }
 
-    /**
-     * Sets up listeners for main menu buttons
-     */
+
     private void setupMainMenuListeners() {
         mainMenuPanel.addContinueListener(e -> continuePreviousGame());
         mainMenuPanel.addEasyListener(e -> startNewGame(DifficultyLevel.EASY));
@@ -123,18 +117,14 @@ public class SudokuGUI extends JFrame {
         mainMenuPanel.addLoadFileListener(e -> loadFromFile());
     }
 
-    /**
-     * Shows the main menu
-     */
+
     private void showMainMenu() {
         Catalog catalog = controller.getCatalog();
         mainMenuPanel.setContinueButtonEnabled(catalog.hasCurrent());
         cardLayout.show(mainPanel, "MENU");
     }
 
-    /**
-     * Continues previous unfinished game
-     */
+
     private void continuePreviousGame() {
         try {
             int[][] board = controller.getGame((char) 0); // 0 for incomplete
@@ -147,9 +137,7 @@ public class SudokuGUI extends JFrame {
         }
     }
 
-    /**
-     * Starts a new game with specified difficulty
-     */
+
     private void startNewGame(DifficultyLevel difficulty) {
         try {
             char diffChar = difficulty.toString().charAt(0);
@@ -216,9 +204,7 @@ public class SudokuGUI extends JFrame {
         }
     }
 
-    /**
-     * Reads board from file (simple format: 9 lines of 9 space-separated numbers)
-     */
+
     private int[][] readBoardFromFile(String filePath) throws IOException {
         int[][] board = new int[9][9];
         try (java.io.BufferedReader reader =
@@ -242,9 +228,7 @@ public class SudokuGUI extends JFrame {
         return board;
     }
 
-    /**
-     * Shows the game board
-     */
+
     private void showGameBoard(int[][] board) {
         currentBoardGrid = board;
         originalBoardGrid = copyBoard(board);
@@ -283,9 +267,7 @@ public class SudokuGUI extends JFrame {
         updateSolveButtonState();
     }
 
-    /**
-     * Tracks board changes for undo functionality
-     */
+
     private void trackBoardChanges() {
         if (gameBoardPanel != null) {
             int[][] currentBoard = gameBoardPanel.getBoardState();
@@ -304,9 +286,7 @@ public class SudokuGUI extends JFrame {
         }
     }
 
-    /**
-     * Compares two boards for equality
-     */
+
     private boolean boardsEqual(int[][] board1, int[][] board2) {
         if (board1 == null || board2 == null) return false;
 
@@ -320,9 +300,7 @@ public class SudokuGUI extends JFrame {
         return true;
     }
 
-    /**
-     * Sets up game control listeners
-     */
+
     private void setupGameControls() {
         controlPanel.addVerifyListener(e -> verifyGame());
         controlPanel.addSolveListener(e -> solveGame());
@@ -331,9 +309,7 @@ public class SudokuGUI extends JFrame {
         controlPanel.addNewGameListener(e -> showMainMenu());
     }
 
-    /**
-     * Verifies the current game state
-     */
+
     private void verifyGame() {
         int[][] board = gameBoardPanel.getBoardState();
         boolean[][] invalidCells = controller.verifyGame(board);
@@ -361,9 +337,7 @@ public class SudokuGUI extends JFrame {
         }
     }
 
-    /**
-     * Solves the game
-     */
+
     private void solveGame() {
         try {
             int[][] board = gameBoardPanel.getBoardState();
@@ -378,15 +352,7 @@ public class SudokuGUI extends JFrame {
         }
     }
 
-    /**
-     * Undoes last move
-     */
-    /**
-     * Undoes last move
-     */
-    /**
-     * Undoes last move - WORKING VERSION
-     */
+
     private void undoMove() {
         if (moveHistory == null || moveHistory.size() <= 1) {
             controlPanel.setStatus("No moves to undo");
@@ -462,9 +428,7 @@ public class SudokuGUI extends JFrame {
         }
     }
 
-    /**
-     * Copies a 2D array
-     */
+
     private int[][] copyBoard(int[][] original) {
         int[][] copy = new int[9][9];
         for (int i = 0; i < 9; i++) {
@@ -473,12 +437,7 @@ public class SudokuGUI extends JFrame {
         return copy;
     }
 
-    /**
-     * Updates solve button based on empty cell count
-     */
-    /**
-     * Updates solve button based on empty cell count
-     */
+
     public void updateSolveButtonState() {
         if (controlPanel != null && gameBoardPanel != null) {
             int emptyCells = gameBoardPanel.countEmptyCells();

@@ -18,10 +18,7 @@ public interface Controllable {
      */
     Catalog getCatalog();
 
-    /**
-     * Returns a game grid for specified difficulty level
-     * @param level 'e' for easy, 'm' for medium, 'h' for hard
-     */
+
     int[][] getGame(char level) throws NotFoundException;
 
     /**
@@ -40,8 +37,5 @@ public interface Controllable {
      */
     int[][] solveGame(int[][] game) throws InvalidGameException;
 
-    /**
-     * Logs user action
-     */
-    void logUserAction(UserAction userAction) throws IOException;
+
 }

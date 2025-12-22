@@ -4,21 +4,14 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import OptionalHelperClasses.Position;
 
-/**
- * Iterator pattern for generating permutations of values for empty cells
- * Generates combinations without storing all at once (memory efficient)
- * For 5 empty cells with 9 possible values each: 9^5 = 59,049 permutations
- */
+
 public class PermutationIterator {
     private final List<Position> emptyPositions;
     private final int numPositions;
     private final int[] currentCombination;
     private boolean hasNext;
 
-    /**
-     * Creates iterator for permutations
-     * @param emptyPositions Positions of empty cells in the board
-     */
+
     public PermutationIterator(List<Position> emptyPositions) {
         if (emptyPositions == null || emptyPositions.isEmpty()) {
             throw new IllegalArgumentException("Empty positions cannot be null or empty");

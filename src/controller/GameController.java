@@ -179,6 +179,7 @@ public class GameController implements Viewable, Controllable {
             throw e;
         }
     }
+
     @Override
     public boolean[][] verifyGame(int[][] grid) {
         Models.Board board = new Models.Board(grid);
@@ -245,59 +246,6 @@ public class GameController implements Viewable, Controllable {
     // ==================== Additional Helper Methods ====================
 
     /**
-     * Performs undo operation on current game
-     * @return true if undo successful, false otherwise
-     */
-    public boolean undo() {
-        try {
-            return undoManager.undo(currentGame);
-        } catch (IOException e) {
-            System.err.println("Undo failed: " + e.getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Saves the current game state to incomplete folder
-     */
-    public void saveCurrentGame() throws IOException {
-        if (currentGame != null) {
-            gameLoader.saveCurrentGame(currentGame);
-        }
-    }
-
-    /**
-     * Deletes completed game from difficulty folder
-     */
-    public void deleteCompletedGame(Models.enums.DifficultyLevel level) throws IOException {
-        gameLoader.deleteGame(level);
-    }
-
-    /**
-     * Gets the current game instance
-     */
-    public Models.Game getCurrentGame() {
-        return currentGame;
-    }
-
-    /**
-     * Sets the current game instance
-     */
-    public void setCurrentGame(Models.Game game) {
-        this.currentGame = game;
-    }
-
-    /**
-     * Checks if current game is complete and valid
-     */
-    public boolean isGameCompleteAndValid() {
-        if (currentGame == null) return false;
-
-        verification.VerificationResult result = verifier.verify(currentGame.getBoard());
-        return result.isValid();
-    }
-
-    /**
      * Gets number of empty cells in current game
      */
     public int getEmptyCellCount() {
@@ -311,29 +259,5 @@ public class GameController implements Viewable, Controllable {
             }
         }
         return count;
-    }
-
-    /**
-     * Checks if solve button should be enabled (exactly 5 empty cells)
-     */
-    public boolean canSolve() {
-        return getEmptyCellCount() == 5;
-    }
-
-    /**
-     * Gets current board state
-     */
-    public int[][] getCurrentBoardState() {
-        if (currentGame == null) return null;
-        return currentGame.getBoard().getGrid();
-    }
-
-    /**
-     * Updates current game board with new state
-     */
-    public void updateCurrentGameBoard(int[][] newBoard) {
-        if (currentGame != null) {
-            currentGame.setBoard(new Models.Board(newBoard));
-        }
     }
 }

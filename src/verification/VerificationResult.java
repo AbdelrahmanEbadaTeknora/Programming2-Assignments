@@ -6,38 +6,17 @@ import Models.enums.GameState;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Contains the result of a Sudoku board verification
- * Stores the state (VALID, INVALID, INCOMPLETE) and any invalid positions
- */
 public class VerificationResult {
     private final GameState state;
     private final List<Position> invalidPositions;
     private final String message;
 
-    /**
-     * Constructor with all parameters
-     * @param state The state of the board (VALID, INVALID, or INCOMPLETE)
-     * @param invalidPositions List of positions that have conflicts
-     * @param message Additional message describing the result
-     */
     public VerificationResult(GameState state, List<Position> invalidPositions, String message) {
         this.state = state;
         this.invalidPositions = invalidPositions != null ? invalidPositions : new ArrayList<>();
         this.message = message != null ? message : "";
     }
 
-    /**
-     * Constructor with only state
-     * @param state The state of the board
-     */
-    public VerificationResult(GameState state) {
-        this(state, new ArrayList<>(), "");
-    }
-
-    /**
-     * Gets the state of the board
-     */
     public GameState getState() {
         return state;
     }
@@ -49,16 +28,7 @@ public class VerificationResult {
         return new ArrayList<>(invalidPositions);
     }
 
-    /**
-     * Gets the message describing the result
-     */
-    public String getMessage() {
-        return message;
-    }
 
-    /**
-     * Checks if board is valid
-     */
     public boolean isValid() {
         return state == GameState.VALID;
     }
