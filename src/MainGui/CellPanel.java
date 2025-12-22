@@ -61,6 +61,9 @@ public class CellPanel extends JPanel {
     /**
      * Sets up input validation for user entries
      */
+    /**
+     * Sets up input validation for user entries
+     */
     private void setupInputValidation() {
         textField.addKeyListener(new KeyListener() {
             @Override
@@ -68,40 +71,71 @@ public class CellPanel extends JPanel {
                 String input = String.valueOf(e.getKeyChar());
 
                 // Allow backspace and delete
-                if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE ||
-                        e.getKeyCode() == KeyEvent.VK_DELETE) {
+                if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE ||
+                        e.getKeyChar() == KeyEvent.VK_DELETE) {
                     return;
                 }
 
-                // Only allow digits 1-9 or empty
+                // Get current text
+                String currentText = textField.getText();
+
+                // Prevent typing if already has 1 digit
+                if (currentText.length() >= 1) {
+                    e.consume(); // Block the input
+                    return;
+                }
+
+                // Only allow digits 1-9
                 if (!input.matches("[1-9]")) {
-                    e.consume();
+                    e.consume(); // Block the input
                 }
             }
 
             @Override
-            public void keyPressed(KeyEvent e) {}
+            public void keyPressed(KeyEvent e) {
+                // No changes needed here
+            }
 
             @Override
-            public void keyReleased(KeyEvent e) {}
+            public void keyReleased(KeyEvent e) {
+                // No changes needed here
+            }
         });
 
         textField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 textField.setBackground(new Color(255, 255, 200)); // Light yellow when focused
+                textField.selectAll(); // Select text for easy replacement
             }
 
             @Override
             public void focusLost(FocusEvent e) {
+                // Validate the content is a single digit 1-9 or empty
+                String text = textField.getText();
+                if (!text.isEmpty()) {
+                    // If more than 1 character, keep only first
+                    if (text.length() > 1) {
+                        textField.setText(text.substring(0, 1));
+                        text = textField.getText();
+                    }
+
+                    // Check if it's a digit 1-9
+                    if (!text.matches("[1-9]")) {
+                        textField.setText(""); // Clear if not valid
+                    }
+                }
+
+                // Update background color
                 if (isInvalid) {
-                    textField.setBackground(new Color(255, 200, 200)); // Light red if invalid
+                    textField.setBackground(new Color(255, 200, 200));
                 } else {
                     textField.setBackground(Color.WHITE);
                 }
             }
         });
     }
+
 
     /**
      * Gets the value in the cell
@@ -121,12 +155,17 @@ public class CellPanel extends JPanel {
     /**
      * Sets the value in the cell
      */
+    /**
+     * Sets the value in the cell
+     */
     public void setValue(int value) {
+        // Only allow 0 (empty) or digits 1-9
         if (value == 0) {
             textField.setText("");
-        } else {
+        } else if (value >= 1 && value <= 9) {
             textField.setText(String.valueOf(value));
         }
+        // If value is not 0-9, ignore it (don't set anything)
     }
 
     /**
