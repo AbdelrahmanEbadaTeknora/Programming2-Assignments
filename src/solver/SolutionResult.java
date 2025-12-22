@@ -4,9 +4,7 @@ import OptionalHelperClasses.Position;
 
 import java.util.List;
 
-/**
- * Contains the solution mapping for a Sudoku puzzle
- */
+
 public class SolutionResult {
     private int[] solution;           // Array of values for empty cells
     private List<Position> emptyPositions;  // Positions of empty cells

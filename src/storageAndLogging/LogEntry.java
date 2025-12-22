@@ -3,10 +3,7 @@ package storageAndLogging;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- * Represents a single log entry for a user action
- * Stores row, column, new value, and previous value
- */
+
 public class LogEntry {
     private int row;
     private int col;

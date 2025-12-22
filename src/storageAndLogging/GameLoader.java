@@ -16,20 +16,10 @@ import java.util.List;
 
 import static utils.Constants.GAMES_FOLDER;
 
-/**
- * Loads and saves Sudoku games from/to storage
- * Handles game persistence across sessions
- */
+
 public class GameLoader {
 
-    /**
-     * Loads a game of specified difficulty level
-     * For INCOMPLETE, loads from the incomplete folder
-     *
-     * @param level Difficulty level (EASY, MEDIUM, HARD, or INCOMPLETE)
-     * @return Game object with loaded board
-     * @throws NotFoundException if no game found for difficulty
-     */
+
     public Game loadGame(DifficultyLevel level) throws NotFoundException {
         String folderPath = GAMES_FOLDER + File.separator;
 
@@ -61,16 +51,11 @@ public class GameLoader {
         }
     }
 
-    /**
-     * Loads incomplete/current game
-     */
+
     public Game loadCurrentGame() throws NotFoundException {
         return loadGame(null);
     }
 
-    /**
-     * Saves current game state to incomplete folder
-     */
     public void saveCurrentGame(Game game) throws IOException {
         if (game == null) {
             throw new IllegalArgumentException("Game cannot be null");
@@ -84,9 +69,7 @@ public class GameLoader {
         saveBoardToFile(game.getBoard(), filePath);
     }
 
-    /**
-     * Saves a game to the appropriate difficulty folder
-     */
+
     public void saveGame(Game game, DifficultyLevel difficulty) throws IOException {
         if (game == null) {
             throw new IllegalArgumentException("Game cannot be null");
@@ -103,9 +86,7 @@ public class GameLoader {
         saveBoardToFile(game.getBoard(), filePath);
     }
 
-    /**
-     * Deletes a completed game from the difficulty folder
-     */
+
     public void deleteGame(DifficultyLevel difficulty) throws IOException {
         if (difficulty == null) {
             throw new IllegalArgumentException("Difficulty cannot be null");
@@ -127,9 +108,7 @@ public class GameLoader {
         }
     }
 
-    /**
-     * Deletes the current/incomplete game
-     */
+
     public void deleteCurrentGame() throws IOException {
         String folderPath = GAMES_FOLDER + File.separator +
                 Constants.INCOMPLETE_FOLDER;
@@ -147,10 +126,7 @@ public class GameLoader {
         }
     }
 
-    /**
-     * Loads a 9x9 Sudoku board from a text file
-     * Format: 9 lines, each with 9 space-separated integers
-     */
+
     private int[][] loadBoardFromFile(File file) throws IOException {
         int[][] grid = new int[9][9];
 
@@ -187,9 +163,7 @@ public class GameLoader {
         return grid;
     }
 
-    /**
-     * Saves a 9x9 Sudoku board to a text file
-     */
+
     private void saveBoardToFile(Board board, String filePath) throws IOException {
         int[][] grid = board.getGrid();
 
@@ -206,9 +180,7 @@ public class GameLoader {
         }
     }
 
-    /**
-     * Creates folder if it doesn't exist
-     */
+
     private void createFolderIfNotExists(String folderPath) {
         File folder = new File(folderPath);
         if (!folder.exists()) {
@@ -219,9 +191,7 @@ public class GameLoader {
         }
     }
 
-    /**
-     * Gets all games for a specific difficulty
-     */
+
     public List<Game> getAllGames(DifficultyLevel difficulty) throws IOException {
         List<Game> games = new ArrayList<>();
         String folderPath = GAMES_FOLDER + File.separator +

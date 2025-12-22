@@ -57,10 +57,7 @@ public class PermutationIterator {
         return result;
     }
 
-    /**
-     * Increments the current combination to the next valid permutation
-     * Works like incrementing a base-9 number where digits are 1-9
-     */
+
     private void incrementCombination() {
         int position = numPositions - 1;
 
@@ -81,32 +78,11 @@ public class PermutationIterator {
         hasNext = false;
     }
 
-    /**
-     * Resets iterator to beginning
-     */
+
     public void reset() {
         for (int i = 0; i < numPositions; i++) {
             currentCombination[i] = 1;
         }
         hasNext = true;
-    }
-
-    /**
-     * Gets the positions being permuted
-     */
-    public List<Position> getEmptyPositions() {
-        return emptyPositions;
-    }
-
-    /**
-     * Gets total number of permutations possible
-     * This is 9^n where n is number of empty cells
-     */
-    public long getTotalPermutations() {
-        long total = 1;
-        for (int i = 0; i < numPositions; i++) {
-            total *= 9;
-        }
-        return total;
     }
 }

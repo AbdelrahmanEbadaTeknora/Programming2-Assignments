@@ -108,17 +108,13 @@ public class GameLogger {
         }
     }
 
-    /**
-     * Checks if log file exists
-     */
+
     private boolean logFileExists() {
         File file = new File(logFilePath);
         return file.exists() && file.isFile();
     }
 
-    /**
-     * Creates log file if it doesn't exist
-     */
+
     private void createLogFileIfNotExists() throws IOException {
         File file = new File(logFilePath);
         File parentDir = file.getParentFile();

@@ -9,8 +9,6 @@ import exceptions.SolutionInvalidException;
 
 import java.io.IOException;
 
-/**
- * Controller interface for the View layer
- */
+
 public interface Viewable {
 }

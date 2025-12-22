@@ -144,7 +144,6 @@ public class Cell {
         }
     }
 
-    /
     public void reset() {
         if (isEditable()) {
             this.value = 0;
@@ -155,14 +154,14 @@ public class Cell {
 
     // ==================== Utility Methods ====================
 
-    /
+
     public Cell copy() {
         Cell copy = new Cell(this.row, this.col, this.value, this.state);
         copy.setPreviousValue(this.previousValue);
         return copy;
     }
 
-    /
+
     public String getPosition() {
         return row + "," + col;
     }

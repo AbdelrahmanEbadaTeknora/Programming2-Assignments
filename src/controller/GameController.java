@@ -26,10 +26,7 @@ import verification.*;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Main controller implementing both Viewable and Controllable interfaces
- * Coordinates between View and Model/Business Logic layers
- */
+
 public class GameController implements Viewable, Controllable {
 
     private final verification.SudokuVerifier verifier;
@@ -59,74 +56,10 @@ public class GameController implements Viewable, Controllable {
         return catalogService.checkGames();
     }
 
-    @Override
-    public Models.Game getGame(Models.enums.DifficultyLevel level) throws exceptions.NotFoundException {
-        currentGame = gameLoader.loadGame(level);
-        return currentGame;
-    }
 
-    @Override
-    public void driveGames(Models.Game source) throws exceptions.SolutionInvalidException {
-        gameDriver.generateGames(source);
-    }
 
-    @Override
-    public String verifyGame(Models.Game game) {
-        if (game == null) {
-            return "INVALID: Game is null";
-        }
 
-        Models.Board board = game.getBoard();
-        verification.VerificationResult result = verifier.verify(board);
 
-        switch (result.getState()) {
-            case VALID:
-                return "VALID";
-
-            case INCOMPLETE:
-                return "INCOMPLETE";
-
-            case INVALID:
-                StringBuilder sb = new StringBuilder("INVALID");
-                List<OptionalHelperClasses.Position> invalidPositions = result.getInvalidPositions();
-                if (!invalidPositions.isEmpty()) {
-                    sb.append(": ");
-                    for (int i = 0; i < invalidPositions.size(); i++) {
-                        OptionalHelperClasses.Position pos = invalidPositions.get(i);
-                        sb.append("(").append(pos.getRow()).append(",")
-                                .append(pos.getCol()).append(")");
-                        if (i < invalidPositions.size() - 1) {
-                            sb.append(", ");
-                        }
-                    }
-                }
-                return sb.toString();
-
-            default:
-                return "UNKNOWN";
-        }
-    }
-
-    @Override
-    public int[] solveGame(Models.Game game) throws exceptions.InvalidGameException {
-        if (game == null) {
-            throw new exceptions.InvalidGameException("Game is null");
-        }
-
-        Models.Board board = game.getBoard();
-        solver.SolutionResult result = solver.solve(board);
-
-        if (result == null || result.getSolution() == null) {
-            throw new exceptions.InvalidGameException("No solution found");
-        }
-
-        return result.getSolution();
-    }
-
-    @Override
-    public void logUserAction(String userAction) throws IOException {
-        gameLogger.log(userAction);
-    }
 
     // ==================== Controllable Interface Implementation ====================
 
@@ -233,21 +166,11 @@ public class GameController implements Viewable, Controllable {
         return solvedGrid;
     }
 
-    @Override
-    public void logUserAction(OptionalHelperClasses.UserAction userAction) throws IOException {
-        String logEntry = String.format("(%d,%d,%d,%d)",
-                userAction.getRow(),
-                userAction.getCol(),
-                userAction.getNewValue(),
-                userAction.getPreviousValue());
-        gameLogger.log(logEntry);
-    }
+
 
     // ==================== Additional Helper Methods ====================
 
-    /**
-     * Gets number of empty cells in current game
-     */
+
     public int getEmptyCellCount() {
         if (currentGame == null) return 0;
 

@@ -8,13 +8,7 @@ import OptionalHelperClasses.Position;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Sudoku solver using permutation-based approach
- * Solves boards with exactly 5 empty cells using Iterator and Flyweight patterns
- *
- * Iterator Pattern: PermutationIterator generates combinations on-the-fly
- * Flyweight Pattern: BoardFlyweight verifies without copying boards
- */
+
 public class SudokuSolver {
     private SudokuVerifier verifier;
     private static final int MAX_EMPTY_CELLS = 5;
@@ -23,13 +17,7 @@ public class SudokuSolver {
         this.verifier = verifier;
     }
 
-    /**
-     * Solves the board if it has exactly 5 empty cells
-     * Uses permutations to test all possible combinations
-     *
-     * @param board Board with empty cells marked as 0
-     * @return SolutionResult containing the solution, or null if cannot solve
-     */
+
     public SolutionResult solve(Board board) {
         if (board == null) {
             return null;
@@ -61,9 +49,6 @@ public class SudokuSolver {
         return new SolutionResult(null, emptyPositions, false);
     }
 
-    /**
-     * Finds all empty cells in the board
-     */
     private List<Position> findEmptyPositions(Board board) {
         List<Position> emptyPositions = new ArrayList<>();
         int[][] grid = board.getGrid();
@@ -79,9 +64,6 @@ public class SudokuSolver {
         return emptyPositions;
     }
 
-    /**
-     * Gets maximum number of empty cells this solver can handle
-     */
     public static int getMaxEmptyCells() {
         return MAX_EMPTY_CELLS;
     }
