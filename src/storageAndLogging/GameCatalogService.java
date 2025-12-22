@@ -24,6 +24,12 @@ public class GameCatalogService {
         boolean hasUnfinished = checkUnfinishedGame();
         boolean hasAllDifficulties = checkAllDifficulties();
 
+        System.out.println("DEBUG [GameCatalogService]:");
+        System.out.println("  hasUnfinished: " + hasUnfinished);
+        System.out.println("  hasAllDifficulties: " + hasAllDifficulties);
+        System.out.println("  incomplete folder: " +
+                Constants.GAMES_FOLDER + File.separator + Constants.INCOMPLETE_FOLDER);
+
         return new Catalog(hasUnfinished, hasAllDifficulties);
     }
 

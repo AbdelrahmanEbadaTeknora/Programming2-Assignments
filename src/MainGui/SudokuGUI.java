@@ -8,7 +8,8 @@ import exceptions.InvalidGameException;
 import exceptions.NotFoundException;
 import exceptions.SolutionInvalidException;
 import OptionalHelperClasses.UserAction;
-
+import Models.Game;
+import java.io.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -34,9 +35,50 @@ public class SudokuGUI extends JFrame {
 
     public SudokuGUI(Controllable controller) {
         this.controller = controller;
+        storageAndLogging.GameStorage.initializeFolderStructure();
+        debugIncompleteGameStatus();
         setupGUI();
     }
+    public void debugIncompleteGameStatus() {
+        System.out.println("\n=== DEBUG Incomplete Game Status ===");
 
+        // Check folder
+        String incompletePath = utils.Constants.GAMES_FOLDER +
+                File.separator + utils.Constants.INCOMPLETE_FOLDER;
+        File incompleteFolder = new File(incompletePath);
+
+        System.out.println("Incomplete folder path: " + incompleteFolder.getAbsolutePath());
+        System.out.println("Folder exists: " + incompleteFolder.exists());
+        System.out.println("Is directory: " + incompleteFolder.isDirectory());
+
+        if (incompleteFolder.exists() && incompleteFolder.isDirectory()) {
+            File[] files = incompleteFolder.listFiles();
+            System.out.println("Files in folder: " + (files != null ? files.length : 0));
+
+            if (files != null) {
+                for (File file : files) {
+                    System.out.println("  - " + file.getName() +
+                            " (" + file.length() + " bytes)");
+
+                    // Try to read game file
+                    if (file.getName().equals(utils.Constants.GAME_FILE)) {
+                        System.out.println("  ^^ Found game.txt!");
+                        try {
+                            int[][] board = readBoardFromFile(file.getAbsolutePath());
+                            System.out.println("  Board successfully read");
+                        } catch (Exception e) {
+                            System.out.println("  Error reading: " + e.getMessage());
+                        }
+                    }
+                }
+            }
+        }
+
+        // Check catalog
+        Models.Catalog catalog = controller.getCatalog();
+        System.out.println("Catalog: current=" + catalog.hasCurrent() +
+                ", allModesExist=" + catalog.hasAllModes());
+    }
 
     private void setupGUI() {
         setTitle("Sudoku Game");
@@ -44,6 +86,11 @@ public class SudokuGUI extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+                              @Override
+                              public void windowClosing(java.awt.event.WindowEvent e) {
+                                  saveGameOnExit();
+                              }});
 
         // Card layout for switching between menu and game
         cardLayout = new CardLayout();
@@ -123,12 +170,30 @@ public class SudokuGUI extends JFrame {
         mainMenuPanel.setContinueButtonEnabled(catalog.hasCurrent());
         cardLayout.show(mainPanel, "MENU");
     }
-
+//    private void saveCurrentGameState() {
+//        try {
+//            if (currentBoardGrid != null) {
+//                // Save to incomplete folder
+//                Game game = new Game(currentBoardGrid, null); // null difficulty for incomplete
+//                ((GameController) controller).saveCurrentGame();
+//            }
+//        } catch (IOException e) {
+//            System.err.println("Failed to save game: " + e.getMessage());
+//        }
+//    }
 
     private void continuePreviousGame() {
         try {
-            int[][] board = controller.getGame((char) 0); // 0 for incomplete
-            showGameBoard(board);
+            // Try to load incomplete game
+            int[][] board = controller.getGame('i'); // Use 'i' for incomplete
+            if (board != null) {
+                showGameBoard(board);
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "No unfinished game found",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         } catch (NotFoundException e) {
             JOptionPane.showMessageDialog(this,
                     "No unfinished game found",
@@ -227,11 +292,30 @@ public class SudokuGUI extends JFrame {
         }
         return board;
     }
-
+    private void saveGameOnExit() {
+        if (gameBoardPanel != null) {
+            int[][] board = gameBoardPanel.getBoardState();
+            autoSaveCurrentGame(board);
+        }
+    }
 
     private void showGameBoard(int[][] board) {
         currentBoardGrid = board;
         originalBoardGrid = copyBoard(board);
+
+        try {
+            Models.Board gameBoard = new Models.Board(board);
+            Models.Game game = new Models.Game(gameBoard, null);
+
+            if (controller instanceof GameController) {
+                GameController gc = (GameController) controller;
+                gc.setCurrentGame(game);
+                gc.saveCurrentGame();
+                System.out.println("DEBUG: Saved initial game to incomplete folder");
+            }
+        } catch (Exception e) {
+            System.err.println("DEBUG: Failed to save initial game: " + e.getMessage());
+        }
 
         moveHistory = new Stack<>();
         moveHistory.push(copyBoard(board)); // Save initial state
@@ -282,10 +366,28 @@ public class SudokuGUI extends JFrame {
                         ". History size: " + moveHistory.size());
 
                 updateSolveButtonState();
+                autoSaveCurrentGame(currentBoard);
             }
         }
     }
 
+    private void autoSaveCurrentGame(int[][] board) {
+        try {
+            // Create a Game object with null difficulty (for incomplete)
+            Models.Board gameBoard = new Models.Board(board);
+            Models.Game game = new Models.Game(gameBoard, null);
+
+            // Save using GameController
+            if (controller instanceof GameController) {
+                GameController gc = (GameController) controller;
+                gc.setCurrentGame(game);
+                gc.saveCurrentGame();
+                System.out.println("DEBUG: Auto-saved game to incomplete folder");
+            }
+        } catch (Exception e) {
+            System.err.println("DEBUG: Failed to auto-save: " + e.getMessage());
+        }
+    }
 
     private boolean boardsEqual(int[][] board1, int[][] board2) {
         if (board1 == null || board2 == null) return false;

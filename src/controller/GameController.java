@@ -59,80 +59,19 @@ public class GameController implements Viewable, Controllable {
         return catalogService.checkGames();
     }
 
-    @Override
-    public Models.Game getGame(Models.enums.DifficultyLevel level) throws exceptions.NotFoundException {
-        currentGame = gameLoader.loadGame(level);
-        return currentGame;
-    }
-
-    @Override
-    public void driveGames(Models.Game source) throws exceptions.SolutionInvalidException {
-        gameDriver.generateGames(source);
-    }
-
-    @Override
-    public String verifyGame(Models.Game game) {
-        if (game == null) {
-            return "INVALID: Game is null";
-        }
-
-        Models.Board board = game.getBoard();
-        verification.VerificationResult result = verifier.verify(board);
-
-        switch (result.getState()) {
-            case VALID:
-                return "VALID";
-
-            case INCOMPLETE:
-                return "INCOMPLETE";
-
-            case INVALID:
-                StringBuilder sb = new StringBuilder("INVALID");
-                List<OptionalHelperClasses.Position> invalidPositions = result.getInvalidPositions();
-                if (!invalidPositions.isEmpty()) {
-                    sb.append(": ");
-                    for (int i = 0; i < invalidPositions.size(); i++) {
-                        OptionalHelperClasses.Position pos = invalidPositions.get(i);
-                        sb.append("(").append(pos.getRow()).append(",")
-                                .append(pos.getCol()).append(")");
-                        if (i < invalidPositions.size() - 1) {
-                            sb.append(", ");
-                        }
-                    }
-                }
-                return sb.toString();
-
-            default:
-                return "UNKNOWN";
-        }
-    }
-
-    @Override
-    public int[] solveGame(Models.Game game) throws exceptions.InvalidGameException {
-        if (game == null) {
-            throw new exceptions.InvalidGameException("Game is null");
-        }
-
-        Models.Board board = game.getBoard();
-        solver.SolutionResult result = solver.solve(board);
-
-        if (result == null || result.getSolution() == null) {
-            throw new exceptions.InvalidGameException("No solution found");
-        }
-
-        return result.getSolution();
-    }
-
-    @Override
-    public void logUserAction(String userAction) throws IOException {
-        gameLogger.log(userAction);
-    }
-
     // ==================== Controllable Interface Implementation ====================
 
     @Override
-    public int[][] getGame(char level) throws exceptions.NotFoundException {
+    public int[][] getGame(char level) throws NotFoundException {
         Models.enums.DifficultyLevel difficulty;
+
+        if (level == 0 || level == 'i' || level == 'I') {
+            // Load incomplete game
+            Models.Game game = gameLoader.loadGame(null); // null for incomplete
+            currentGame = game;
+            return game.getBoard().getGrid();
+        }
+
         switch (Character.toLowerCase(level)) {
             case 'e':
                 difficulty = Models.enums.DifficultyLevel.EASY;
@@ -144,7 +83,7 @@ public class GameController implements Viewable, Controllable {
                 difficulty = Models.enums.DifficultyLevel.HARD;
                 break;
             default:
-                throw new exceptions.NotFoundException("Invalid difficulty level: " + level);
+                throw new NotFoundException("Invalid difficulty level: " + level);
         }
 
         Models.Game game = gameLoader.loadGame(difficulty);
@@ -203,7 +142,17 @@ public class GameController implements Viewable, Controllable {
 
         return invalidCells;
     }
-
+    public void saveCurrentGame() throws IOException {
+        if (currentGame != null) {
+            gameLoader.saveCurrentGame(currentGame);
+        }
+    }
+    /**
+     * Sets the current game instance
+     */
+    public void setCurrentGame(Models.Game game) {
+        this.currentGame = game;
+    }
     @Override
     public int[][] solveGame(int[][] grid) throws exceptions.InvalidGameException {
         Models.Board board = new Models.Board(grid);
@@ -231,16 +180,6 @@ public class GameController implements Viewable, Controllable {
         }
 
         return solvedGrid;
-    }
-
-    @Override
-    public void logUserAction(OptionalHelperClasses.UserAction userAction) throws IOException {
-        String logEntry = String.format("(%d,%d,%d,%d)",
-                userAction.getRow(),
-                userAction.getCol(),
-                userAction.getNewValue(),
-                userAction.getPreviousValue());
-        gameLogger.log(logEntry);
     }
 
     // ==================== Additional Helper Methods ====================

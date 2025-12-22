@@ -80,8 +80,22 @@ public class GameLoader {
                 Constants.INCOMPLETE_FOLDER;
         createFolderIfNotExists(folderPath);
 
+        // Use the correct filename
         String filePath = folderPath + File.separator + Constants.GAME_FILE;
+
+        System.out.println("DEBUG [GameLoader.saveCurrentGame]:");
+        System.out.println("  Folder: " + folderPath);
+        System.out.println("  File: " + filePath);
+
         saveBoardToFile(game.getBoard(), filePath);
+
+        // Verify file was created
+        File savedFile = new File(filePath);
+        if (savedFile.exists()) {
+            System.out.println("  SUCCESS: File saved (" + savedFile.length() + " bytes)");
+        } else {
+            System.err.println("  ERROR: File not created!");
+        }
     }
 
     /**
@@ -196,7 +210,7 @@ public class GameLoader {
         try (FileWriter writer = new FileWriter(filePath)) {
             for (int i = 0; i < 9; i++) {
                 for (int j = 0; j < 9; j++) {
-                    writer.write(grid[i][j]);
+                    writer.write(String.valueOf(grid[i][j]));
                     if (j < 8) {
                         writer.write(" ");
                     }
