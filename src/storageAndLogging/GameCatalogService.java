@@ -8,18 +8,10 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-/**
- * Checks available games in storage
- * Returns catalog information about unfinished games and difficulty levels
- */
+
 public class GameCatalogService {
 
-    /**
-     * Checks for unfinished game and available difficulty levels
-     * Returns Catalog with:
-     * - current: true if incomplete game exists
-     * - allModesExist: true if at least one game per difficulty exists
-     */
+
     public Catalog checkGames() {
         boolean hasUnfinished = checkUnfinishedGame();
         boolean hasAllDifficulties = checkAllDifficulties();
@@ -33,9 +25,7 @@ public class GameCatalogService {
         return new Catalog(hasUnfinished, hasAllDifficulties);
     }
 
-    /**
-     * Checks if an unfinished (incomplete) game exists
-     */
+
     private boolean checkUnfinishedGame() {
         String incompletePath = Constants.GAMES_FOLDER + File.separator +
                 Constants.INCOMPLETE_FOLDER;
@@ -50,18 +40,14 @@ public class GameCatalogService {
         return gameFile.exists() && gameFile.isFile();
     }
 
-    /**
-     * Checks if at least one game exists for each difficulty level
-     */
+
     private boolean checkAllDifficulties() {
         return checkDifficultyExists(DifficultyLevel.EASY) &&
                 checkDifficultyExists(DifficultyLevel.MEDIUM) &&
                 checkDifficultyExists(DifficultyLevel.HARD);
     }
 
-    /**
-     * Checks if at least one game exists for a specific difficulty
-     */
+
     private boolean checkDifficultyExists(DifficultyLevel difficulty) {
         String folderPath = Constants.GAMES_FOLDER + File.separator +
                 difficulty.getFolderName();
@@ -76,9 +62,7 @@ public class GameCatalogService {
         return files != null && files.length > 0;
     }
 
-    /**
-     * Creates necessary folder structure if it doesn't exist
-     */
+
     public void initializeFolderStructure() {
         String[] folderNames = {
                 Constants.GAMES_FOLDER,

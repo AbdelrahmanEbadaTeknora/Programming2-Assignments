@@ -85,25 +85,19 @@ public class GameStorage {
         return FileManager.countFiles(folderPath);
     }
 
-    /**
-     * Gets all game files for a difficulty level
-     */
+
     public static List<File> getGameFilesByDifficulty(DifficultyLevel difficulty) {
         String folderPath = getDifficultyFolderPath(difficulty);
         return FileManager.getAllFiles(folderPath);
     }
 
-    /**
-     * Gets all .txt game files for a difficulty
-     */
+
     public static List<File> getTextGameFiles(DifficultyLevel difficulty) {
         String folderPath = getDifficultyFolderPath(difficulty);
         return FileManager.getFilesWithExtension(folderPath, ".txt");
     }
 
-    /**
-     * Gets the first game file for a difficulty (for loading)
-     */
+
     public static File getFirstGameFile(DifficultyLevel difficulty) {
         List<File> files = getTextGameFiles(difficulty);
         if (files.isEmpty()) {
@@ -112,16 +106,12 @@ public class GameStorage {
         return files.get(0);
     }
 
-    /**
-     * Creates a unique filename for a game
-     */
+
     public static String generateGameFilename() {
         return "game_" + System.currentTimeMillis() + ".txt";
     }
 
-    /**
-     * Creates a backup filename
-     */
+
     public static String generateBackupFilename(String originalFilename) {
         String timestamp = "_backup_" + System.currentTimeMillis();
         int dotIndex = originalFilename.lastIndexOf('.');
@@ -133,9 +123,7 @@ public class GameStorage {
         return originalFilename + timestamp;
     }
 
-    /**
-     * Gets total size of games folder in bytes
-     */
+
     public static long getStorageSizeInBytes() {
         long totalSize = 0;
         String[] folders = {
@@ -155,17 +143,13 @@ public class GameStorage {
         return totalSize;
     }
 
-    /**
-     * Checks if storage has space (basic check)
-     */
+
     public static boolean hasStorageSpace() {
         File storageFolder = new File(Constants.GAMES_FOLDER);
         return storageFolder.getUsableSpace() > 1024 * 1024; // At least 1MB free
     }
 
-    /**
-     * Gets storage statistics
-     */
+
     public static StorageStats getStorageStats() {
         StorageStats stats = new StorageStats();
 
@@ -178,9 +162,7 @@ public class GameStorage {
         return stats;
     }
 
-    /**
-     * Clears all games from a difficulty folder
-     */
+
     public static boolean clearDifficultyGames(DifficultyLevel difficulty)
             throws StorageException {
         try {
@@ -191,9 +173,7 @@ public class GameStorage {
         }
     }
 
-    /**
-     * Clears incomplete game
-     */
+
     public static boolean clearIncompleteGame() throws StorageException {
         try {
             String folderPath = getIncompleteGamePath();
@@ -204,9 +184,7 @@ public class GameStorage {
         }
     }
 
-    /**
-     * Backs up incomplete game before overwriting
-     */
+
     public static void backupIncompleteGame() throws StorageException {
         try {
             String folderPath = getIncompleteGamePath();
