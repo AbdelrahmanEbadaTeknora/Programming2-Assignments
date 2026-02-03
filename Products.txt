@@ -1,0 +1,9 @@
+P1001,Laptop,Dell,TechSupplier,5,3000.0
+P1002,Mouse,Logitech,TechSupplier,20,150.0
+P1003,Keyboard,Razer,GamingSupplier,15,500.0
+22,asfsa,safsa,asfa,21,4.0
+3121,maya,hayat,eltete,222,6.0
+#101,gebna,eel bawadi,factor,98,15.0
+P2001,Laptop,Dell,TechSupplier,9,5000.0
+P2002,Mouse,Logitech,TechSupplier,50,150.0
+P2003,Monitor,Samsung,DisplaySupplier,19,2500.0
